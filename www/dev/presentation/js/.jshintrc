@@ -15,6 +15,7 @@
       "require": false,
       "module": false,
       "$": false,
-      "console": false
+      "console": false,
+      "io": false
     }
 }

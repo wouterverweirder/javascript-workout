@@ -16,8 +16,21 @@ function Server() {
 	app.get('/', function(req, res){
 		res.redirect('/mobile/index.html');
 	});
+	io.sockets.on('connection', this.onSocketConnection.bind(this));
+
+	//test polar
+	var PolarH7 = require('./sensors/polarh7');
+	var polarh7 = new PolarH7();
+	polarh7.on('heartRate', function(heartRate){
+		console.log(heartRate);
+		io.sockets.emit('heartRate', heartRate);
+	});
 }
 
 util.inherits(Server, events.EventEmitter);
+
+Server.prototype.onSocketConnection = function(socket) {
+	console.log('[Server] onSocketConnection');
+};
 
 module.exports = Server;
