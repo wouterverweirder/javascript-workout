@@ -12,9 +12,9 @@ function Server() {
 	console.log("Server constructor");
 	server.listen(config.port);
 	console.log("Listening on", config.ip + ':' + config.port);
-	app.use(express.static(path.join(__dirname, '..', 'client')));
+	app.use(express.static(path.join(__dirname, '..', 'www', 'live')));
 	app.get('/', function(req, res){
-		res.sendfile(path.join(__dirname, '..', 'client', 'index.html'));
+		res.redirect('/mobile/index.html');
 	});
 }
 
