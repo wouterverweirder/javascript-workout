@@ -9,5 +9,15 @@
     "dependencies": {
         "express": "latest",
         "socket.io": "latest"
+    },
+    "devDependencies": {
+        "gulp": "latest",
+        "gulp-browserify": "latest",
+        "browserify-handlebars": "latest",
+        "gulp-compass": "latest",
+        "gulp-concat": "latest",
+        "gulp-jshint": "latest",
+        "gulp-plumber": "latest",
+        "gulp-uglify": "latest"
     }
 }
