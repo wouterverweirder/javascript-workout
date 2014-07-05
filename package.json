@@ -8,8 +8,11 @@
     },
     "dependencies": {
         "express": "latest",
+        "body-parser": "latest",
         "socket.io": "latest",
-        "noble": "latest"
+        "noble": "latest",
+        "jsonwebtoken": "latest",
+        "socketio-jwt": "latest"
     },
     "devDependencies": {
         "gulp": "latest",

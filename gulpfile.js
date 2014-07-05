@@ -20,7 +20,7 @@ gulp.task('mobile-styles', function(){
 });
 
 gulp.task('mobile-js', function(){
-	return gulp.src(['www/dev/mobile/js/**/*.js', '!www/dev/mobile/js/lib/**/*.js'])
+	return gulp.src(['www/dev/mobile/js/**/*.js', '!www/dev/mobile/js/vendors/**/*.js'])
 		.pipe(plumber())
 		.pipe(jshint('www/dev/mobile/js/.jshintrc'))
 		.pipe(jshint.reporter('default'))
@@ -51,7 +51,7 @@ gulp.task('presentation-styles', function(){
 });
 
 gulp.task('presentation-js', function(){
-	return gulp.src(['www/dev/presentation/js/**/*.js', '!www/dev/presentation/js/lib/**/*.js'])
+	return gulp.src(['www/dev/presentation/js/**/*.js', '!www/dev/presentation/js/vendors/**/*.js'])
 		.pipe(plumber())
 		.pipe(jshint('www/dev/presentation/js/.jshintrc'))
 		.pipe(jshint.reporter('default'))
@@ -66,6 +66,16 @@ gulp.task('presentation-js', function(){
 			//bundle.require(__dirname + '/src/shared-js/classes/components/CalendarBlock.js', { expose: 'components/CalendarBlock' });
 		})
 		.pipe(concat('script.min.js'))
+		.pipe(gulp.dest('www/live/presentation/js/'));
+});
+
+gulp.task('presentation-vendors-js', function(){
+	return gulp.src([
+			'www/dev/presentation/js/vendors/jquery.min.js'
+        ])
+		.pipe(plumber())
+		.pipe(concat('vendors.min.js'))
+		.pipe(uglify())
 		.pipe(gulp.dest('www/live/presentation/js/'));
 });
 

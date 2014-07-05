@@ -7,7 +7,13 @@
 	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+	<form id="login" method="post" action="/login">
+		<input type="text" name="email" placeholder="email" />
+		<input type="password" name="password" placeholder="password" />
+		<button type="submit">Login</button>
+	</form>
 	<script src="/socket.io/socket.io.js"></script>
+	<script src="js/vendors.min.js"></script>
 	<script src="js/script.min.js"></script>
 </body>
 </html>
