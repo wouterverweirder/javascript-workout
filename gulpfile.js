@@ -20,21 +20,20 @@ gulp.task('mobile-styles', function(){
 });
 
 gulp.task('mobile-js', function(){
-	return gulp.src(['www/dev/mobile/js/**/*.js', '!www/dev/mobile/js/vendors/**/*.js'])
+	gulp.src(['www/dev/mobile/js/**/*.js', '!www/dev/mobile/js/vendors/**/*.js'])
 		.pipe(plumber())
 		.pipe(jshint('www/dev/mobile/js/.jshintrc'))
-		.pipe(jshint.reporter('default'))
-		.pipe(gulp.src(['www/dev/mobile/js/script.js']))
+		.pipe(jshint.reporter('default'));
+	return gulp.src(['www/dev/mobile/js/script.js'])
+		.pipe(plumber())
 		.pipe(browserify({
 			transform: [browserifyHandlebars]
 		}))
 		.on('prebundle', function(bundle) {
-			//bundle.require(__dirname + '/src/shared-js/classes/core/Class.js', { expose: 'core/Class' });
-			//bundle.require(__dirname + '/src/shared-js/classes/utility/Inflector.js', { expose: 'utility/Inflector' });
-			//bundle.require(__dirname + '/src/shared-js/classes/components/Calendar.js', { expose: 'components/Calendar' });
-			//bundle.require(__dirname + '/src/shared-js/classes/components/CalendarBlock.js', { expose: 'components/CalendarBlock' });
+			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
 		})
 		.pipe(concat('script.min.js'))
+		.pipe(uglify())
 		.pipe(gulp.dest('www/live/mobile/js/'));
 });
 
@@ -51,21 +50,20 @@ gulp.task('presentation-styles', function(){
 });
 
 gulp.task('presentation-js', function(){
-	return gulp.src(['www/dev/presentation/js/**/*.js', '!www/dev/presentation/js/vendors/**/*.js'])
+	gulp.src(['www/dev/presentation/js/**/*.js', '!www/dev/presentation/js/vendors/**/*.js'])
 		.pipe(plumber())
 		.pipe(jshint('www/dev/presentation/js/.jshintrc'))
-		.pipe(jshint.reporter('default'))
-		.pipe(gulp.src(['www/dev/presentation/js/script.js']))
+		.pipe(jshint.reporter('default'));
+	return gulp.src(['www/dev/presentation/js/script.js'])
+		.pipe(plumber())
 		.pipe(browserify({
 			transform: [browserifyHandlebars]
 		}))
 		.on('prebundle', function(bundle) {
-			//bundle.require(__dirname + '/src/shared-js/classes/core/Class.js', { expose: 'core/Class' });
-			//bundle.require(__dirname + '/src/shared-js/classes/utility/Inflector.js', { expose: 'utility/Inflector' });
-			//bundle.require(__dirname + '/src/shared-js/classes/components/Calendar.js', { expose: 'components/Calendar' });
-			//bundle.require(__dirname + '/src/shared-js/classes/components/CalendarBlock.js', { expose: 'components/CalendarBlock' });
+			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
 		})
 		.pipe(concat('script.min.js'))
+		.pipe(uglify())
 		.pipe(gulp.dest('www/live/presentation/js/'));
 });
 
