@@ -8,15 +8,16 @@ var config = require('./config'),
 	io = require('socket.io').listen(server),
 	path = require('path'),
 	jwt = require('jsonwebtoken'),
-	socketioJwt = require('socketio-jwt');
+	socketioJwt = require('socketio-jwt'),
+	PresentationClientHandler = require('./clienthandlers/presentation');
 
 var jwtSecret = "JdklmazeXHkdlsfdezaiHJK67hdf87";
 
 function Server() {
 	events.EventEmitter.call(this);
-	console.log("Server constructor");
+	console.log("[Server] constructor");
 	server.listen(config.port);
-	console.log("Listening on", config.ip + ':' + config.port);
+	console.log("[Server] Listening on", config.ip + ':' + config.port);
 
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({
@@ -29,7 +30,7 @@ function Server() {
 		console.log(req.body.email, req.body.password);
 		var profile = {
 			email: 'wouter.verweirder@gmail.com',
-			role: 'presenter'
+			role: 'presentation'
 		};
 		var token = jwt.sign(profile, jwtSecret, {expiresInMinutes: 60*5});
 		res.json({token: token});
@@ -64,7 +65,13 @@ util.inherits(Server, events.EventEmitter);
 
 Server.prototype.onSocketConnection = function(socket) {
 	console.log('[Server] onSocketConnection');
-	console.log(socket.decoded_token.role, 'connected');
+	switch(socket.decoded_token.role) {
+		case "presentation":
+			new PresentationClientHandler(socket);
+			break;
+		default:
+			break;
+	}
 };
 
 module.exports = Server;
