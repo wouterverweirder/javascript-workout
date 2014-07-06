@@ -34,7 +34,7 @@ gulp.task('mobile-js', function(){
 			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
 		})
 		.pipe(concat('script.min.js'))
-		.pipe(uglify())
+		//.pipe(uglify())
 		.pipe(gulp.dest('www/live/mobile/js/'));
 });
 
@@ -65,7 +65,7 @@ gulp.task('presentation-js', function(){
 			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
 		})
 		.pipe(concat('script.min.js'))
-		.pipe(uglify())
+		//.pipe(uglify())
 		.pipe(gulp.dest('www/live/presentation/js/'));
 });
 
@@ -76,7 +76,7 @@ gulp.task('presentation-vendors-js', function(){
         ])
 		.pipe(plumber())
 		.pipe(concat('vendors.min.js'))
-		.pipe(uglify())
+		//.pipe(uglify())
 		.pipe(gulp.dest('www/live/presentation/js/'));
 });
 

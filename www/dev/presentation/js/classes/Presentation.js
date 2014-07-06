@@ -73,16 +73,19 @@ module.exports = (function(){
 			var currentIframe = this.getIframeForSlide(currentSlide, [previousSlide, nextSlide]);
 			if(currentIframe) {
 				currentSlide.attachToIframe(currentIframe, "slides/" + currentSlide.name + '.html?token=' + this.token);
+				currentSlide.setState('active');
 				$(currentIframe).css('left', 0);
 			}
 			var previousIframe = this.getIframeForSlide(previousSlide, [currentSlide, nextSlide]);
 			if(previousIframe) {
 				previousSlide.attachToIframe(previousIframe, "slides/" + previousSlide.name + '.html?token=' + this.token);
+				previousSlide.setState('inactive');
 				$(previousIframe).css('left', '-100%');
 			}
 			var nextIframe = this.getIframeForSlide(nextSlide, [previousSlide, currentSlide]);
 			if(nextIframe) {
 				nextSlide.attachToIframe(nextIframe, "slides/" + nextSlide.name + '.html?token=' + this.token);
+				nextSlide.setState('inactive');
 				$(nextIframe).css('left', '100%');
 			}
 		},

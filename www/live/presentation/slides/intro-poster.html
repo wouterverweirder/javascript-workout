@@ -5,10 +5,36 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title></title>
 	<link rel="stylesheet" href="">
+	<style>
+	* {
+		margin: 0;
+		padding: 0;
+	}
+	html, body {
+		height: 100%;
+	}
+	body {
+		background-color: black;
+		color: white;
+		text-align: center;
+	}
+	.outer {
+		display: table;
+		width: 100%;
+		height: 100%;
+	}
+	.heartRate {
+		display: table-cell;
+		width: 100%;
+		height: 100%;
+		vertical-align: middle;
+	}
+	</style>
 </head>
 <body>
-	<h1>Intro - Poster</h1>
-	<h2 class="heartRate"></h2>
+	<div class="outer">
+		<h1 class="heartRate"></h2>
+	</div>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="/presentation/js/vendors.min.js"></script>
 	<script>
@@ -17,6 +43,7 @@
 		var token, socket;
 
 		function init() {
+			window.setState = setState;
 			token = $.getUrlVar('token');
 			socket = io.connect('/', {
 				query: 'token=' + token
@@ -24,6 +51,10 @@
 			socket.on('heartRate', heartRateHandler);
 			socket.on('connect', socketConnectHandler);
 			socket.on('disconnect', socketDisconnectHandler);
+		}
+
+		function setState(state) {
+			console.log('set state to', state);
 		}
 
 		function socketConnectHandler() {
@@ -37,7 +68,7 @@
 
 		function heartRateHandler(heartRate) {
 			//console.log("[intro-poster] heartRate", heartRate);
-			$('.heartRate').text(heartRate);
+			$('.heartRate').text(heartRate + ' bpm');
 		}
 
 		init();

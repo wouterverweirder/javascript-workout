@@ -61,16 +61,17 @@ body {
 /* line 8, ../../../dev/presentation/css/style.scss */
 #presentation {
   position: absolute;
-  left: 100px;
-  right: 100px;
-  top: 100px;
-  bottom: 100px; }
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden; }
 
-/* line 16, ../../../dev/presentation/css/style.scss */
+/* line 17, ../../../dev/presentation/css/style.scss */
 #login {
   position: relative; }
 
-/* line 20, ../../../dev/presentation/css/style.scss */
+/* line 21, ../../../dev/presentation/css/style.scss */
 iframe {
   position: absolute;
   border: solid 1px black;

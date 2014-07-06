@@ -1,7 +1,6 @@
 var config = require('../config'),
 	events = require('events'),
-	util = require('util'),
-	noble = require('noble');
+	util = require('util');
 
 var POLARH7_HRM_HEART_RATE_SERVICE_UUID = "180d";
 
@@ -18,8 +17,9 @@ function PolarH7() {
 	this._stateChangeHandler = this.stateChangeHandler.bind(this);
 	this._discoverHandler = this.discoverHandler.bind(this);
 
-	noble.on('stateChange', this._stateChangeHandler);
-	noble.on('discover', this._discoverHandler);
+	this.noble = require('noble');
+	this.noble.on('stateChange', this._stateChangeHandler);
+	this.noble.on('discover', this._discoverHandler);
 }
 
 util.inherits(PolarH7, events.EventEmitter);
@@ -28,9 +28,9 @@ PolarH7.prototype.stateChangeHandler = function(state) {
 	console.log('[PolarH7] stateChange', state);
 	this.emit('stateChange', state);
 	if(state === 'poweredOn') {
-		noble.startScanning(serviceUUIDs);
+		this.noble.startScanning(serviceUUIDs);
 	} else {
-		noble.stopScanning();
+		this.noble.stopScanning();
 	}
 };
 
@@ -51,7 +51,7 @@ PolarH7.prototype.discoverHandler = function(peripheral) {
 
 PolarH7.prototype.onFoundSuitablePeripheral = function(peripheral) {
 	console.log("[PolarH7]", peripheral.advertisement.localName);
-	noble.stopScanning();
+	this.noble.stopScanning();
 	this.polarH7Peripheral = peripheral;
 	this.polarH7Peripheral.connect(this.onConnect.bind(this));
 };
