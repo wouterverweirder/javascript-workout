@@ -7,11 +7,18 @@ function ClientHandler(socket) {
 	this.socket = socket;
 	this.appModel = AppModel.getInstance();
 
-	this.appModel.on('currentSlideIndexChanged', this.currentSlideIndexChangedHandler.bind(this));
+
+	this._currentSlideIndexChangedHandler = this.currentSlideIndexChangedHandler.bind(this);
+	this.appModel.on('currentSlideIndexChanged', this._currentSlideIndexChangedHandler);
+
 	this.currentSlideIndexChangedHandler(this.appModel.getCurrentSlideIndex(), this.appModel.slides[this.appModel.getCurrentSlideIndex()]);
 }
 
 util.inherits(ClientHandler, events.EventEmitter);
+
+ClientHandler.prototype.dispose = function() {
+	this.appModel.removeListener('currentSlideIndexChanged', this._currentSlideIndexChangedHandler);
+};
 
 ClientHandler.prototype.currentSlideIndexChangedHandler = function(currentSlideIndex, currentSlide) {
 	this.socket.emit('currentSlideIndexChanged', currentSlideIndex, currentSlide);

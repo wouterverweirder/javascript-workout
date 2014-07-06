@@ -7,9 +7,10 @@
 	<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+	<div id="presentation"></div>
 	<form id="login" method="post" action="/login">
-		<input type="text" name="email" placeholder="email" />
-		<input type="password" name="password" placeholder="password" />
+		<input type="email" name="email" placeholder="email" value="wouter.verweirder@gmail.com" />
+		<input type="password" name="password" placeholder="password" value="geheim" />
 		<button type="submit">Login</button>
 	</form>
 	<script src="/socket.io/socket.io.js"></script>

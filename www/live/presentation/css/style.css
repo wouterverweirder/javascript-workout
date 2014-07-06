@@ -53,3 +53,29 @@ a img {
 /* line 116, ../../../../../../../../../../Library/Ruby/Gems/2.0.0/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
   display: block; }
+
+/* line 4, ../../../dev/presentation/css/style.scss */
+body {
+  overflow: hidden; }
+
+/* line 8, ../../../dev/presentation/css/style.scss */
+#presentation {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  top: 100px;
+  bottom: 100px; }
+
+/* line 16, ../../../dev/presentation/css/style.scss */
+#login {
+  position: relative; }
+
+/* line 20, ../../../dev/presentation/css/style.scss */
+iframe {
+  position: absolute;
+  border: solid 1px black;
+  width: 100%;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }

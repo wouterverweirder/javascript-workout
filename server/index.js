@@ -9,9 +9,11 @@ var config = require('./config'),
 	path = require('path'),
 	jwt = require('jsonwebtoken'),
 	socketioJwt = require('socketio-jwt'),
+	AppModel = require('./model/AppModel'),
 	PresentationClientHandler = require('./clienthandlers/presentation');
 
 var jwtSecret = "JdklmazeXHkdlsfdezaiHJK67hdf87";
+var appModel = AppModel.getInstance();
 
 function Server() {
 	events.EventEmitter.call(this);
@@ -27,13 +29,17 @@ function Server() {
 	app.use(express.static(path.join(__dirname, '..', 'www', 'live')));
 
 	app.post('/login', function(req, res){
-		console.log(req.body.email, req.body.password);
-		var profile = {
-			email: 'wouter.verweirder@gmail.com',
-			role: 'presentation'
-		};
-		var token = jwt.sign(profile, jwtSecret, {expiresInMinutes: 60*5});
-		res.json({token: token});
+		if(req.body.email === 'wouter.verweirder@gmail.com' && req.body.password === 'geheim') {
+			var profile = {
+				email: 'wouter.verweirder@gmail.com',
+				role: 'presentation'
+			};
+			var token = jwt.sign(profile, jwtSecret, {expiresInMinutes: 60*5});
+			res.json({token: token, slides: appModel.slides});
+		} else {
+			var token = jwt.sign({}, jwtSecret, {expiresInMinutes: 60*5});
+			res.json({token: token});
+		}
 	});
 
 	app.get('/', function(req, res){
@@ -65,13 +71,19 @@ util.inherits(Server, events.EventEmitter);
 
 Server.prototype.onSocketConnection = function(socket) {
 	console.log('[Server] onSocketConnection');
+	var clientHandler = false;
 	switch(socket.decoded_token.role) {
 		case "presentation":
-			new PresentationClientHandler(socket);
+			clientHandler = new PresentationClientHandler(socket);
 			break;
 		default:
 			break;
 	}
+	socket.on('disconnect', function(){
+		if(clientHandler) {
+			clientHandler.dispose();
+		}
+	});
 };
 
 module.exports = Server;
