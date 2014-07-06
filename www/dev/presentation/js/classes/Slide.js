@@ -3,10 +3,15 @@ module.exports = (function(){
 
 	var Slide = Class.extend({
 		init: function(data) {
-			console.log("[Slide] init");
 			this.data = data;
 			this.name = this.data.name;
 		},
+		attachToIframe: function(iframe, src) {
+			$(iframe).attr('name', this.name);
+			if(src !== $(iframe).attr('src')) {
+				$(iframe).attr('src', src);
+			}
+		}
 	});
 
 	return Slide;

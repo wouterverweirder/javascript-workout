@@ -10,7 +10,9 @@ var config = require('./config'),
 	jwt = require('jsonwebtoken'),
 	socketioJwt = require('socketio-jwt'),
 	AppModel = require('./model/AppModel'),
-	PresentationClientHandler = require('./clienthandlers/presentation');
+	ClientHandler = require('./clienthandlers/ClientHandler'),
+	PresentationClientHandler = require('./clienthandlers/presentation'),
+	Constants = require('../shared/Constants');
 
 var jwtSecret = "JdklmazeXHkdlsfdezaiHJK67hdf87";
 var appModel = AppModel.getInstance();
@@ -55,35 +57,37 @@ function Server() {
 		handshake: true
 	}));
 	io.sockets.on('connection', this.onSocketConnection.bind(this));
-
-	//test polar
-	/*
-	var PolarH7 = require('./sensors/polarh7');
-	var polarh7 = new PolarH7();
-	polarh7.on('heartRate', function(heartRate){
-		console.log(heartRate);
-		io.sockets.emit('heartRate', heartRate);
-	});
-	*/
 }
 
 util.inherits(Server, events.EventEmitter);
 
 Server.prototype.onSocketConnection = function(socket) {
 	console.log('[Server] onSocketConnection');
+	
 	var clientHandler = false;
 	switch(socket.decoded_token.role) {
 		case "presentation":
 			clientHandler = new PresentationClientHandler(socket);
 			break;
 		default:
+			clientHandler = new ClientHandler(socket);
 			break;
 	}
+	
+	clientHandler.on(Constants.REQUEST_POLAR_H7, this.requestPolarH7Handler.bind(this, clientHandler));
+	
 	socket.on('disconnect', function(){
-		if(clientHandler) {
-			clientHandler.dispose();
-		}
+		clientHandler.removeAllListeners();
+		clientHandler.dispose();
 	});
+};
+
+Server.prototype.requestPolarH7Handler = function(clientHandler) {
+	if(!this.polarH7) {
+		var PolarH7 = require('./sensors/PolarH7');
+		this.polarH7 = new PolarH7();
+	}
+	clientHandler.polarH7 = this.polarH7;
 };
 
 module.exports = Server;

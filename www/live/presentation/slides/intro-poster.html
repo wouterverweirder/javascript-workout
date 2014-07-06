@@ -8,5 +8,42 @@
 </head>
 <body>
 	<h1>Intro - Poster</h1>
+	<h2 class="heartRate"></h2>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/presentation/js/vendors.min.js"></script>
+	<script>
+	(function(){
+
+		var token, socket;
+
+		function init() {
+			token = $.getUrlVar('token');
+			socket = io.connect('/', {
+				query: 'token=' + token
+			});
+			socket.on('heartRate', heartRateHandler);
+			socket.on('connect', socketConnectHandler);
+			socket.on('disconnect', socketDisconnectHandler);
+		}
+
+		function socketConnectHandler() {
+			console.log("[intro-poster] socket connect");
+			socket.emit('requestPolarH7');
+		}
+
+		function socketDisconnectHandler() {
+			console.log("[intro-poster] socket disconnect");
+		}
+
+		function heartRateHandler(heartRate) {
+			//console.log("[intro-poster] heartRate", heartRate);
+			$('.heartRate').text(heartRate);
+		}
+
+		init();
+
+
+	})();
+	</script>
 </body>
 </html>

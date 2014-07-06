@@ -1,6 +1,7 @@
 module.exports = (function(){
 	var Class = require('core/Class');
 	var Slide = require('./Slide');
+	var Constants = require('Constants');
 
 	var KEYCODE_LEFT = 37;
 	var KEYCODE_RIGHT = 39;
@@ -45,6 +46,7 @@ module.exports = (function(){
 		},
 
 		connectSocket: function(token) {
+			this.token = token;
 			this.socket = io.connect('/', {
 				query: 'token=' + token
 			});
@@ -54,12 +56,10 @@ module.exports = (function(){
 		},
 
 		socketConnectHandler: function() {
-			console.log('connected');
 			$('#login').hide();
 		},
 
 		socketDisconnectHandler: function() {
-			console.log('disconnected');
 			$('#login').show();
 		},
 
@@ -70,33 +70,20 @@ module.exports = (function(){
 			var previousSlide = this.getSlideByIndex(currentSlideIndex - 1);
 			var nextSlide = this.getSlideByIndex(currentSlideIndex + 1);
 			//
-			var src = '';
 			var currentIframe = this.getIframeForSlide(currentSlide, [previousSlide, nextSlide]);
 			if(currentIframe) {
-				$(currentIframe).attr('name', currentSlide.name);
+				currentSlide.attachToIframe(currentIframe, "slides/" + currentSlide.name + '.html?token=' + this.token);
 				$(currentIframe).css('left', 0);
-				src = 'slides/' + currentSlide.name + '.html';
-				if(src !== $(currentIframe).attr('src')) {
-					$(currentIframe).attr('src', src);
-				}
 			}
 			var previousIframe = this.getIframeForSlide(previousSlide, [currentSlide, nextSlide]);
 			if(previousIframe) {
-				$(previousIframe).attr('name', previousSlide.name);
+				previousSlide.attachToIframe(previousIframe, "slides/" + previousSlide.name + '.html?token=' + this.token);
 				$(previousIframe).css('left', '-100%');
-				src = 'slides/' + previousSlide.name + '.html';
-				if(src !== $(previousIframe).attr('src')) {
-					$(previousIframe).attr('src', src);
-				}
 			}
 			var nextIframe = this.getIframeForSlide(nextSlide, [previousSlide, currentSlide]);
 			if(nextIframe) {
-				$(nextIframe).attr('name', nextSlide.name);
+				nextSlide.attachToIframe(nextIframe, "slides/" + nextSlide.name + '.html?token=' + this.token);
 				$(nextIframe).css('left', '100%');
-				src = 'slides/' + nextSlide.name + '.html';
-				if(src !== $(nextIframe).attr('src')) {
-					$(nextIframe).attr('src', src);
-				}
 			}
 		},
 
@@ -133,10 +120,10 @@ module.exports = (function(){
 		keydownHandler: function(event) {
 			switch(event.keyCode) {
 				case KEYCODE_LEFT:
-					this.tryToSend("setCurrentSlideIndex", this.currentSlideIndex - 1);
+					this.tryToSend(Constants.SET_CURRENT_SLIDE_INDEX, this.currentSlideIndex - 1);
 					break;
 				case KEYCODE_RIGHT:
-					this.tryToSend("setCurrentSlideIndex", this.currentSlideIndex + 1);
+					this.tryToSend(Constants.SET_CURRENT_SLIDE_INDEX, this.currentSlideIndex + 1);
 					break;
 			}
 		},

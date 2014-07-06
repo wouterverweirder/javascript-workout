@@ -30,6 +30,7 @@ gulp.task('mobile-js', function(){
 			transform: [browserifyHandlebars]
 		}))
 		.on('prebundle', function(bundle) {
+			bundle.require(__dirname + '/shared/Constants.js', { expose: 'Constants'});
 			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
 		})
 		.pipe(concat('script.min.js'))
@@ -60,6 +61,7 @@ gulp.task('presentation-js', function(){
 			transform: [browserifyHandlebars]
 		}))
 		.on('prebundle', function(bundle) {
+			bundle.require(__dirname + '/shared/Constants.js', { expose: 'Constants'});
 			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
 		})
 		.pipe(concat('script.min.js'))
@@ -69,7 +71,8 @@ gulp.task('presentation-js', function(){
 
 gulp.task('presentation-vendors-js', function(){
 	return gulp.src([
-			'www/dev/presentation/js/vendors/jquery.min.js'
+			'www/dev/presentation/js/vendors/jquery.min.js',
+			'www/dev/presentation/js/vendors/jquery.geturlvars.js'
         ])
 		.pipe(plumber())
 		.pipe(concat('vendors.min.js'))
@@ -79,7 +82,8 @@ gulp.task('presentation-vendors-js', function(){
 
 gulp.task('watch', function(){
 	gulp.watch('www/dev/mobile/css/**/*.scss', ['mobile-styles']);
-	gulp.watch('www/dev/mobile/js/**/*.js', ['mobile-js']);
+	gulp.watch(['www/dev/mobile/js/**/*.js', 'shared/**/*.js'], ['mobile-js']);
 	gulp.watch('www/dev/presentation/css/**/*.scss', ['presentation-styles']);
-	gulp.watch('www/dev/presentation/js/**/*.js', ['presentation-js']);
+	gulp.watch(['www/dev/presentation/js/**/*.js', 'shared/**/*.js'], ['presentation-js']);
+	gulp.watch('www/dev/presentation/js/vendors/**/*.js', ['presentation-vendors-js']);
 });
