@@ -10,8 +10,7 @@ var config = require('./config'),
 	jwt = require('jsonwebtoken'),
 	socketioJwt = require('socketio-jwt'),
 	AppModel = require('./model/AppModel'),
-	ClientHandler = require('./clienthandlers/ClientHandler'),
-	PresentationClientHandler = require('./clienthandlers/presentation'),
+	ClientHandlerFactory = require('./clienthandlers/ClientHandlerFactory'),
 	Constants = require('../shared/Constants');
 
 var jwtSecret = "JdklmazeXHkdlsfdezaiHJK67hdf87";
@@ -56,24 +55,15 @@ function Server() {
 		secret: jwtSecret,
 		handshake: true
 	}));
-	io.sockets.on('connection', this.onSocketConnection.bind(this));
+
+	io.on('connection', this.onConnection.bind(this));
 }
 
 util.inherits(Server, events.EventEmitter);
 
-Server.prototype.onSocketConnection = function(socket) {
-	console.log('[Server] onSocketConnection');
-	
-	var clientHandler = false;
-	switch(socket.decoded_token.role) {
-		case "presentation":
-			clientHandler = new PresentationClientHandler(socket);
-			break;
-		default:
-			clientHandler = new ClientHandler(socket);
-			break;
-	}
-	
+Server.prototype.onConnection = function(socket) {
+	var clientHandler = ClientHandlerFactory.createClientHandler(socket);
+
 	clientHandler.on(Constants.REQUEST_POLAR_H7, this.requestPolarH7Handler.bind(this, clientHandler));
 	
 	socket.on('disconnect', function(){

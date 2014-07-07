@@ -7,7 +7,7 @@ module.exports = (function(){
 			console.log("[IntroPoster] init");
 
 			this.socket = io.connect('/', {
-				query: 'token=' + this.token
+				query: 'token=' + this.token + "&slide=intro-poster"
 			});
 
 			this._heartRateHandler = $.proxy(this.heartRateHandler, this);
