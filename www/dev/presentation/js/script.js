@@ -1,9 +1,10 @@
 (function(){
 
-	var Presentation = require('./classes/Presentation');
-
 	function init() {
-		new Presentation();
+		if($('#presentation').length > 0) {
+			var Presentation = require('./classes/Presentation');
+			new Presentation();
+		}
 	}
 
 	init();

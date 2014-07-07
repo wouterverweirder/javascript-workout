@@ -37,42 +37,12 @@
 	</div>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="/presentation/js/vendors.min.js"></script>
+	<script src="/presentation/js/script.min.js"></script>
 	<script>
 	(function(){
 
-		var token, socket;
-
-		function init() {
-			window.setState = setState;
-			token = $.getUrlVar('token');
-			socket = io.connect('/', {
-				query: 'token=' + token
-			});
-			socket.on('heartRate', heartRateHandler);
-			socket.on('connect', socketConnectHandler);
-			socket.on('disconnect', socketDisconnectHandler);
-		}
-
-		function setState(state) {
-			console.log('set state to', state);
-		}
-
-		function socketConnectHandler() {
-			console.log("[intro-poster] socket connect");
-			socket.emit('requestPolarH7');
-		}
-
-		function socketDisconnectHandler() {
-			console.log("[intro-poster] socket disconnect");
-		}
-
-		function heartRateHandler(heartRate) {
-			//console.log("[intro-poster] heartRate", heartRate);
-			$('.heartRate').text(heartRate + ' bpm');
-		}
-
-		init();
-
+		var IntroPoster = require('classes/content/intro-poster');
+		new IntroPoster();
 
 	})();
 	</script>

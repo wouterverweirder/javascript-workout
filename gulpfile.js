@@ -63,6 +63,8 @@ gulp.task('presentation-js', function(){
 		.on('prebundle', function(bundle) {
 			bundle.require(__dirname + '/shared/Constants.js', { expose: 'Constants'});
 			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
+			//content
+			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/intro-poster/index.js', { expose: 'classes/content/intro-poster'});
 		})
 		.pipe(concat('script.min.js'))
 		//.pipe(uglify())
