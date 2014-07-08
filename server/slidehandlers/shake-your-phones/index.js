@@ -1,10 +1,10 @@
 var events = require('events'),
 	util = require('util'),
-	SlideHandler = require('../SlideHandler'),
-	Constants = require('../../../../../shared/Constants');
+	SlideHandler = require('../SlideHandler');
 
-function ShakeYourPhonesSlideHandler(slideName, socket) {
-	SlideHandler.call(this, slideName, socket);
+function ShakeYourPhonesSlideHandler(slide) {
+	SlideHandler.call(this, slide);
+	//send heart rate info to the client
 	console.log('[ShakeYourPhonesSlideHandler] constructor');
 }
 

@@ -11,6 +11,8 @@ function AppModel() {
 
 util.inherits(AppModel, events.EventEmitter);
 
+AppModel.CURRENT_SLIDE_INDEX_CHANGED = 'currentSlideIndexChanged';
+
 AppModel.getInstance = function() {
 	if(!instance) {
 		instance = new AppModel();
@@ -28,7 +30,7 @@ AppModel.prototype.setCurrentSlideIndex = function(value) {
 	value = Math.max(0, Math.min(value, this.slides.length - 1));
 	if(value !== this._currentSlideIndex) {
 		this._currentSlideIndex = value;
-		this.emit('currentSlideIndexChanged', this._currentSlideIndex, this.slides[this._currentSlideIndex]);
+		this.emit(AppModel.CURRENT_SLIDE_INDEX_CHANGED, this._currentSlideIndex, this.slides[this._currentSlideIndex]);
 	}
 };
 

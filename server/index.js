@@ -10,6 +10,7 @@ var config = require('./config'),
 	jwt = require('jsonwebtoken'),
 	socketioJwt = require('socketio-jwt'),
 	AppModel = require('./model/AppModel'),
+	SlideHandlerFactory = require('./slidehandlers/SlideHandlerFactory'),
 	ClientHandlerFactory = require('./clienthandlers/ClientHandlerFactory'),
 	Constants = require('../shared/Constants');
 
@@ -19,6 +20,9 @@ var appModel = AppModel.getInstance();
 function Server() {
 	events.EventEmitter.call(this);
 	console.log("[Server] constructor");
+	this.clientHandlers = [];
+	this._currentSlideIndexChangedHandler = this.currentSlideIndexChangedHandler.bind(this);
+	appModel.on(AppModel.CURRENT_SLIDE_INDEX_CHANGED, this._currentSlideIndexChangedHandler);
 	server.listen(config.port);
 	console.log("[Server] Listening on", config.ip + ':' + config.port);
 
@@ -57,27 +61,44 @@ function Server() {
 	}));
 
 	io.on('connection', this.onConnection.bind(this));
+	this.currentSlideIndexChangedHandler(appModel.getCurrentSlideIndex(), appModel.slides[appModel.getCurrentSlideIndex()]);
 }
 
 util.inherits(Server, events.EventEmitter);
 
-Server.prototype.onConnection = function(socket) {
-	var clientHandler = ClientHandlerFactory.createClientHandler(socket);
-
-	clientHandler.on(Constants.REQUEST_POLAR_H7, this.requestPolarH7Handler.bind(this, clientHandler));
-	
-	socket.on('disconnect', function(){
-		clientHandler.removeAllListeners();
-		clientHandler.dispose();
-	});
+Server.prototype.currentSlideIndexChangedHandler = function(slideIndex, slide) {
+	console.log('[Server] currentSlideIndexChangedHandler', slideIndex, slide);
+	if(this.currentSlideHandler) {
+		this.currentSlideHandler.dispose();
+	}
+	this.currentSlideHandler = SlideHandlerFactory.createSlideHandler(slide);
+	var numClientHandlers = this.clientHandlers.length;
+	for(var i = 0; i < numClientHandlers; i++) {
+		this.currentSlideHandler.addClientHandler(this.clientHandlers[i]);
+	}
 };
 
-Server.prototype.requestPolarH7Handler = function(clientHandler) {
-	if(!this.polarH7) {
-		var PolarH7 = require('./sensors/PolarH7');
-		this.polarH7 = new PolarH7();
+Server.prototype.onConnection = function(socket) {
+	var clientHandler = ClientHandlerFactory.createClientHandler(socket);
+	
+	this.clientHandlers.push(clientHandler);
+	if(this.currentSlideHandler) {
+		this.currentSlideHandler.addClientHandler(clientHandler);
 	}
-	clientHandler.polarH7 = this.polarH7;
+
+	clientHandler.on('disconnect', this.onDisconnect.bind(this, clientHandler));
+};
+
+Server.prototype.onDisconnect = function(clientHandler) {
+	var index = this.clientHandlers.indexOf(clientHandler);
+	if(index > -1) {
+		this.clientHandlers.splice(index, 1);
+	}
+	if(this.currentSlideHandler) {
+		this.currentSlideHandler.removeClientHandler(clientHandler);
+	}
+	clientHandler.removeAllListeners();
+	clientHandler.dispose();
 };
 
 module.exports = Server;
