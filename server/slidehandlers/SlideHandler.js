@@ -16,7 +16,7 @@ SlideHandler.prototype.dispose = function() {
 
 SlideHandler.prototype.addClientHandler = function(clientHandler) {
 	this.clientHandlers.push(clientHandler);
-	//console.log("[SlideHandler] add client handler", this.clientHandlers.length);
+	console.log("[SlideHandler] add client handler", this.clientHandlers.length);
 };
 
 SlideHandler.prototype.removeClientHandler = function(clientHandler) {

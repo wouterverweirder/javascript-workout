@@ -4,8 +4,8 @@ var events = require('events'),
 
 function ShakeYourPhonesSlideHandler(slide) {
 	SlideHandler.call(this, slide);
-	//send heart rate info to the client
 	console.log('[ShakeYourPhonesSlideHandler] constructor');
+	//clients will send accelerometer data
 }
 
 util.inherits(ShakeYourPhonesSlideHandler, SlideHandler);

@@ -32,6 +32,8 @@ gulp.task('mobile-js', function(){
 		.on('prebundle', function(bundle) {
 			bundle.require(__dirname + '/shared/Constants.js', { expose: 'Constants'});
 			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
+			//content
+			bundle.require(__dirname + '/www/dev/mobile/js/classes/content/shake-your-phones/index.js', { expose: 'classes/content/shake-your-phones'});
 		})
 		.pipe(concat('script.min.js'))
 		//.pipe(uglify())
@@ -83,10 +85,22 @@ gulp.task('presentation-vendors-js', function(){
 		.pipe(gulp.dest('www/live/presentation/js/'));
 });
 
+gulp.task('mobile-vendors-js', function(){
+	return gulp.src([
+			'www/dev/mobile/js/vendors/jquery.min.js',
+			'www/dev/mobile/js/vendors/jquery.geturlvars.js'
+        ])
+		.pipe(plumber())
+		.pipe(concat('vendors.min.js'))
+		//.pipe(uglify())
+		.pipe(gulp.dest('www/live/mobile/js/'));
+});
+
 gulp.task('watch', function(){
 	gulp.watch('www/dev/mobile/css/**/*.scss', ['mobile-styles']);
 	gulp.watch(['www/dev/mobile/js/**/*.js', 'shared/**/*.js'], ['mobile-js']);
 	gulp.watch('www/dev/presentation/css/**/*.scss', ['presentation-styles']);
 	gulp.watch(['www/dev/presentation/js/**/*.js', 'shared/**/*.js'], ['presentation-js']);
 	gulp.watch('www/dev/presentation/js/vendors/**/*.js', ['presentation-vendors-js']);
+	gulp.watch('www/dev/mobile/js/vendors/**/*.js', ['mobile-vendors-js']);
 });

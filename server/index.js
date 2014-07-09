@@ -43,7 +43,7 @@ function Server() {
 			res.json({token: token, slides: appModel.slides});
 		} else {
 			var token = jwt.sign({}, jwtSecret, {expiresInMinutes: 60*5});
-			res.json({token: token});
+			res.json({token: token, slides: appModel.slides});
 		}
 	});
 
@@ -79,6 +79,7 @@ Server.prototype.currentSlideIndexChangedHandler = function(slideIndex, slide) {
 };
 
 Server.prototype.onConnection = function(socket) {
+	console.log('on connection');
 	var clientHandler = ClientHandlerFactory.createClientHandler(socket);
 	
 	this.clientHandlers.push(clientHandler);
