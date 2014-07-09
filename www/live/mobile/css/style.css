@@ -90,3 +90,12 @@ html, body {
     height: 100%;
     text-align: center;
     vertical-align: middle; }
+
+/* line 41, ../../../dev/mobile/css/style.scss */
+.background {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; }

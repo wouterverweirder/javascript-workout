@@ -77,7 +77,8 @@ gulp.task('presentation-js', function(){
 gulp.task('presentation-vendors-js', function(){
 	return gulp.src([
 			'www/dev/presentation/js/vendors/jquery.min.js',
-			'www/dev/presentation/js/vendors/jquery.geturlvars.js'
+			'www/dev/presentation/js/vendors/jquery.geturlvars.js',
+			'www/dev/presentation/js/vendors/rAF.js'
         ])
 		.pipe(plumber())
 		.pipe(concat('vendors.min.js'))
@@ -88,7 +89,8 @@ gulp.task('presentation-vendors-js', function(){
 gulp.task('mobile-vendors-js', function(){
 	return gulp.src([
 			'www/dev/mobile/js/vendors/jquery.min.js',
-			'www/dev/mobile/js/vendors/jquery.geturlvars.js'
+			'www/dev/mobile/js/vendors/jquery.geturlvars.js',
+			'www/dev/mobile/js/vendors/rAF.js'
         ])
 		.pipe(plumber())
 		.pipe(concat('vendors.min.js'))

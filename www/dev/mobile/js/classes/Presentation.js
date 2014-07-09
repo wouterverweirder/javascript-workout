@@ -1,6 +1,7 @@
 module.exports = (function(){
 	var Class = require('core/Class');
 	var Slide = require('./Slide');
+	var Constants = require('Constants');
 
 	var Presentation = Class.extend({
 		currentSlideIndex: 0,
@@ -62,19 +63,19 @@ module.exports = (function(){
 			var currentIframe = this.getIframeForSlide(currentSlide, [previousSlide, nextSlide]);
 			if(currentIframe) {
 				currentSlide.attachToIframe(currentIframe, "slides/" + currentSlide.name + '.html?token=' + this.token);
-				currentSlide.setState('active');
+				currentSlide.setState(Constants.STATE_ACTIVE);
 				$(currentIframe).css('left', 0);
 			}
 			var previousIframe = this.getIframeForSlide(previousSlide, [currentSlide, nextSlide]);
 			if(previousIframe) {
 				previousSlide.attachToIframe(previousIframe, "slides/" + previousSlide.name + '.html?token=' + this.token);
-				previousSlide.setState('inactive');
+				previousSlide.setState(Constants.STATE_INACTIVE);
 				$(previousIframe).css('left', '-100%');
 			}
 			var nextIframe = this.getIframeForSlide(nextSlide, [previousSlide, currentSlide]);
 			if(nextIframe) {
 				nextSlide.attachToIframe(nextIframe, "slides/" + nextSlide.name + '.html?token=' + this.token);
-				nextSlide.setState('inactive');
+				nextSlide.setState(Constants.STATE_INACTIVE);
 				$(nextIframe).css('left', '100%');
 			}
 		},

@@ -3,12 +3,16 @@ module.exports = (function(){
 
 	var ContentBase = Class.extend({
 		init: function() {
-			console.log("[ContentBase] init");
 			this.token = $.getUrlVar('token');
 			window.setState = $.proxy(this.setState, this);
 		},
 		setState: function(state) {
-			console.log('[ContentBase] set state to', state);
+			if(state !== this.state) {
+				this.state = state;
+				this.onStateChanged();
+			}
+		},
+		onStateChanged: function() {
 		}
 	});
 
