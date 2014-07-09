@@ -1,5 +1,6 @@
 module.exports = (function(){
 	var Class = require('core/Class');
+	//var Constants = require('Constants');
 
 	var Slide = Class.extend({
 		init: function(data) {
@@ -25,8 +26,10 @@ module.exports = (function(){
 		},
 		iframeLoadHandler: function(event) {
 			var w = getIframeWindow(this.iframe);
-			if(w && w.setState) {
-				w.setState(this.state);
+			if(w) {
+				if(w.setState) {
+					w.setState(this.state);
+				}
 			}
 		}
 	});

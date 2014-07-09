@@ -9,6 +9,7 @@ module.exports = (function(){
 		_delta: 0,
 		_interval: false,
 		_lastTime: new Date().getTime(),
+		currentFrame: 0,
 		init: function() {
 			this.token = $.getUrlVar('token');
 			window.setState = $.proxy(this.setState, this);
@@ -20,6 +21,7 @@ module.exports = (function(){
 				this.state = state;
 				this.onStateChanged();
 				if(this.state === Constants.STATE_ACTIVE) {
+					this.currentFrame = 0;
 					this._drawLoop();
 				} else {
 					window.cancelAnimationFrame(this._animationFrameId);
@@ -33,6 +35,7 @@ module.exports = (function(){
 			this._currentTime = (new Date()).getTime();
 		    this._delta = (this._currentTime - this._lastTime);
 		    if(this._delta > this._interval) {
+		    	this.currentFrame++;
 		    	this.drawLoop();
 		    	this._lastTime = this._currentTime - (this._delta % this._interval);
 		    }

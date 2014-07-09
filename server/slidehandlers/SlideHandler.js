@@ -16,7 +16,7 @@ SlideHandler.prototype.dispose = function() {
 
 SlideHandler.prototype.addClientHandler = function(clientHandler) {
 	this.clientHandlers.push(clientHandler);
-	console.log("[SlideHandler] add client handler", this.clientHandlers.length);
+	this.onClientHandlerAdded(clientHandler);
 };
 
 SlideHandler.prototype.removeClientHandler = function(clientHandler) {
@@ -24,7 +24,19 @@ SlideHandler.prototype.removeClientHandler = function(clientHandler) {
 	if(index > -1) {
 		this.clientHandlers.splice(index, 1);
 	}
-	//console.log("[SlideHandler] remove client handler", this.clientHandlers.length);
+	this.onClientHandlerRemoved(clientHandler);
+};
+
+SlideHandler.prototype.onClientHandlerAdded = function(clientHandler) {
+};
+
+SlideHandler.prototype.onClientHandlerRemoved = function(clientHandler) {
+};
+
+SlideHandler.prototype.sendToAll = function() {
+	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
+		this.clientHandlers[i].send.apply(this.clientHandlers[i], arguments);
+	};
 };
 
 module.exports = SlideHandler;

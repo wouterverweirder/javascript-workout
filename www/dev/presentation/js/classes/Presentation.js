@@ -19,6 +19,8 @@ module.exports = (function(){
 
 			$("#login").on('submit', $.proxy(this.loginSubmitHandler, this));
 			$(window).on('keydown', $.proxy(this.keydownHandler, this));
+			$('body').on(Constants.GO_TO_PREVIOUS_SLIDE, $.proxy(this.goToPreviousSlide, this));
+			$('body').on(Constants.GO_TO_NEXT_SLIDE, $.proxy(this.goToNextSlide, this));
 		},
 
 		createIframes: function() {
@@ -39,7 +41,8 @@ module.exports = (function(){
 				that.slides = [];
 				var numSlides = result.slides.length;
 				for(var i = 0; i < numSlides; i++) {
-					that.slides.push(new Slide(result.slides[i]));
+					var slide = new Slide(result.slides[i]);
+					that.slides.push(slide);
 				}
 				that.connectSocket(result.token);
 			});
@@ -123,12 +126,20 @@ module.exports = (function(){
 		keydownHandler: function(event) {
 			switch(event.keyCode) {
 				case KEYCODE_LEFT:
-					this.tryToSend(Constants.SET_CURRENT_SLIDE_INDEX, this.currentSlideIndex - 1);
+					this.goToPreviousSlide();
 					break;
 				case KEYCODE_RIGHT:
-					this.tryToSend(Constants.SET_CURRENT_SLIDE_INDEX, this.currentSlideIndex + 1);
+					this.goToNextSlide();
 					break;
 			}
+		},
+
+		goToPreviousSlide: function() {
+			this.tryToSend(Constants.SET_CURRENT_SLIDE_INDEX, this.currentSlideIndex - 1);
+		},
+
+		goToNextSlide: function() {
+			this.tryToSend(Constants.SET_CURRENT_SLIDE_INDEX, this.currentSlideIndex + 1);
 		},
 
 		tryToSend: function() {

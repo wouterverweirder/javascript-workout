@@ -79,7 +79,6 @@ Server.prototype.currentSlideIndexChangedHandler = function(slideIndex, slide) {
 };
 
 Server.prototype.onConnection = function(socket) {
-	console.log('on connection');
 	var clientHandler = ClientHandlerFactory.createClientHandler(socket);
 	
 	this.clientHandlers.push(clientHandler);

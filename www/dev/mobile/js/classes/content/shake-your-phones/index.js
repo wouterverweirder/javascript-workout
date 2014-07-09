@@ -5,6 +5,7 @@ module.exports = (function(){
 	var ShakeYourPhones = ContentBase.extend({
 		currentMotion: 0,
 		motion: 0,
+		maximumMotion: 0,
 		init: function() {
 			this._super();
 			console.log('[Mobile] shake your phones init');
@@ -21,13 +22,16 @@ module.exports = (function(){
 
 			this._socketConnectHandler = $.proxy(this.socketConnectHandler, this);
 			this._socketDisconnectHandler = $.proxy(this.socketDisconnectHandler, this);
+			this._setSubstateHandler = $.proxy(this.setSubstateHandler, this);
 
 			this.socket.on('connect', this._socketConnectHandler);
 			this.socket.on('disconnect', this._socketDisconnectHandler);
+			this.socket.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
 		},
 
 		onStateChanged: function() {
 			if(this.state === Constants.STATE_ACTIVE) {
+				this.maximumMotion = 0;
 				if (window.DeviceMotionEvent) {
 					window.addEventListener('devicemotion', this._motionUpdateHandler, false);
 				} else {
@@ -44,6 +48,9 @@ module.exports = (function(){
 		socketDisconnectHandler: function() {
 		},
 
+		setSubstateHandler: function(substate) {
+		},
+
 		motionUpdateHandler: function(event) {
 			this.currentMotion = event.interval * (Math.abs(event.acceleration.x) + Math.abs(event.acceleration.y) + Math.abs(event.acceleration.z));
 		},
@@ -52,6 +59,11 @@ module.exports = (function(){
 			this.motion += this.currentMotion;
 			this.motion *= 0.97;
 			this.$background.css('top', 100 - this.motion + '%');
+			this.maximumMotion = Math.max(this.maximumMotion, this.motion);
+			if(this.currentFrame % 10 === 0 && this.maximumMotion !== this.lastSentMaximumMotion) {
+				this.lastSentMaximumMotion = this.maximumMotion;
+				this.socket.emit(Constants.UPDATE_MAXIMUM_MOTION, this.maximumMotion);
+			}
 		}
 	});
 
