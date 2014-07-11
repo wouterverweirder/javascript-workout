@@ -1,22 +1,18 @@
 var gulp = require('gulp'),
 	browserify = require('gulp-browserify'),
 	browserifyHandlebars = require('browserify-handlebars'),
-	compass = require('gulp-compass'),
+	path = require('path'),
+	less = require('gulp-less'),
+	uncss = require('gulp-uncss'),
 	concat = require('gulp-concat'),
 	jshint = require('gulp-jshint'),
 	plumber = require('gulp-plumber'),
 	uglify = require('gulp-uglify');
 
 gulp.task('mobile-styles', function(){
-	return gulp.src('www/dev/mobile/css/*.scss')
-		.pipe(plumber())
-		.pipe(compass({
-			config_file: './config-mobile-styles.rb',
-			project: '.',
-			sass: 'www/dev/mobile/css',
-			css: 'www/live/mobile/css'
-		}))
-		.pipe(gulp.dest('www/live/mobile/css/'));
+	return gulp.src('www/dev/mobile/css/style.less')
+		.pipe(less())
+		.pipe(gulp.dest('www/live/mobile/css'));
 });
 
 gulp.task('mobile-js', function(){
@@ -41,15 +37,23 @@ gulp.task('mobile-js', function(){
 });
 
 gulp.task('presentation-styles', function(){
-	return gulp.src('www/dev/presentation/css/*.scss')
-		.pipe(plumber())
-		.pipe(compass({
-			config_file: './config-presentation-styles.rb',
-			project: '.',
-			sass: 'www/dev/presentation/css',
-			css: 'www/live/presentation/css'
-		}))
-		.pipe(gulp.dest('www/live/presentation/css/'));
+	return gulp.src('www/dev/presentation/css/style.less')
+		.pipe(less())
+		/*.pipe(uncss({
+			html: [
+				'www/live/presentation/index.html',
+				'www/live/presentation/slides/highest-heartrate-game.html',
+				'www/live/presentation/slides/intro-poster.html',
+				'www/live/presentation/slides/shake-your-phones.html',
+				'www/live/presentation/slides/thank-you.html'
+			],
+			ignore: [
+				'iframe',
+				'.substate.active'
+			]
+		}))*/
+		.pipe(gulp.dest('www/live/presentation/css'));
+
 });
 
 gulp.task('presentation-js', function(){
@@ -100,9 +104,9 @@ gulp.task('mobile-vendors-js', function(){
 });
 
 gulp.task('watch', function(){
-	gulp.watch('www/dev/mobile/css/**/*.scss', ['mobile-styles']);
+	gulp.watch('www/dev/mobile/css/**/*.less', ['mobile-styles']);
 	gulp.watch(['www/dev/mobile/js/**/*.js', 'shared/**/*.js'], ['mobile-js']);
-	gulp.watch('www/dev/presentation/css/**/*.scss', ['presentation-styles']);
+	gulp.watch('www/dev/presentation/css/**/*.less', ['presentation-styles']);
 	gulp.watch(['www/dev/presentation/js/**/*.js', 'shared/**/*.js'], ['presentation-js']);
 	gulp.watch('www/dev/presentation/js/vendors/**/*.js', ['presentation-vendors-js']);
 	gulp.watch('www/dev/mobile/js/vendors/**/*.js', ['mobile-vendors-js']);
