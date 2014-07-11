@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="slide vertical-center">
+	<div class="content">
+		<div class="substate substate-intro">
+			<h1>Highest Heartrate Game</h1>
+			<button class="btn">Start Game</button>
+		</div>
+		<div class="substate substate-game">
+			<h1>Game is busy...</h1>
+		</div>
+		<div class="substate substate-finished">
+			<h1>Finished</h1>
+		</div>
+	</div>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/presentation/js/vendors.min.js"></script>
+	<script src="/presentation/js/script.min.js"></script>
+	<script>
+	(function(){
+
+		var HighestHeartrateGame = require('classes/content/highest-heartrate-game');
+		new HighestHeartrateGame();
+
+	})();
+	</script>
+</body>
+</html>

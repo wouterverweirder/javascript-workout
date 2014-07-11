@@ -68,6 +68,7 @@ gulp.task('presentation-js', function(){
 			//content
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/intro-poster/index.js', { expose: 'classes/content/intro-poster'});
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/shake-your-phones/index.js', { expose: 'classes/content/shake-your-phones'});
+			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/highest-heartrate-game/index.js', { expose: 'classes/content/highest-heartrate-game'});
 		})
 		.pipe(concat('script.min.js'))
 		//.pipe(uglify())

@@ -51,6 +51,7 @@ ShakeYourPhonesSlideHandler.prototype.setSubstate = function(substate) {
 		this.sendToAll(Constants.SET_SUBSTATE, substate);
 		if(this.substate === Constants.SHAKE_YOUR_PHONES_GAME) {
 			this.substateTimeout = setTimeout(this.setSubstate.bind(this, Constants.SHAKE_YOUR_PHONES_FINISHED), 1000);
+		} else if(this.substate === Constants.SHAKE_YOUR_PHONES_FINISHED) {
 		}
 	}
 };

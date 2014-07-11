@@ -17,7 +17,12 @@ module.exports = (function(){
 		SHAKE_YOUR_PHONES_GAME : 'shakeYourPhonesGame',
 		SHAKE_YOUR_PHONES_FINISHED : 'shakeYourPhonesFinished',
 
-		UPDATE_MAXIMUM_MOTION : 'updateMaximumMotion'
+		HIGHEST_HEARTRATE_GAME_INTRO : 'highestHeartrateGameIntro',
+		HIGHEST_HEARTRATE_GAME_GAME : 'highestHeartrateGameGame',
+		HIGHEST_HEARTRATE_GAME_FINISHED : 'highestHeartrateGameFinished',
+
+		UPDATE_MAXIMUM_MOTION : 'updateMaximumMotion',
+		HEART_RATE_SPARK : 'heartRateSpark'
 	};
 
 	return Constants;

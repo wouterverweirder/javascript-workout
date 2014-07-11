@@ -62,6 +62,13 @@ function Server() {
 
 	io.on('connection', this.onConnection.bind(this));
 	this.currentSlideIndexChangedHandler(appModel.getCurrentSlideIndex(), appModel.slides[appModel.getCurrentSlideIndex()]);
+
+	appModel.setMaxListeners(0);
+	/*
+	setInterval(function(){
+		console.log(events.EventEmitter.listenerCount(appModel, AppModel.CURRENT_SLIDE_INDEX_CHANGED));
+	}, 1000);
+	*/
 }
 
 util.inherits(Server, events.EventEmitter);
