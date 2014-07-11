@@ -8,11 +8,15 @@
 </head>
 <body>
 	<div id="presentation"></div>
-	<form id="login" method="post" action="/login">
-		<input type="email" name="email" placeholder="email" value="wouter.verweirder@gmail.com" />
-		<input type="password" name="password" placeholder="password" value="geheim" />
-		<button type="submit">Login</button>
-	</form>
+	<div class="vertical-center">
+		<div class="content">
+			<form id="login" method="post" action="/login" class="form-inline">
+				<input type="email" name="email" placeholder="email" value="wouter.verweirder@gmail.com" class="form-control" />
+				<input type="password" name="password" placeholder="password" value="geheim" class="form-control" />
+				<button type="submit" class="btn btn-primary">Login</button>
+			</form>
+		</div>
+	</div>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="js/vendors.min.js"></script>
 	<script src="js/script.min.js"></script>

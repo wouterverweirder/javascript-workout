@@ -7,21 +7,21 @@
         "start": "node index.js"
     },
     "dependencies": {
-        "express": "latest",
-        "body-parser": "latest",
-        "socket.io": "latest",
-        "noble": "latest",
-        "jsonwebtoken": "latest",
-        "socketio-jwt": "latest"
+        "express": "4.5.1",
+        "body-parser": "1.4.3",
+        "socket.io": "1.0.6",
+        "noble": "0.3.1",
+        "jsonwebtoken": "0.4.0",
+        "socketio-jwt": "2.3.1"
     },
     "devDependencies": {
-        "gulp": "latest",
-        "gulp-browserify": "latest",
-        "browserify-handlebars": "latest",
-        "gulp-compass": "latest",
-        "gulp-concat": "latest",
-        "gulp-jshint": "latest",
-        "gulp-plumber": "latest",
-        "gulp-uglify": "latest"
+        "gulp": "3.8.6",
+        "gulp-browserify": "0.5.0",
+        "browserify-handlebars": "0.2.0",
+        "gulp-compass": "1.1.9",
+        "gulp-concat": "2.3.3",
+        "gulp-jshint": "1.7.1",
+        "gulp-plumber": "0.6.3",
+        "gulp-uglify": "0.3.1"
     }
 }
