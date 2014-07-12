@@ -49,6 +49,10 @@ module.exports = (function(){
 		},
 
 		setSubstateHandler: function(substate) {
+			if(this.substate !== substate) {
+				this.substate = substate;
+				this.showCurrentState();
+			}
 		},
 
 		motionUpdateHandler: function(event) {
@@ -63,6 +67,17 @@ module.exports = (function(){
 			if(this.currentFrame % 10 === 0 && this.maximumMotion !== this.lastSentMaximumMotion) {
 				this.lastSentMaximumMotion = this.maximumMotion;
 				this.socket.emit(Constants.UPDATE_MAXIMUM_MOTION, this.maximumMotion);
+			}
+		},
+
+		showCurrentState: function() {
+			$('.substate').removeClass('active');
+			if(this.substate === Constants.SHAKE_YOUR_PHONES_GAME) {
+				$('.substate-game').addClass('active');
+			} else if(this.substate === Constants.SHAKE_YOUR_PHONES_FINISHED) {
+				$('.substate-finished').addClass('active');
+			} else {
+				$('.substate-intro').addClass('active');
 			}
 		}
 	});

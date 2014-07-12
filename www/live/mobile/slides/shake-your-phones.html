@@ -10,7 +10,15 @@
 	<div class="background">
 	</div>
 	<div class="content container-fluid">
-		<h1>Shake Your Device</h1>
+		<div class="substate substate-intro">
+			<h1>Waiting For Game To Start...</h1>
+		</div>
+		<div class="substate substate-game">
+			<h1>Shake Your Device!</h1>
+		</div>
+		<div class="substate substate-finished">
+			<h1>Finished</h1>
+		</div>
 		<h2 class="acceleration"></h2>
 	</div>
 	<script src="/socket.io/socket.io.js"></script>

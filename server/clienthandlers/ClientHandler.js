@@ -1,5 +1,6 @@
 var events = require('events'),
 	util = require('util'),
+	url = require('url'),
 	Constants = require('../../shared/Constants'),
 	AppModel = require('../model/AppModel');
 
@@ -7,7 +8,14 @@ function ClientHandler(role, socket) {
 	events.EventEmitter.call(this);
 	this.role = role;
 	this.socket = socket;
+	this.id = this.socket.client.id;
 	this.appModel = AppModel.getInstance();
+
+	this.socketTargetSlide = '';
+	var qry = url.parse(socket.request.url, true).query;
+    if(qry.slide) {
+    	this.socketTargetSlide = qry.slide;
+    }
 
 	this.socket.on('disconnect', this.forwardEventHandler.bind(this, 'disconnect'));
 	this.socket.on(Constants.UPDATE_MAXIMUM_MOTION, this.forwardEventHandler.bind(this, Constants.UPDATE_MAXIMUM_MOTION));

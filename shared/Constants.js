@@ -17,6 +17,11 @@ module.exports = (function(){
 		SHAKE_YOUR_PHONES_GAME : 'shakeYourPhonesGame',
 		SHAKE_YOUR_PHONES_FINISHED : 'shakeYourPhonesFinished',
 
+		SHAKE_YOUR_PHONES_CLIENT_ADDED : 'shakeYourPhonesClientAdded',
+		SHAKE_YOUR_PHONES_CLIENT_REMOVED : 'shakeYourPhonesClientRemoved',
+		SHAKE_YOUR_PHONES_CLIENT_LIST : 'shakeYourPhonesClientList',
+		SHAKE_YOUR_PHONES_CLIENT_UPDATE : 'shakeYourPhonesClientUpdate',
+
 		HIGHEST_HEARTRATE_GAME_INTRO : 'highestHeartrateGameIntro',
 		HIGHEST_HEARTRATE_GAME_GAME : 'highestHeartrateGameGame',
 		HIGHEST_HEARTRATE_GAME_FINISHED : 'highestHeartrateGameFinished',

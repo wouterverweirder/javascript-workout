@@ -23,26 +23,69 @@ ShakeYourPhonesSlideHandler.prototype.dispose = function() {
 	};
 };
 
-ShakeYourPhonesSlideHandler.prototype.onClientHandlerAdded = function(clientHandler) {
+ShakeYourPhonesSlideHandler.prototype.onInitializationComplete = function() {
+	ShakeYourPhonesSlideHandler.super_.prototype.onInitializationComplete.apply(this);
+	this.resetAllMaximumMotions();
+	var list = [];
+	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
+		if(this.clientHandlers[i].socketTargetSlide === this.slide.name && this.clientHandlers[i].role === Constants.ROLE_MOBILE) {
+			list.push({
+				id: this.clientHandlers[i].id,
+				maximumMotion: this.clientHandlers[i].maximumMotion
+			});
+		}
+	}
+	this.sendToClientsByRole(Constants.ROLE_PRESENTATION, Constants.SHAKE_YOUR_PHONES_CLIENT_LIST, list);
+}
+
+ShakeYourPhonesSlideHandler.prototype.onClientHandlerAdded = function(clientHandler, isAddFromInitialization) {
+	clientHandler.maximumMotion = 0;
 	clientHandler.send(Constants.SET_SUBSTATE, this.substate);
 	if(clientHandler.role === Constants.ROLE_MOBILE) {
 		clientHandler.on(Constants.UPDATE_MAXIMUM_MOTION, this._updateMaximumMotionHandler);
 	} else if(clientHandler.role === Constants.ROLE_PRESENTATION) {
 		clientHandler.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
 	}
+	if(!isAddFromInitialization) {
+		if(clientHandler.socketTargetSlide === this.slide.name && clientHandler.role === Constants.ROLE_MOBILE) {
+			this.sendToClientsByRole(Constants.ROLE_PRESENTATION, Constants.SHAKE_YOUR_PHONES_CLIENT_ADDED, {
+				id: clientHandler.id,
+				maximumMotion: clientHandler.maximumMotion
+			});
+		}
+	}
 };
 
 ShakeYourPhonesSlideHandler.prototype.onClientHandlerRemoved = function(clientHandler) {
 	clientHandler.removeListener(Constants.UPDATE_MAXIMUM_MOTION, this._updateMaximumMotionHandler);
 	clientHandler.removeListener(Constants.SET_SUBSTATE, this._setSubstateHandler);
+	if(clientHandler.socketTargetSlide === this.slide.name && clientHandler.role === Constants.ROLE_MOBILE) {
+		this.sendToClientsByRole(Constants.ROLE_PRESENTATION, Constants.SHAKE_YOUR_PHONES_CLIENT_REMOVED, {
+			id: clientHandler.id,
+			maximumMotion: clientHandler.maximumMotion
+		});
+	}
 };
 
 ShakeYourPhonesSlideHandler.prototype.updateMaximumMotionHandler = function(clientHandler, maximumMotion) {
 	clientHandler.maximumMotion = maximumMotion;
+	//inform the presentation of this client's updated maximum motion
+	if(clientHandler.socketTargetSlide === this.slide.name && clientHandler.role === Constants.ROLE_MOBILE) {
+		this.sendToClientsByRole(Constants.ROLE_PRESENTATION, Constants.SHAKE_YOUR_PHONES_CLIENT_UPDATE, {
+			id: clientHandler.id,
+			maximumMotion: clientHandler.maximumMotion
+		});
+	}
 };
 
 ShakeYourPhonesSlideHandler.prototype.setSubstateHandler = function(clientHandler, substate) {
 	this.setSubstate(substate);
+};
+
+ShakeYourPhonesSlideHandler.prototype.resetAllMaximumMotions = function() {
+	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
+		this.clientHandlers[i].maximumMotion = 0;
+	};
 };
 
 ShakeYourPhonesSlideHandler.prototype.setSubstate = function(substate) {
@@ -50,6 +93,7 @@ ShakeYourPhonesSlideHandler.prototype.setSubstate = function(substate) {
 		this.substate = substate;
 		this.sendToAll(Constants.SET_SUBSTATE, substate);
 		if(this.substate === Constants.SHAKE_YOUR_PHONES_GAME) {
+			this.resetAllMaximumMotions();
 			this.substateTimeout = setTimeout(this.setSubstate.bind(this, Constants.SHAKE_YOUR_PHONES_FINISHED), 1000);
 		} else if(this.substate === Constants.SHAKE_YOUR_PHONES_FINISHED) {
 		}

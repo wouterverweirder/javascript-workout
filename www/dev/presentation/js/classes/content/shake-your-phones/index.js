@@ -19,6 +19,11 @@ module.exports = (function(){
 			this.socket.on('disconnect', this._socketDisconnectHandler);
 			this.socket.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
 
+			this.socket.on(Constants.SHAKE_YOUR_PHONES_CLIENT_ADDED, $.proxy(this.clientAddedHandler, this));
+			this.socket.on(Constants.SHAKE_YOUR_PHONES_CLIENT_REMOVED, $.proxy(this.clientRemovedHandler, this));
+			this.socket.on(Constants.SHAKE_YOUR_PHONES_CLIENT_UPDATE, $.proxy(this.clientUpdateHandler, this));
+			this.socket.on(Constants.SHAKE_YOUR_PHONES_CLIENT_LIST, $.proxy(this.clientListHandler, this));
+
 			$('.substate-intro .btn').on('click', $.proxy(this.startClickHandler, this));
 
 			this.showCurrentState();
@@ -39,6 +44,22 @@ module.exports = (function(){
 
 		startClickHandler: function() {
 			this.socket.emit(Constants.SET_SUBSTATE, Constants.SHAKE_YOUR_PHONES_GAME);
+		},
+
+		clientAddedHandler: function(clientInfo) {
+			console.log('[ShakeYourPhones] client added', clientInfo);
+		},
+
+		clientRemovedHandler: function(clientInfo) {
+			console.log('[ShakeYourPhones] client removed', clientInfo);
+		},
+
+		clientUpdateHandler: function(clientInfo) {
+			console.log('[ShakeYourPhones] client update', clientInfo);
+		},
+
+		clientListHandler: function(list) {
+			console.log('[ShakeYourPhones] client list', list);
 		},
 
 		showCurrentState: function() {

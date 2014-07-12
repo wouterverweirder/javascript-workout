@@ -81,8 +81,9 @@ Server.prototype.currentSlideIndexChangedHandler = function(slideIndex, slide) {
 	this.currentSlideHandler = SlideHandlerFactory.createSlideHandler(slide);
 	var numClientHandlers = this.clientHandlers.length;
 	for(var i = 0; i < numClientHandlers; i++) {
-		this.currentSlideHandler.addClientHandler(this.clientHandlers[i]);
+		this.currentSlideHandler.addClientHandler(this.clientHandlers[i], true);
 	}
+	this.currentSlideHandler.onInitializationComplete();
 };
 
 Server.prototype.onConnection = function(socket) {

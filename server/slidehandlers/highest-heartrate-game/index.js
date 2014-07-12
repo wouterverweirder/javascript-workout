@@ -56,7 +56,7 @@ HighestHeartrateGameSlideHandler.prototype.udpListeningHandler = function() {
 	console.log('[HighestHeartrateGameSlideHandler] udpListening');
 };
 
-HighestHeartrateGameSlideHandler.prototype.onClientHandlerAdded = function(clientHandler) {
+HighestHeartrateGameSlideHandler.prototype.onClientHandlerAdded = function(clientHandler, isAddFromInitialization) {
 	clientHandler.send(Constants.SET_SUBSTATE, this.substate);
 	if(clientHandler.role === Constants.ROLE_PRESENTATION) {
 		clientHandler.on(Constants.SET_SUBSTATE, this._setSubstateHandler);

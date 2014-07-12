@@ -14,9 +14,12 @@ util.inherits(SlideHandler, events.EventEmitter);
 SlideHandler.prototype.dispose = function() {
 };
 
-SlideHandler.prototype.addClientHandler = function(clientHandler) {
+SlideHandler.prototype.onInitializationComplete = function() {
+};
+
+SlideHandler.prototype.addClientHandler = function(clientHandler, isAddFromInitialization) {
 	this.clientHandlers.push(clientHandler);
-	this.onClientHandlerAdded(clientHandler);
+	this.onClientHandlerAdded(clientHandler, isAddFromInitialization);
 };
 
 SlideHandler.prototype.removeClientHandler = function(clientHandler) {
@@ -27,7 +30,7 @@ SlideHandler.prototype.removeClientHandler = function(clientHandler) {
 	this.onClientHandlerRemoved(clientHandler);
 };
 
-SlideHandler.prototype.onClientHandlerAdded = function(clientHandler) {
+SlideHandler.prototype.onClientHandlerAdded = function(clientHandler, isAddFromInitialization) {
 };
 
 SlideHandler.prototype.onClientHandlerRemoved = function(clientHandler) {
@@ -36,6 +39,16 @@ SlideHandler.prototype.onClientHandlerRemoved = function(clientHandler) {
 SlideHandler.prototype.sendToAll = function() {
 	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
 		this.clientHandlers[i].send.apply(this.clientHandlers[i], arguments);
+	};
+};
+
+SlideHandler.prototype.sendToClientsByRole = function(role) {
+	var args = Array.prototype.slice.call(arguments);
+	args.shift();
+	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
+		if(this.clientHandlers[i].role === role) {
+			this.clientHandlers[i].send.apply(this.clientHandlers[i], args);
+		}
 	};
 };
 
