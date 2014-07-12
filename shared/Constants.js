@@ -22,6 +22,7 @@ module.exports = (function(){
 		HIGHEST_HEARTRATE_GAME_FINISHED : 'highestHeartrateGameFinished',
 
 		UPDATE_MAXIMUM_MOTION : 'updateMaximumMotion',
+		HEART_RATE_POLAR : 'heartRatePolar',
 		HEART_RATE_SPARK : 'heartRateSpark'
 	};
 

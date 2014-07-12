@@ -24,6 +24,15 @@ function PolarH7() {
 
 util.inherits(PolarH7, events.EventEmitter);
 
+PolarH7.HEART_RATE = 'heartRate';
+
+PolarH7.getInstance = function() {
+	if(!PolarH7.instance) {
+		PolarH7.instance = new PolarH7();
+	}
+	return PolarH7.instance;
+};
+
 PolarH7.prototype.stateChangeHandler = function(state) {
 	console.log('[PolarH7] stateChange', state);
 	this.emit('stateChange', state);
@@ -90,7 +99,7 @@ PolarH7.prototype.onHeartRateRead = function(data, isNotification) {
 	if((data[0] & 0x01) === 0) {
 		var heartRate = data[1];
 		if(heartRate) {
-			this.emit('heartRate', heartRate);
+			this.emit(PolarH7.HEART_RATE, heartRate);
 		}
 	}
 };

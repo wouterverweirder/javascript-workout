@@ -83,7 +83,8 @@ gulp.task('presentation-vendors-js', function(){
 	return gulp.src([
 			'www/dev/presentation/js/vendors/jquery.min.js',
 			'www/dev/presentation/js/vendors/jquery.geturlvars.js',
-			'www/dev/presentation/js/vendors/rAF.js'
+			'www/dev/presentation/js/vendors/rAF.js',
+			'www/dev/presentation/js/vendors/easeljs-0.7.1.min.js'
         ])
 		.pipe(plumber())
 		.pipe(concat('vendors.min.js'))

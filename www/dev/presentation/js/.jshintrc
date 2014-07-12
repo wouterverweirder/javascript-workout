@@ -16,6 +16,7 @@
       "module": false,
       "$": false,
       "console": false,
-      "io": false
+      "io": false,
+      "createjs": false
     }
 }

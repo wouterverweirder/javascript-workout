@@ -56,6 +56,7 @@ module.exports = (function(){
 			this.socket.on('connect', $.proxy(this.socketConnectHandler, this));
 			this.socket.on('disconnect', $.proxy(this.socketDisconnectHandler, this));
 			this.socket.on('currentSlideIndexChanged', $.proxy(this.currentSlideIndexChangedHandler, this));
+			this.socket.on(Constants.HEART_RATE_POLAR, $.proxy(this.heartRatePolarHandler, this));
 		},
 
 		socketConnectHandler: function() {
@@ -91,6 +92,10 @@ module.exports = (function(){
 				nextSlide.setState(Constants.STATE_INACTIVE);
 				$(nextIframe).css('left', '100%');
 			}
+		},
+
+		heartRatePolarHandler: function(heartRate) {
+			//todo: show somewhere
 		},
 
 		getSlideByIndex: function(index) {
