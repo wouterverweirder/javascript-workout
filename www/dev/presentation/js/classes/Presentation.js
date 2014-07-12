@@ -17,7 +17,7 @@ module.exports = (function(){
 
 			this.createIframes();
 
-			$("#login").on('submit', $.proxy(this.loginSubmitHandler, this));
+			$("#login form").on('submit', $.proxy(this.loginSubmitHandler, this));
 			$(window).on('keydown', $.proxy(this.keydownHandler, this));
 			$('body').on(Constants.GO_TO_PREVIOUS_SLIDE, $.proxy(this.goToPreviousSlide, this));
 			$('body').on(Constants.GO_TO_NEXT_SLIDE, $.proxy(this.goToNextSlide, this));
@@ -95,7 +95,7 @@ module.exports = (function(){
 		},
 
 		heartRatePolarHandler: function(heartRate) {
-			//todo: show somewhere
+			$('#global-heart-rate').text(heartRate + ' bpm');
 		},
 
 		getSlideByIndex: function(index) {

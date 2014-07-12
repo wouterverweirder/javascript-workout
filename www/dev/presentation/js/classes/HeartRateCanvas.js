@@ -9,17 +9,17 @@ module.exports = (function(){
 		numValuesMargin: 9,
 		numValuesWithMargin: 9,
 		heartRate: 60,
+		backgroundColor: '#fff',
+		strokeColor: '#00f',
+		width: 0,
+		height: 0,
 		init: function(canvas) {
 			this.canvas = canvas;
+			this.width = this.canvas.width;
+			this.height = this.canvas.height;
+			this._initSizeDependedVariables();
 
 			this.heartRateTickInterval = Math.round(this.fps * 60 / this.heartRate);
-
-			this.numValues = Math.round(this.canvas.width * 0.75);
-			this.numValuesWithMargin = this.numValues + this.numValuesMargin;
-			this.values = new Array(this.numValuesWithMargin);
-			for(var i = 0; i < this.numValuesWithMargin; i++) {
-				this.values[i] = 0;
-			}
 
 			this.stage = new createjs.Stage(this.canvas);
 			
@@ -31,26 +31,39 @@ module.exports = (function(){
 			this._tick = $.proxy(this.tick, this);
 			createjs.Ticker.addEventListener("tick", this._tick);
 		},
+		resize: function(w, h) {
+			this.width = this.canvas.width = w;
+			this.height = this.canvas.height = h;
+			this._initSizeDependedVariables();
+		},
+		_initSizeDependedVariables: function() {
+			this.numValues = Math.round(this.width * 0.80);
+			this.numValuesWithMargin = this.numValues + this.numValuesMargin;
+			if(!this.values) {
+				this.values = [];
+			}
+			this.values.length = this.numValuesWithMargin;
+			this.canvasVerticalCenter = this.height / 2;
+		},
 		dispose: function() {
 			createjs.Ticker.removeEventListener("tick", this._tick);
 		},
 		tick: function() {
 			this.frameNr++;
 			this.drawingShape.graphics.clear()
-				.beginFill('#000')
-				.drawRect(0, 0, this.canvas.width, this.canvas.height)
+				.beginFill(this.backgroundColor)
+				.drawRect(0, 0, this.width, this.height)
 				.endFill()
-				.beginStroke("#0f0");
+				.beginStroke(this.strokeColor);
 
-			var canvasVerticalCenter = this.canvas.height / 2;
-			this.drawingShape.graphics.moveTo(0, canvasVerticalCenter - (canvasVerticalCenter * this.values[0]));
+			this.drawingShape.graphics.moveTo(0, this.canvasVerticalCenter - (this.canvasVerticalCenter * this.values[0]));
 			for(var i = 1; i < this.numValues; i++) {
-				this.drawingShape.graphics.lineTo(i, canvasVerticalCenter - (canvasVerticalCenter * this.values[i]));
+				this.drawingShape.graphics.lineTo(i, this.canvasVerticalCenter - (this.canvasVerticalCenter * this.values[i]));
 			}
 			this.drawingShape.graphics.endStroke();
 
-			this.drawingShape.graphics.beginFill("#0f0")
-				.drawCircle(this.numValues - 1, canvasVerticalCenter - (canvasVerticalCenter * this.values[this.numValues - 1]), 2)
+			this.drawingShape.graphics.beginFill(this.strokeColor)
+				.drawCircle(this.numValues - 1, this.canvasVerticalCenter - (this.canvasVerticalCenter * this.values[this.numValues - 1]), 2)
 				.endFill();
 
 			//does the tick align with a beat?
@@ -70,6 +83,8 @@ module.exports = (function(){
 			}
 
 			this.values.shift();
+			this.values.shift();
+			this.values.push(Math.random() * 0.05 - 0.1);
 			this.values.push(Math.random() * 0.05 - 0.1);
 
 			this.stage.update();

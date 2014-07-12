@@ -13,6 +13,7 @@ module.exports = (function(){
 			});
 
 			this.heartRateCanvas = new HeartRateCanvas(document.getElementById('polarHeartRateCanvas'));
+			this.resizeHeartRateCanvas();
 
 			this._heartRateHandler = $.proxy(this.heartRateHandler, this);
 			this._socketConnectHandler = $.proxy(this.socketConnectHandler, this);
@@ -22,6 +23,8 @@ module.exports = (function(){
 			this.socket.on('connect', this._socketConnectHandler);
 			this.socket.on('disconnect', this._socketDisconnectHandler);
 			this.socket.on(Constants.HEART_RATE_POLAR, $.proxy(this.heartRatePolarHandler, this));
+
+			$(window).on('resize', $.proxy(this.resizeHandler, this));
 		},
 
 		socketConnectHandler: function() {
@@ -35,6 +38,14 @@ module.exports = (function(){
 
 		heartRatePolarHandler: function(heartRate) {
 			this.heartRateCanvas.updateHeartRate(heartRate);
+		},
+
+		resizeHandler: function() {
+			this.resizeHeartRateCanvas();
+		},
+
+		resizeHeartRateCanvas: function() {
+			this.heartRateCanvas.resize(window.innerWidth, window.innerHeight / 2);
 		}
 	});
 
