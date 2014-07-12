@@ -6265,14 +6265,17 @@ body {
 #login {
   position: relative;
 }
+#global-heart-rate {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 1em;
+  background-color: white;
+}
 iframe {
   position: absolute;
-  border: solid 1px black;
   width: 100%;
   height: 100%;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
 }
 .vertical-center {
   display: table;
@@ -6299,4 +6302,22 @@ iframe {
   left: 0;
   right: 0;
   bottom: 0;
+}
+.row-table {
+  display: table;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+.col-table-cell {
+  display: table-cell;
+  float: none;
+  vertical-align: top;
+}
+.col-table-cell.col-table-cell-vm {
+  vertical-align: middle;
+}
+.highlight.neutral {
+  background-color: white;
+  box-shadow: 0 0 0 5px white;
 }

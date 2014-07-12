@@ -105,10 +105,11 @@ gulp.task('mobile-vendors-js', function(){
 });
 
 gulp.task('watch', function(){
+	gulp.watch('www/dev/shared/css/**/*.less', ['mobile-styles', 'presentation-styles']);
 	gulp.watch('www/dev/mobile/css/**/*.less', ['mobile-styles']);
 	gulp.watch(['www/dev/mobile/js/**/*.js', 'shared/**/*.js'], ['mobile-js']);
+	gulp.watch('www/dev/mobile/js/vendors/**/*.js', ['mobile-vendors-js']);
 	gulp.watch('www/dev/presentation/css/**/*.less', ['presentation-styles']);
 	gulp.watch(['www/dev/presentation/js/**/*.js', 'shared/**/*.js'], ['presentation-js']);
 	gulp.watch('www/dev/presentation/js/vendors/**/*.js', ['presentation-vendors-js']);
-	gulp.watch('www/dev/mobile/js/vendors/**/*.js', ['mobile-vendors-js']);
 });
