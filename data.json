@@ -1,16 +1,25 @@
 {
 	"slides": [
 		{
-			"name": "intro-poster"
+			"name": "intro-poster",
+			"mobile": {
+				"url": "slides/text.html?text=Hello"
+			}
 		},
 		{
 			"name": "shake-your-phones"
 		},
 		{
-			"name": "highest-heartrate-game"
+			"name": "highest-heartrate-game",
+			"mobile": {
+				"url": "slides/text.html?text=Highest+Heartrate+Game"
+			}
 		},
 		{
-			"name": "thank-you"
+			"name": "thank-you",
+			"mobile": {
+				"url": "slides/text.html?text=Thank+You"
+			}
 		}
 	]
 }
