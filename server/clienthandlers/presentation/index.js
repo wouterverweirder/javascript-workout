@@ -17,6 +17,7 @@ function PresentationClientHandler(role, socket) {
 	this.socket.on(Constants.SET_CURRENT_SLIDE_INDEX, this._setCurrentSlideIndexHandler);
 
 	this.socket.on(Constants.SET_SUBSTATE, this.forwardEventHandler.bind(this, Constants.SET_SUBSTATE));
+	this.socket.on(Constants.SELECT_WINNER, this.forwardEventHandler.bind(this, Constants.SELECT_WINNER));
 }
 
 util.inherits(PresentationClientHandler, Clienthandler);

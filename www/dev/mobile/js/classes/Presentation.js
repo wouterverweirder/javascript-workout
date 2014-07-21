@@ -16,7 +16,7 @@ module.exports = (function(){
 			this.createIframes();
 			this.login();
 			this.$overlay = $('#overlay');
-			$('body').on('blink', $.proxy(this.blinkHandler, this));
+			$('body').on(Constants.BLINK, $.proxy(this.blinkHandler, this));
 		},
 
 		createIframes: function() {
@@ -48,7 +48,7 @@ module.exports = (function(){
 			this.socket.on('connect', $.proxy(this.socketConnectHandler, this));
 			this.socket.on('disconnect', $.proxy(this.socketDisconnectHandler, this));
 			this.socket.on('currentSlideIndexChanged', $.proxy(this.currentSlideIndexChangedHandler, this));
-			this.socket.on('blink', $.proxy(this.blinkHandler, this));
+			this.socket.on(Constants.BLINK, $.proxy(this.blinkHandler, this, {}));
 		},
 
 		socketConnectHandler: function() {
@@ -57,7 +57,9 @@ module.exports = (function(){
 		socketDisconnectHandler: function() {
 		},
 
-		blinkHandler: function(text, backgroundColor) {
+		blinkHandler: function(event, text, backgroundColor) {
+			console.log('blinkHandler');
+			console.log(text, backgroundColor);
 			//overlay important, blinking text
 			this.$overlay.find('.content').html(text);
 			this.$overlay.addClass('active');

@@ -8,6 +8,7 @@ function ShakeYourPhonesSlideHandler(slide) {
 	console.log('[ShakeYourPhonesSlideHandler] constructor');
 	this._updateMaximumMotionHandler = this.updateMaximumMotionHandler.bind(this);
 	this._setSubstateHandler = this.setSubstateHandler.bind(this);
+	this._selectWinnerHandler = this.selectWinnerHandler.bind(this);
 
 	this.substate = Constants.SHAKE_YOUR_PHONES_INTRO;
 }
@@ -20,6 +21,7 @@ ShakeYourPhonesSlideHandler.prototype.dispose = function() {
 	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
 		this.clientHandlers[i].removeListener(Constants.UPDATE_MAXIMUM_MOTION, this._updateMaximumMotionHandler);
 		this.clientHandlers[i].removeListener(Constants.SET_SUBSTATE, this._setSubstateHandler);
+		this.clientHandlers[i].removeListener(Constants.SELECT_WINNER, this._selectWinnerHandler);
 	};
 };
 
@@ -49,6 +51,7 @@ ShakeYourPhonesSlideHandler.prototype.onClientHandlerAdded = function(clientHand
 		clientHandler.on(Constants.UPDATE_MAXIMUM_MOTION, this._updateMaximumMotionHandler);
 	} else if(clientHandler.role === Constants.ROLE_PRESENTATION) {
 		clientHandler.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
+		clientHandler.on(Constants.SELECT_WINNER, this._selectWinnerHandler);
 	}
 	if(!isAddFromInitialization) {
 		if(clientHandler.socketTargetSlide === this.slide.name && clientHandler.role === Constants.ROLE_MOBILE) {
@@ -63,6 +66,7 @@ ShakeYourPhonesSlideHandler.prototype.onClientHandlerAdded = function(clientHand
 ShakeYourPhonesSlideHandler.prototype.onClientHandlerRemoved = function(clientHandler) {
 	clientHandler.removeListener(Constants.UPDATE_MAXIMUM_MOTION, this._updateMaximumMotionHandler);
 	clientHandler.removeListener(Constants.SET_SUBSTATE, this._setSubstateHandler);
+	clientHandler.removeListener(Constants.SELECT_WINNER, this._selectWinnerHandler);
 	if(clientHandler.socketTargetSlide === this.slide.name && clientHandler.role === Constants.ROLE_MOBILE) {
 		this.sendToClientsByRole(Constants.ROLE_PRESENTATION, Constants.SHAKE_YOUR_PHONES_CLIENT_REMOVED, {
 			id: clientHandler.id,
@@ -89,7 +93,24 @@ ShakeYourPhonesSlideHandler.prototype.setSubstateHandler = function(clientHandle
 ShakeYourPhonesSlideHandler.prototype.resetAllMaximumMotions = function() {
 	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
 		this.clientHandlers[i].maximumMotion = 0;
+		this.clientHandlers[i].shakeWinner = false;
 	};
+};
+
+ShakeYourPhonesSlideHandler.prototype.selectWinnerHandler = function() {
+	//get the clienthandler with the largest motion, and blink it's screen
+	var winningClientHandler = false;
+	var maximumMotion = 0;
+	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
+		if(this.clientHandlers[i].role === Constants.ROLE_MOBILE && !this.clientHandlers[i].shakeWinner && this.clientHandlers[i].maximumMotion > maximumMotion) {
+			winningClientHandler = this.clientHandlers[i];
+		}
+	}
+	console.log(winningClientHandler);
+	if(winningClientHandler) {
+		winningClientHandler.shakeWinner = true;
+		winningClientHandler.send(Constants.BLINK, ['<h1>Spectacular, You Win!</h1>', 'red']);
+	}
 };
 
 ShakeYourPhonesSlideHandler.prototype.setSubstate = function(substate) {
@@ -99,8 +120,6 @@ ShakeYourPhonesSlideHandler.prototype.setSubstate = function(substate) {
 		if(this.substate === Constants.SHAKE_YOUR_PHONES_GAME) {
 			this.resetAllMaximumMotions();
 			this.sendList();
-			//this.substateTimeout = setTimeout(this.setSubstate.bind(this, Constants.SHAKE_YOUR_PHONES_FINISHED), 1000);
-		} else if(this.substate === Constants.SHAKE_YOUR_PHONES_FINISHED) {
 		}
 	}
 };

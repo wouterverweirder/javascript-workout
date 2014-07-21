@@ -3,6 +3,7 @@ module.exports = (function(){
 	var Constants = require('Constants');
 
 	var ShakeYourPhones = ContentBase.extend({
+		gameDuration: 10, //game lasts 30 seconds
 		init: function() {
 			this._super();
 			console.log("[ShakeYourPhones] init");
@@ -27,6 +28,7 @@ module.exports = (function(){
 			this.socket.on(Constants.SHAKE_YOUR_PHONES_CLIENT_LIST, $.proxy(this.clientListHandler, this));
 
 			$('.substate-intro .btn').on('click', $.proxy(this.startClickHandler, this));
+			$('.substate-finished .btn').on('click', $.proxy(this.winnerClickHandler, this));
 
 			this.showCurrentState();
 		},
@@ -46,6 +48,10 @@ module.exports = (function(){
 
 		startClickHandler: function() {
 			this.socket.emit(Constants.SET_SUBSTATE, Constants.SHAKE_YOUR_PHONES_GAME);
+		},
+
+		winnerClickHandler: function() {
+			this.socket.emit(Constants.SELECT_WINNER);
 		},
 
 		clientAddedHandler: function(clientInfo) {
@@ -96,7 +102,9 @@ module.exports = (function(){
 		showCurrentState: function() {
 			$('.substate').removeClass('active');
 			if(this.substate === Constants.SHAKE_YOUR_PHONES_GAME) {
+				$('.substate-game .countdown').html(this.gameDuration);
 				$('.substate-game').addClass('active');
+				this.countDownTimeout = setTimeout($.proxy(this.countDownHandler, this, this.gameDuration - 1), 1000);
 			} else if(this.substate === Constants.SHAKE_YOUR_PHONES_FINISHED) {
 				$('.substate-finished').addClass('active');
 			} else {
@@ -104,15 +112,26 @@ module.exports = (function(){
 			}
 		},
 
+		countDownHandler: function(timeLeft) {
+			$('.substate-game .countdown').html(timeLeft);
+			if(timeLeft > 0) {
+				this.countDownTimeout = setTimeout($.proxy(this.countDownHandler, this, timeLeft - 1), 1000);
+			} else {
+				this.socket.emit(Constants.SET_SUBSTATE, Constants.SHAKE_YOUR_PHONES_FINISHED);
+			}
+		},
+
 		drawLoop: function() {
-			$.each(this.clientsMap, function(key, value){
-				var target = 3 * value.maximumMotion;
-				value.size += (target - value.size) * 0.2;
-				value.$div.css({
-					width: value.size + 'px',
-					height: value.size + 'px'
+			if(this.substate === Constants.SHAKE_YOUR_PHONES_GAME) {
+				$.each(this.clientsMap, function(key, value){
+					var target = 3 * value.maximumMotion;
+					value.size += (target - value.size) * 0.2;
+					value.$div.css({
+						width: value.size + 'px',
+						height: value.size + 'px'
+					});
 				});
-			});
+			}
 		},
 	});
 

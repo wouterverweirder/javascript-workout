@@ -28,7 +28,9 @@ module.exports = (function(){
 
 		UPDATE_MAXIMUM_MOTION : 'updateMaximumMotion',
 		HEART_RATE_POLAR : 'heartRatePolar',
-		HEART_RATE_SPARK : 'heartRateSpark'
+		HEART_RATE_SPARK : 'heartRateSpark',
+		SELECT_WINNER : 'selectWinner',
+		BLINK : 'blink'
 	};
 
 	return Constants;
