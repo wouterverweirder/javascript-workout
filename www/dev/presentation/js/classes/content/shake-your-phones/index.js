@@ -7,6 +7,8 @@ module.exports = (function(){
 			this._super();
 			console.log("[ShakeYourPhones] init");
 
+			this.clientsMap = {};
+
 			this.socket = io.connect('/', {
 				query: 'token=' + this.token + "&slide=shake-your-phones"
 			});
@@ -47,19 +49,48 @@ module.exports = (function(){
 		},
 
 		clientAddedHandler: function(clientInfo) {
-			console.log('[ShakeYourPhones] client added', clientInfo);
+			//console.log('[ShakeYourPhones] client added', clientInfo);
+			this.clientsMap[clientInfo.id] = clientInfo;
+			this.clientsMap[clientInfo.id].size = 0;
+			this.clientsMap[clientInfo.id].$div = $('<div class="circle">').css({
+				position: 'absolute',
+				left: Math.random() * 100 + '%',
+				top: Math.random() * 100 + '%',
+				backgroundColor: 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ', 0.5)',
+				width: '10px',
+				height: '10px'
+			});
+			$('.background .substate-game').append(this.clientsMap[clientInfo.id].$div);
 		},
 
 		clientRemovedHandler: function(clientInfo) {
-			console.log('[ShakeYourPhones] client removed', clientInfo);
+			//console.log('[ShakeYourPhones] client removed', clientInfo);
+			this.clientsMap[clientInfo.id].$div.remove();
+			delete this.clientsMap[clientInfo.id];
 		},
 
 		clientUpdateHandler: function(clientInfo) {
-			console.log('[ShakeYourPhones] client update', clientInfo);
+			//console.log('[ShakeYourPhones] client update', clientInfo);
+			$.extend(this.clientsMap[clientInfo.id], clientInfo);
 		},
 
 		clientListHandler: function(list) {
 			console.log('[ShakeYourPhones] client list', list);
+			this.clientsMap = {};
+			$('.background .substate-game').html('');
+			for (var i = list.length - 1; i >= 0; i--) {
+				this.clientsMap[list[i].id] = list[i];
+				this.clientsMap[list[i].id].size = 0;
+				this.clientsMap[list[i].id].$div = $('<div class="circle">').css({
+					position: 'absolute',
+					left: Math.random() * 100 + '%',
+					top: Math.random() * 100 + '%',
+					backgroundColor: 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ', 0.5)',
+					width: '10px',
+					height: '10px'
+				});
+				$('.background .substate-game').append(this.clientsMap[list[i].id].$div);
+			}
 		},
 
 		showCurrentState: function() {
@@ -71,7 +102,18 @@ module.exports = (function(){
 			} else {
 				$('.substate-intro').addClass('active');
 			}
-		}
+		},
+
+		drawLoop: function() {
+			$.each(this.clientsMap, function(key, value){
+				var target = 3 * value.maximumMotion;
+				value.size += (target - value.size) * 0.2;
+				value.$div.css({
+					width: value.size + 'px',
+					height: value.size + 'px'
+				});
+			});
+		},
 	});
 
 	return ShakeYourPhones;

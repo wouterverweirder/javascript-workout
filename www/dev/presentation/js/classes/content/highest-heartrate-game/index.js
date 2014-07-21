@@ -48,6 +48,9 @@ module.exports = (function(){
 			} else {
 				$('.substate-intro').addClass('active');
 			}
+		},
+
+		drawLoop: function() {
 		}
 	});
 

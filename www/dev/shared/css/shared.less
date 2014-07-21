@@ -46,10 +46,18 @@ iframe {
 	}
 }
 
+.fill {
+	width: 100%;
+	height: 100%;
+}
+
 .substate {
 	display: none;
 	&.active {
 		display: block;
+		&.vertical-center {
+			display: table;
+		}
 	}
 }
 
@@ -83,4 +91,9 @@ iframe {
 		background-color: white;
 		 box-shadow: 0 0 0 5px white;
 	}
+}
+
+.circle {
+	.border-radius(50%);
+	.transform(translate(-50%, -50%));
 }
