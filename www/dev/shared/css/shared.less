@@ -61,13 +61,29 @@ iframe {
 	}
 }
 
-.background {
+.background, .overlay {
 	position: absolute;
-	z-index: -1;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
+}
+
+.background {
+	z-index: -1;
+}
+
+.overlay {
+	display: none;
+	z-index: 9999;
+	background-color: black;
+	color: white;
+	&.active {
+		display: block;
+		&.vertical-center {
+			display: table;
+		}
+	}
 }
 
 .row-table {

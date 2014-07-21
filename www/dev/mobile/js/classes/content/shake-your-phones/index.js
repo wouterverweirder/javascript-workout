@@ -27,6 +27,7 @@ module.exports = (function(){
 			this.socket.on('connect', this._socketConnectHandler);
 			this.socket.on('disconnect', this._socketDisconnectHandler);
 			this.socket.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
+			this.socket.on('blink', $.proxy(this.triggerEventOnParent, this, 'blink'));
 		},
 
 		onStateChanged: function() {

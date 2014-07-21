@@ -9,11 +9,14 @@ module.exports = (function(){
 		iframes: [],
 		numIframes: 3,
 		slides: [],
+		$overlay: false,
 		init: function() {
 			console.log("[Presentation] init");
 
 			this.createIframes();
 			this.login();
+			this.$overlay = $('#overlay');
+			$('body').on('blink', $.proxy(this.blinkHandler, this));
 		},
 
 		createIframes: function() {
@@ -45,6 +48,7 @@ module.exports = (function(){
 			this.socket.on('connect', $.proxy(this.socketConnectHandler, this));
 			this.socket.on('disconnect', $.proxy(this.socketDisconnectHandler, this));
 			this.socket.on('currentSlideIndexChanged', $.proxy(this.currentSlideIndexChangedHandler, this));
+			this.socket.on('blink', $.proxy(this.blinkHandler, this));
 		},
 
 		socketConnectHandler: function() {
@@ -53,7 +57,30 @@ module.exports = (function(){
 		socketDisconnectHandler: function() {
 		},
 
+		blinkHandler: function(text, backgroundColor) {
+			//overlay important, blinking text
+			this.$overlay.find('.content').html(text);
+			this.$overlay.addClass('active');
+			if(this.blinkInterval) {
+				clearInterval(this.blinkInterval);
+			}
+			this.blinkInterval = setInterval($.proxy(this.blinkToggle, this, backgroundColor), 500);
+		},
+
+		blinkToggle: function(backgroundColor) {
+			this.$overlay.toggleClass('blink-on');
+			if(this.$overlay.hasClass('blink-on')) {
+				this.$overlay.css('background-color', backgroundColor);
+			} else {
+				this.$overlay.css('background-color', false);
+			}
+		},
+
 		currentSlideIndexChangedHandler: function(currentSlideIndex) {
+			this.$overlay.removeClass('active');
+			if(this.blinkInterval) {
+				clearInterval(this.blinkInterval);
+			}
 			currentSlideIndex = parseInt(currentSlideIndex);
 			this.currentSlideIndex = currentSlideIndex;
 			var currentSlide = this.getSlideByIndex(currentSlideIndex);

@@ -30,6 +30,10 @@ module.exports = (function(){
 		},
 		onStateChanged: function() {
 		},
+		triggerEventOnParent: function() {
+			var args = Array.prototype.slice.call(arguments);
+			parent.$('body').trigger.apply(parent.$, args);
+		},
 		_drawLoop: function() {
 			this._animationFrameId = window.requestAnimationFrame(this.__drawLoop);
 			this._currentTime = (new Date()).getTime();
