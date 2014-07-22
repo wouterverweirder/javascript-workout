@@ -6,8 +6,8 @@
 	<title></title>
 	<link rel="stylesheet" href="../css/style.css">
 </head>
-<body class="slide vertical-center">
-	<div class="content">
+<body class="slide">
+	<div class="container-fluid">
 		<div class="substate substate-intro">
 			<h1>Highest Heartrate Game</h1>
 			<button class="btn btn-primary">Start Game</button>
@@ -18,6 +18,9 @@
 		<div class="substate substate-finished">
 			<h1>Finished</h1>
 		</div>
+	</div>
+	<div class="background">
+		<canvas id="game"></canvas>
 	</div>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="/presentation/js/vendors.min.js"></script>
