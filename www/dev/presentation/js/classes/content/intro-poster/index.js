@@ -13,6 +13,7 @@ module.exports = (function(){
 			});
 
 			this.heartRateCanvas = new HeartRateCanvas(document.getElementById('polarHeartRateCanvas'));
+			this.heartRateCanvas.updateHeartRate(60);//default 60 bpm
 			this.resizeHeartRateCanvas();
 
 			this._heartRateHandler = $.proxy(this.heartRateHandler, this);

@@ -2,6 +2,7 @@ module.exports = (function(){
 	var ContentBase = require('../ContentBase');
 	var Constants = require('Constants');
 	var GameCharacter = require('./GameCharacter');
+	var HeartRateCanvas = require('../../HeartRateCanvas');
 
 	var HighestHeartrateGame = ContentBase.extend({
 		winner: false,
@@ -24,9 +25,11 @@ module.exports = (function(){
 
 			$('.substate-intro .btn').on('click', $.proxy(this.startClickHandler, this));
 
-			this.showCurrentState();
+			//heart rate canvas
+			this.peachCanvas = new HeartRateCanvas(document.getElementById('peach'));
+			this.marioCanvas = new HeartRateCanvas(document.getElementById('mario'));
 
-			//canvas
+			//game canvas
 			this.canvas = document.getElementById('game');
 			this.stage = new createjs.Stage(this.canvas);
 
@@ -47,6 +50,7 @@ module.exports = (function(){
 			createjs.Ticker.setFPS(60);
 			createjs.Ticker.addEventListener("tick", this.stage);
 
+			this.showCurrentState();
 			$(window).on('resize', $.proxy(this.resizeHandler, this));
 			this.resizeHandler();
 

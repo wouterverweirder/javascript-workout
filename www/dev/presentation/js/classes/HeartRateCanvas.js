@@ -8,7 +8,7 @@ module.exports = (function(){
 		numValues: 0,
 		numValuesMargin: 9,
 		numValuesWithMargin: 9,
-		heartRate: 60,
+		heartRate: 0,
 		backgroundColor: '#fff',
 		strokeColor: '#00f',
 		width: 0,
@@ -67,7 +67,7 @@ module.exports = (function(){
 				.endFill();
 
 			//does the tick align with a beat?
-			if(this.frameNr % this.heartRateTickInterval === 0) {
+			if(this.heartRate > 0 && this.frameNr % this.heartRateTickInterval === 0) {
 				this.frameNr = 0;//reset to zero
 				var strength = 0.7 + Math.random() * 0.3;
 				this.values[this.numValuesWithMargin - this.numValuesMargin - 1] = 0.05 * strength;
@@ -91,7 +91,9 @@ module.exports = (function(){
 		},
 		updateHeartRate: function(heartRate) {
 			this.heartRate = heartRate;
-			this.heartRateTickInterval = Math.round(this.fps * 60 / this.heartRate);
+			if(this.heartRate > 0) {
+				this.heartRateTickInterval = Math.round(this.fps * 60 / this.heartRate);
+			}
 		},
 	});
 

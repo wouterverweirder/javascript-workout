@@ -7,15 +7,24 @@
 	<link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="slide">
-	<div class="container-fluid">
-		<div class="substate substate-intro">
-			<h1>Highest Heartrate Game</h1>
+	<div class="container">
+		<div class="row" style="margin-top: 1em; margin-bottom: 1em;">
+			<div class="col-sm-4 col-sm-offset-1" style="background-color: white;">
+				<h3>Peach: 0 bpm</h3>
+				<canvas id="peach"></canvas>
+			</div>
+			<div class="col-sm-4 col-sm-offset-2" style="background-color: white;">
+				<h3>Mario: 0 bpm</h3>
+				<canvas id="mario"></canvas>
+			</div>
+		</div>
+		<div class="substate substate-intro" style="text-align: center;">
 			<button class="btn btn-primary">Start Game</button>
 		</div>
-		<div class="substate substate-game">
+		<div class="substate substate-game" style="text-align: center;">
 			<h1>Game is busy...</h1>
 		</div>
-		<div class="substate substate-finished">
+		<div class="substate substate-finished" style="text-align: center;">
 			<h1>Finished</h1>
 		</div>
 	</div>
