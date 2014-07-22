@@ -47,8 +47,7 @@ HighestHeartrateGameSlideHandler.prototype.udpMessageHandler = function(message,
 	var str = message.toString();
 	var split = str.split(';');
 	if(split.length > 2) {
-		//this.sendToAll(Constants.HEART_RATE_SPARK, split[0], split[2]);
-		console.log('[HighestHeartrateGameSlideHandler] udpMessage', split[0], split[1], split[2]);
+		this.sendToClientsByRole(Constants.ROLE_PRESENTATION, Constants.HEART_RATE_SPARK, split[0], split[2]);
 	}
 };
 
