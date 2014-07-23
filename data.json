@@ -16,6 +16,12 @@
 			}
 		},
 		{
+			"name": "lowest-heartrate-game",
+			"mobile": {
+				"url": "slides/text.html?text=Lowest+Heartrate+Game"
+			}
+		},
+		{
 			"name": "thank-you",
 			"mobile": {
 				"url": "slides/text.html?text=Thank+You"
