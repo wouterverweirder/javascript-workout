@@ -7,7 +7,7 @@
 			}
 		},
 		{
-			"name": "codemirror-test",
+			"name": "firmata-arduino-led",
 			"mobile": {
 				"url": "slides/text.html?text=Code+Demo"
 			}

@@ -13,6 +13,7 @@ module.exports = (function(){
 		_interval: false,
 		_lastTime: new Date().getTime(),
 		currentFrame: 0,
+		slideControlEnabled: true,
 		init: function(name) {
 			this.name = name;
 			this.token = $.getUrlVar('token');
@@ -56,13 +57,15 @@ module.exports = (function(){
 		},
 
 		keydownHandler: function(event) {
-			switch(event.keyCode) {
-				case KEYCODE_LEFT:
-					parent.$('body').trigger(Constants.GO_TO_PREVIOUS_SLIDE);
-					break;
-				case KEYCODE_RIGHT:
-					parent.$('body').trigger(Constants.GO_TO_NEXT_SLIDE);
-					break;
+			if(this.slideControlEnabled) {
+				switch(event.keyCode) {
+					case KEYCODE_LEFT:
+						parent.$('body').trigger(Constants.GO_TO_PREVIOUS_SLIDE);
+						break;
+					case KEYCODE_RIGHT:
+						parent.$('body').trigger(Constants.GO_TO_NEXT_SLIDE);
+						break;
+				}
 			}
 		},
 	});

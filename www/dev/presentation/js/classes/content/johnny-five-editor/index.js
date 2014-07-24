@@ -5,6 +5,7 @@ module.exports = (function(){
 	var JohnnyFiveBlink = ContentBase.extend({
 		init: function(name) {
 			this._super(name);
+			this.slideControlEnabled = false;
 			console.log("[JohnnyFiveBlink] init");
 
 			this.codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {

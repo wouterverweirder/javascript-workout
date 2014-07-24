@@ -19,12 +19,12 @@ JohnnyFiveApp.getInstance = function() {
 };
 
 JohnnyFiveApp.prototype.runCode = function(code) {
-	console.log("[JohnnyFiveApp] runCode", Config.johnnyFiveEditorFilePath, code);
+	console.log("[JohnnyFiveApp] runCode");
 	//stop current instance
-	//johnny five needs some time to property close, wait for a timeout to run new code
 	if(this.runner) {
 		this.runner.stdin.end();
 		this.runner.kill();
+		console.log("[JohnnyFiveApp] kill() executed");
 		this.runner = false;
 		setTimeout(this.runCode.bind(this, code), 500);
 	} else {
@@ -45,12 +45,12 @@ JohnnyFiveApp.prototype.runCode = function(code) {
 };
 
 JohnnyFiveApp.prototype.onDisconnect = function() {
-	console.log('runner disconnected');
+	console.log('[JohnnyFiveApp] runner disconnected');
 	this.runner = false;
 };
 
 JohnnyFiveApp.prototype.onClose = function() {
-	console.log('runner closed');
+	console.log('[JohnnyFiveApp] runner closed');
 	this.runner = false;
 };
 
