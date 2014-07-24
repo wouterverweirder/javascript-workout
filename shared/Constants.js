@@ -34,7 +34,9 @@ module.exports = (function(){
 		HEART_RATE_POLAR : 'heartRatePolar',
 		HEART_RATE_SPARK : 'heartRateSpark',
 		SELECT_WINNER : 'selectWinner',
-		BLINK : 'blink'
+		BLINK : 'blink',
+
+		JOHNNY_FIVE_RUN_CODE : 'johnnyFiveRunCode'
 	};
 
 	return Constants;

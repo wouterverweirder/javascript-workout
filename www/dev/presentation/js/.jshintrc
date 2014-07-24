@@ -17,6 +17,7 @@
       "$": false,
       "console": false,
       "io": false,
-      "createjs": false
+      "createjs": false,
+      "CodeMirror": false
     }
 }

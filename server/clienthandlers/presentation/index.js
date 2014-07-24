@@ -2,7 +2,9 @@ var Clienthandler = require('../ClientHandler'),
 	util = require('util'),
 	url = require('url'),
 	Constants = require('../../../shared/Constants'),
-	PolarH7 = require('../../sensors/PolarH7');
+	PolarH7 = require('../../sensors/PolarH7'),
+	JohnnyFiveApp = require('../../childapps/JohnnyFiveApp'),
+	fs = require('fs');
 
 function PresentationClientHandler(role, socket) {
 	Clienthandler.call(this, role, socket);
@@ -18,6 +20,9 @@ function PresentationClientHandler(role, socket) {
 
 	this.socket.on(Constants.SET_SUBSTATE, this.forwardEventHandler.bind(this, Constants.SET_SUBSTATE));
 	this.socket.on(Constants.SELECT_WINNER, this.forwardEventHandler.bind(this, Constants.SELECT_WINNER));
+
+	this._johnnyFiveRunCodeHandler = this.johnnyFiveRunCodeHandler.bind(this);
+	this.socket.on(Constants.JOHNNY_FIVE_RUN_CODE, this._johnnyFiveRunCodeHandler);
 }
 
 util.inherits(PresentationClientHandler, Clienthandler);
@@ -33,6 +38,10 @@ PresentationClientHandler.prototype.setCurrentSlideIndexHandler = function(curre
 
 PresentationClientHandler.prototype.heartRateHandler = function(heartRate) {
 	this.send(Constants.HEART_RATE_POLAR, heartRate);
+};
+
+PresentationClientHandler.prototype.johnnyFiveRunCodeHandler = function(code) {
+	JohnnyFiveApp.getInstance().runCode(code);
 };
 
 module.exports = PresentationClientHandler;

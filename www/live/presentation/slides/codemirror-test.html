@@ -52,14 +52,8 @@ board.on("ready", function() {
 	<script src="/presentation/js/script.min.js"></script>
 	<script>
 	(function(){
-		var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
-			lineNumbers: true,
-			extraKeys: {"Ctrl-Space": "autocomplete"}
-	    });
-
-	    $('.btn').on('click', function(){
-	    	console.log(myCodeMirror.getValue());
-	    });
+		var JohnnyFiveEditor = require('classes/content/johnny-five-editor');
+		new JohnnyFiveEditor("codemirror-test");
 	})();
 	</script>
 </body>

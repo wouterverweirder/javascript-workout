@@ -1,3 +1,5 @@
+var path = require('path');
+
 var Config = {};
 
 // Retrieve local ip for Config
@@ -12,6 +14,9 @@ for (var dev in ifaces) {
 	}
 }
 
+
+Config.entryPoint = path.normalize(__dirname + '/../../index.js');
+Config.johnnyFiveEditorFilePath = path.normalize(__dirname + '/../../johnny-five-app.js');
 Config.ip = ip;
 Config.port = 8080;
 
