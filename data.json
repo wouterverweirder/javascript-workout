@@ -7,6 +7,12 @@
 			}
 		},
 		{
+			"name": "codemirror-test",
+			"mobile": {
+				"url": "slides/text.html?text=Code+Demo"
+			}
+		},
+		{
 			"name": "shake-your-phones"
 		},
 		{

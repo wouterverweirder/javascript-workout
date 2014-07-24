@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="../css/style.css">
+	<!-- codemirror includes -->
+	<script src="../codemirror/lib/codemirror.js"></script>
+	<link rel="stylesheet" href="../codemirror/lib/codemirror.css">
+	<script src="../codemirror/mode/javascript/javascript.js"></script>
+	<script src="../codemirror/addon/hint/show-hint.js"></script>
+	<link rel="stylesheet" href="../codemirror/addon/hint/show-hint.css">
+	<script src="../codemirror/addon/hint/javascript-hint.js"></script>
+	<style>
+	.CodeMirrorWrapper {
+		text-align: left;
+		margin-left: auto;
+		margin-right: auto;
+		width: 50%;
+		margin-bottom: 1em;
+	}
+	.CodeMirror {
+	  border: 1px solid #eee;
+	  height: 300px;
+	  font-size: 20px;
+	}
+	</style>
+
+	<!-- end codemirror includes -->
+</head>
+<body class="slide vertical-center">
+	<div class="content">
+		<div class="CodeMirrorWrapper">
+			<textarea id="code">var five = require("johnny-five"),
+
+board = new five.Board();
+
+board.on("ready", function() {
+
+  // Create an Led on pin 13 and strobe it on/off
+  // Optionally set the speed; defaults to 100ms
+  (new five.Led(13)).strobe();
+
+});</textarea>
+		</div>
+		<button class="btn btn-default">Run</button>
+	</div>
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/presentation/js/vendors.min.js"></script>
+	<script src="/presentation/js/script.min.js"></script>
+	<script>
+	(function(){
+		var myCodeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
+			lineNumbers: true,
+			extraKeys: {"Ctrl-Space": "autocomplete"}
+	    });
+
+	    $('.btn').on('click', function(){
+	    	console.log(myCodeMirror.getValue());
+	    });
+	})();
+	</script>
+</body>
+</html>

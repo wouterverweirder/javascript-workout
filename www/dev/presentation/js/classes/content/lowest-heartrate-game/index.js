@@ -8,21 +8,13 @@ module.exports = (function(){
 		sparkIdMap: {},
 		beamPosition: 0.5,
 		winner: false,
-		init: function() {
-			this._super();
+		init: function(name) {
+			this._super(name);
 			console.log("[LowestHeartrateGame] init");
 
-			this.socket = io.connect('/', {
-				query: 'token=' + this.token + "&slide=lowest-heartrate-game"
-			});
-
-			this._socketConnectHandler = $.proxy(this.socketConnectHandler, this);
-			this._socketDisconnectHandler = $.proxy(this.socketDisconnectHandler, this);
 			this._setSubstateHandler = $.proxy(this.setSubstateHandler, this);
 			this._heartRateSparkHandler = $.proxy(this.heartRateSparkHandler, this);
 
-			this.socket.on('connect', this._socketConnectHandler);
-			this.socket.on('disconnect', this._superocketDisconnectHandler);
 			this.socket.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
 			this.socket.on(Constants.HEART_RATE_SPARK, this._heartRateSparkHandler);
 
@@ -147,12 +139,6 @@ module.exports = (function(){
 			this.resetGame();
 
 			this.stage.addChild(this.backgroundImage, this.floorImage, this.gohan.sprite, this.goku.sprite, this.gokuBeam, this.gohanBeam, this.gokuBeamEnd, this.gohanBeamEnd);
-		},
-
-		socketConnectHandler: function() {
-		},
-
-		socketDisconnectHandler: function() {
 		},
 
 		setSubstateHandler: function(substate) {

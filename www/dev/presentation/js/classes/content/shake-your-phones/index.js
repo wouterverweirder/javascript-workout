@@ -4,22 +4,14 @@ module.exports = (function(){
 
 	var ShakeYourPhones = ContentBase.extend({
 		gameDuration: 10, //game lasts 30 seconds
-		init: function() {
-			this._super();
+		init: function(name) {
+			this._super(name);
 			console.log("[ShakeYourPhones] init");
 
 			this.clientsMap = {};
 
-			this.socket = io.connect('/', {
-				query: 'token=' + this.token + "&slide=shake-your-phones"
-			});
-
-			this._socketConnectHandler = $.proxy(this.socketConnectHandler, this);
-			this._socketDisconnectHandler = $.proxy(this.socketDisconnectHandler, this);
 			this._setSubstateHandler = $.proxy(this.setSubstateHandler, this);
 
-			this.socket.on('connect', this._socketConnectHandler);
-			this.socket.on('disconnect', this._socketDisconnectHandler);
 			this.socket.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
 
 			this.socket.on(Constants.SHAKE_YOUR_PHONES_CLIENT_ADDED, $.proxy(this.clientAddedHandler, this));
@@ -31,12 +23,6 @@ module.exports = (function(){
 			$('.substate-finished .btn').on('click', $.proxy(this.winnerClickHandler, this));
 
 			this.showCurrentState();
-		},
-
-		socketConnectHandler: function() {
-		},
-
-		socketDisconnectHandler: function() {
 		},
 
 		setSubstateHandler: function(substate) {

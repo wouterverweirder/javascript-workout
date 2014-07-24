@@ -10,21 +10,13 @@ module.exports = (function(){
 		sparkIdMap: {},
 		minHeartRate: 60,
 		maxHeartRate: 200,
-		init: function() {
-			this._super();
+		init: function(name) {
+			this._super(name);
 			console.log("[HighestHeartrateGame] init");
 
-			this.socket = io.connect('/', {
-				query: 'token=' + this.token + "&slide=highest-heartrate-game"
-			});
-
-			this._socketConnectHandler = $.proxy(this.socketConnectHandler, this);
-			this._socketDisconnectHandler = $.proxy(this.socketDisconnectHandler, this);
 			this._setSubstateHandler = $.proxy(this.setSubstateHandler, this);
 			this._heartRateSparkHandler = $.proxy(this.heartRateSparkHandler, this);
 
-			this.socket.on('connect', this._socketConnectHandler);
-			this.socket.on('disconnect', this._superocketDisconnectHandler);
 			this.socket.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
 			this.socket.on(Constants.HEART_RATE_SPARK, this._heartRateSparkHandler);
 
@@ -124,12 +116,6 @@ module.exports = (function(){
 
 			this.stage.addChild(this.hills, this.ground, this.flagpole, this.flag, this.mario.sprite, this.peach.sprite);
 			this.resizeHandler();
-		},
-
-		socketConnectHandler: function() {
-		},
-
-		socketDisconnectHandler: function() {
 		},
 
 		setSubstateHandler: function(substate) {

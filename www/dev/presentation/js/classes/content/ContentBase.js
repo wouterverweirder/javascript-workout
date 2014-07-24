@@ -13,12 +13,17 @@ module.exports = (function(){
 		_interval: false,
 		_lastTime: new Date().getTime(),
 		currentFrame: 0,
-		init: function() {
+		init: function(name) {
+			this.name = name;
 			this.token = $.getUrlVar('token');
 			window.setState = $.proxy(this.setState, this);
 			$(window).on('keydown', $.proxy(this.keydownHandler, this));
 			this.__drawLoop = $.proxy(this._drawLoop, this);
 			this._interval = 1000 / this.fps;
+
+			this.socket = io.connect('/', {
+				query: 'token=' + this.token + "&slide=" + name
+			});
 		},
 
 		setState: function(state) {
