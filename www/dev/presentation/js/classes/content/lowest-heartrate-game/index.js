@@ -57,7 +57,7 @@ module.exports = (function(){
 			this.resizeHandler();
 
 			//fake control
-			$(window).on('mousemove', $.proxy(this.mousemoveHandler, this));
+			//$(window).on('mousemove', $.proxy(this.mousemoveHandler, this));
 		},
 
 		loadCompleteHandler: function() {
@@ -328,12 +328,13 @@ module.exports = (function(){
 			}
 		},
 
+		/**
+		 * test with mouse instead of heartrates
+		 */
 		mousemoveHandler: function(event) {
-			/*
 			if(!this.winner) {
 				this.setBeamPosition(event.clientX / this.canvas.width);
 			}
-			*/
 		}
 	});
 
