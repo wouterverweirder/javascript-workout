@@ -160,6 +160,12 @@
 			}
 		},
 		{
+			"name": "010-noble-001",
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
 			"name": "shake-your-phones"
 		},
 		{
