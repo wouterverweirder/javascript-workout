@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+	<script src="../js/vendors.min.js"></script>
+	<script>
+	(function(){
+
+		function init() {
+			$('body').css({
+				backgroundRepeat: 'no-repeat',
+				backgroundSize: 'contain',
+				backgroundPosition: 'center center',
+				backgroundImage: 'url(' + getParameterByName('image') + ')'
+			});
+		}
+
+		/**
+		 * http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+		 */
+		function getParameterByName(name) {
+			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+			var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(location.search);
+			return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+		}
+
+		init();
+
+	})();
+	</script>
+</body>
+</html>

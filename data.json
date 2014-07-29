@@ -7,9 +7,156 @@
 			}
 		},
 		{
-			"name": "firmata-arduino-led",
+			"name": "ble-explanation-01",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.001.png"
+			},
 			"mobile": {
-				"url": "slides/text.html?text=Code+Demo"
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-02",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.002.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-03",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.003.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-04",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.004.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-05",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.005.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-06",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.006.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-07",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.007.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-08",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.008.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-09",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.009.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-10",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.010.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-11",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.011.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-12",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.012.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-13",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.013.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-14",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.014.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-15",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.015.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-16",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.016.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-17",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.017.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
 			}
 		},
 		{
@@ -25,6 +172,12 @@
 			"name": "lowest-heartrate-game",
 			"mobile": {
 				"url": "slides/text.html?text=Lowest+Heartrate+Game"
+			}
+		},
+		{
+			"name": "firmata-arduino-led",
+			"mobile": {
+				"url": "slides/text.html?text=Code+Demo"
 			}
 		},
 		{
