@@ -5,15 +5,20 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title></title>
 	<link rel="stylesheet" href="../css/style.css">
+	<style>
+	.CodeMirrorWrapper {
+		width: 75%;
+	}
+	</style>
 </head>
 <body class="slide vertical-center">
 	<div class="content">
 		<div class="CodeMirrorWrapper">
-			<textarea id="code">var noble = require('noble');
-noble.on('discover', discoverHandler);
-noble.startScanning(serviceUUIDs);</textarea>
+			<textarea id="code">function onConnect(error) {
+	peripheral.discoverServices(serviceUUIDs, onDiscover);
+};</textarea>
 		</div>
-		<h4>start library &amp; scan for<br />peripherals with given services</h4>
+		<h4>Discover the services<br />of this particular peripheral</h4>
 	</div>
 
 	<script src="/socket.io/socket.io.js"></script>

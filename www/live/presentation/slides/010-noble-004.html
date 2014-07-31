@@ -5,15 +5,22 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title></title>
 	<link rel="stylesheet" href="../css/style.css">
+	<style>
+	.CodeMirrorWrapper {
+		width: 75%;
+	}
+	</style>
 </head>
 <body class="slide vertical-center">
 	<div class="content">
 		<div class="CodeMirrorWrapper">
-			<textarea id="code">var noble = require('noble');
-noble.on('discover', discoverHandler);
-noble.startScanning(serviceUUIDs);</textarea>
+			<textarea id="code">function onDiscover = function(error, services) {
+	for (var i = services.length - 1; i >= 0; i--) {
+		services[i].discoverCharacteristics(characteristicsUUIDs, onCharacteristics);
+	}	
+};</textarea>
 		</div>
-		<h4>start library &amp; scan for<br />peripherals with given services</h4>
+		<h4>discover the service characteristics</h4>
 	</div>
 
 	<script src="/socket.io/socket.io.js"></script>

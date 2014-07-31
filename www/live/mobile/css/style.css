@@ -6269,7 +6269,7 @@ body {
   position: absolute;
   bottom: 0;
   right: 0;
-  padding: 1em;
+  padding: 0.5em;
   background-color: white;
 }
 iframe {
@@ -6282,6 +6282,7 @@ iframe {
   display: table;
   width: 100%;
   height: 100%;
+  table-layout: fixed;
 }
 .vertical-center .content {
   display: table-cell;
