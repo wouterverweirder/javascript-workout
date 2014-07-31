@@ -160,49 +160,49 @@
 			}
 		},
 		{
-			"name": "010-noble-001",
+			"name": "020-noble-001",
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
 			}
 		},
 		{
-			"name": "010-noble-002",
+			"name": "020-noble-002",
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
 			}
 		},
 		{
-			"name": "010-noble-003",
+			"name": "020-noble-003",
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
 			}
 		},
 		{
-			"name": "010-noble-004",
+			"name": "020-noble-004",
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
 			}
 		},
 		{
-			"name": "010-noble-005",
+			"name": "020-noble-005",
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
 			}
 		},
 		{
-			"name": "010-noble-006",
+			"name": "020-noble-006",
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
 			}
 		},
 		{
-			"name": "010-noble-007",
+			"name": "020-noble-007",
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
 			}
 		},
 		{
-			"name": "010-noble-008",
+			"name": "020-noble-008",
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
 			}
@@ -226,6 +226,12 @@
 			"name": "firmata-arduino-led",
 			"mobile": {
 				"url": "slides/text.html?text=Code+Demo"
+			}
+		},
+		{
+			"name": "050-spacebrew-arduino-dance",
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
 			}
 		},
 		{
