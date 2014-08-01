@@ -10,6 +10,7 @@ module.exports = (function(){
 
 			this.codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
 				lineNumbers: true,
+				mode: "javascript",
 				extraKeys: {"Ctrl-Space": "autocomplete"}
 		    });
 

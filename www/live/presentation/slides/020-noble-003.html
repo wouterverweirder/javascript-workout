@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="../css/style.css">
 	<style>
 	.CodeMirrorWrapper {
-		width: 75%;
+		width: 80%;
 	}
 	</style>
 </head>
@@ -28,6 +28,7 @@
 	(function(){
 		var codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
 			lineNumbers: true,
+			mode: "javascript",
 			extraKeys: {"Ctrl-Space": "autocomplete"}
 	    });
 	})();

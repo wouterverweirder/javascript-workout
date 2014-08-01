@@ -14,13 +14,18 @@
 <body class="slide vertical-center">
 	<div class="content">
 		<div class="CodeMirrorWrapper">
-			<textarea id="code">function onDiscover = function(error, services) {
-	for (var i = services.length - 1; i >= 0; i--) {
-		services[i].discoverCharacteristics(cUUIDs, onChars);
-	}	
-};</textarea>
+			<textarea id="code">IPAddress ipAddress = Network.gatewayIP();
+Udp.beginPacket(ipAddress, 1234);
+
+String str = Spark.deviceID() + ";" + symbol + ";" + data;
+int str_len = str.length() + 1; 
+char char_array[str_len];
+str.toCharArray(char_array, str_len);
+Udp.write((const uint8_t*)char_array, str_len);
+
+Udp.endPacket();</textarea>
 		</div>
-		<h4>discover the service characteristics</h4>
+		<h4>Spark Core:<br />Send bpm over udp</h4>
 	</div>
 
 	<script src="/socket.io/socket.io.js"></script>
@@ -30,7 +35,7 @@
 	(function(){
 		var codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
 			lineNumbers: true,
-			mode: "javascript",
+			mode: "clike",
 			extraKeys: {"Ctrl-Space": "autocomplete"}
 	    });
 	})();

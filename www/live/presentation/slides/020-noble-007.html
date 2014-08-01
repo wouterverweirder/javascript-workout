@@ -22,6 +22,7 @@ characteristic.notify(true);</textarea>
 	(function(){
 		var codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
 			lineNumbers: true,
+			mode: "javascript",
 			extraKeys: {"Ctrl-Space": "autocomplete"}
 	    });
 	})();

@@ -208,6 +208,90 @@
 			}
 		},
 		{
+			"name": "pulse-explanation-01",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.027.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Pulse+Sensor"
+			}
+		},
+		{
+			"name": "pulse-explanation-02",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.028.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Pulse+Sensor"
+			}
+		},
+		{
+			"name": "pulse-explanation-03",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.029.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Pulse+Sensor"
+			}
+		},
+		{
+			"name": "pulse-explanation-04",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.030.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Pulse+Sensor"
+			}
+		},
+		{
+			"name": "pulse-explanation-05",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.031.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Pulse+Sensor"
+			}
+		},
+		{
+			"name": "pulse-explanation-06",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.032.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Pulse+Sensor"
+			}
+		},
+		{
+			"name": "pulse-explanation-07",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.033.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Pulse+Sensor"
+			}
+		},
+		{
+			"name": "pulse-explanation-08",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.034.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Pulse+Sensor"
+			}
+		},
+		{
+			"name": "030-pulse-001",
+			"mobile": {
+				"url": "slides/text.html?text=Pulse+Sensor"
+			}
+		},
+		{
+			"name": "030-pulse-002",
+			"mobile": {
+				"url": "slides/text.html?text=Pulse+Sensor"
+			}
+		},
+		{
 			"name": "shake-your-phones"
 		},
 		{

@@ -7,20 +7,21 @@
 	<link rel="stylesheet" href="../css/style.css">
 	<style>
 	.CodeMirrorWrapper {
-		width: 85%;
+		width: 70%;
 	}
 	</style>
 </head>
 <body class="slide vertical-center">
 	<div class="content">
 		<div class="CodeMirrorWrapper">
-			<textarea id="code">function onDiscover = function(error, services) {
-	for (var i = services.length - 1; i >= 0; i--) {
-		services[i].discoverCharacteristics(cUUIDs, onChars);
-	}	
-};</textarea>
+			<textarea id="code">var dgram = require('dgram');
+var udpSocket = dgram.createSocket('udp4');
+udpSocket.on("message", function(message, info){
+	console.log(message);
+});
+udpSocket.bind(1234);</textarea>
 		</div>
-		<h4>discover the service characteristics</h4>
+		<h4>NodeJS: <br />Listen for UDP packets</h4>
 	</div>
 
 	<script src="/socket.io/socket.io.js"></script>
