@@ -160,6 +160,24 @@
 			}
 		},
 		{
+			"name": "ble-explanation-18",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.018.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-19",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.019.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
 			"name": "020-noble-001",
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
@@ -210,7 +228,7 @@
 		{
 			"name": "pulse-explanation-01",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.027.png"
+				"url": "slides/image.html?image=images/keynote/keynote.029.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -219,7 +237,7 @@
 		{
 			"name": "pulse-explanation-02",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.028.png"
+				"url": "slides/image.html?image=images/keynote/keynote.030.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -228,7 +246,7 @@
 		{
 			"name": "pulse-explanation-03",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.029.png"
+				"url": "slides/image.html?image=images/keynote/keynote.031.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -237,7 +255,7 @@
 		{
 			"name": "pulse-explanation-04",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.030.png"
+				"url": "slides/image.html?image=images/keynote/keynote.032.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -246,7 +264,7 @@
 		{
 			"name": "pulse-explanation-05",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.031.png"
+				"url": "slides/image.html?image=images/keynote/keynote.033.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -255,7 +273,7 @@
 		{
 			"name": "pulse-explanation-06",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.032.png"
+				"url": "slides/image.html?image=images/keynote/keynote.034.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -264,7 +282,7 @@
 		{
 			"name": "pulse-explanation-07",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.033.png"
+				"url": "slides/image.html?image=images/keynote/keynote.035.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -273,7 +291,7 @@
 		{
 			"name": "pulse-explanation-08",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.034.png"
+				"url": "slides/image.html?image=images/keynote/keynote.036.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
