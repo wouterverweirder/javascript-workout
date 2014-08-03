@@ -16,6 +16,12 @@
 			}
 		},
 		{
+			"name": "010-belgians",
+			"mobile": {
+				"url": "slides/text.html?text=Hello"
+			}
+		},
+		{
 			"name": "ble-explanation-01",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.002.png"
