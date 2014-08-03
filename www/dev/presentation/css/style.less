@@ -54,6 +54,46 @@
 @import "../codemirror/lib/codemirror.css";
 @import "../codemirror/addon/hint/show-hint.css";
 
+#wrapper {
+	position: relative;
+	width: 1280px;
+	height: 720px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: white;
+}
+
+#footer {
+	background-color: red;
+	overflow: hidden;
+	.navbar {
+		min-height: 10px;
+	}
+	.btn-xs {
+		font-size: 16px;
+		margin-top: 8px;
+		margin-bottom: 8px;
+	}
+	.navbar-fixed-bottom {
+		position: absolute;
+	}
+	.navbar-inverse .navbar-btn {
+		background-color: #222222;
+		border-color: #333333;
+		color: #999999;
+	}
+	.navbar-inverse .navbar-btn:hover {
+		color: #ffffff;
+		background-color: #333333;
+	}
+	#global-heart-rate {
+	}
+}
+
+#login {
+	position: relative;
+}
+
 .CodeMirrorWrapper {
 	text-align: left;
 	margin-left: auto;

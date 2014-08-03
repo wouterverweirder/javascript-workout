@@ -5,53 +5,66 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Reasons To Be Creative 2014</title>
 	<link rel="stylesheet" href="css/style.css">
+	<style>
+	body {
+		background-color: black;
+	}
+	</style>
 </head>
 <body>
-	<div id="presentation"></div>
-	<footer id="footer">
-	<div class="navbar navbar-inverse navbar-fixed-bottom">
-		<div class="container-fluid">
-			<div class="pull-left">
-				<p class="navbar-text"><span class="glyphicon glyphicon-heart"></span> <span id="global-heart-rate">60</span></p>
-			</div>
-			<div class="btn-toolbar pull-right">
-				<div class="btn-group">
-					<button class="btn btn-default btn-xs navbar-btn" data-toggle="modal" data-target="#spaceBrewModal">
-						<span class="glyphicon glyphicon-plane"></span>
-					</button>
-					<button class="btn btn-default btn-xs navbar-btn" data-toggle="modal" data-target="#webcamModal">
-						<span class="glyphicon glyphicon-camera"></span>
-					</button>
+	<div style="display: table; width: 100%; height: 100%">
+		<div style="display: table-cell; vertical-align: middle; width: 100%; height: 100%;">
+
+			<div id="wrapper">
+				<div id="presentation"></div>
+				<footer id="footer">
+					<div class="navbar navbar-inverse navbar-fixed-bottom">
+						<div class="container-fluid">
+							<div class="pull-left">
+								<p class="navbar-text"><span class="glyphicon glyphicon-heart"></span> <span id="global-heart-rate">60</span></p>
+							</div>
+							<div class="btn-toolbar pull-right">
+								<div class="btn-group">
+									<button class="btn btn-default btn-xs navbar-btn" data-toggle="modal" data-target="#spaceBrewModal">
+										<span class="glyphicon glyphicon-plane"></span>
+									</button>
+									<button class="btn btn-default btn-xs navbar-btn" data-toggle="modal" data-target="#webcamModal">
+										<span class="glyphicon glyphicon-camera"></span>
+									</button>
+								</div>
+							</div>
+						</div>
+				    </div>
+				    <div class="modal fade" id="webcamModal" tabindex="-1" role="dialog" aria-hidden="true">
+					  <div class="modal-dialog modal-lg" style="width: 90%">
+					    <div class="modal-content">
+					      <div class="modal-body">
+					        <iframe src="webcam.html" width="100%" height="600" frameborder="0"></iframe>
+					      </div>
+					    </div>
+					  </div>
+					</div>
+				    <div class="modal fade" id="spaceBrewModal" tabindex="-1" role="dialog" aria-hidden="true">
+					  <div class="modal-dialog modal-lg" style="width: 90%">
+					    <div class="modal-content">
+					      <div class="modal-body">
+					        <iframe src="spacebrew-admin/index.html" width="100%" height="600" frameborder="0"></iframe>
+					      </div>
+					    </div>
+					  </div>
+					</div>
+				</footer>
+				<div id="login" class="vertical-center">
+					<div class="content">
+						<form method="post" action="/login" class="form-inline">
+							<input type="email" name="email" placeholder="email" value="wouter.verweirder@gmail.com" class="form-control" />
+							<input type="password" name="password" placeholder="password" value="geheim" class="form-control" />
+							<button type="submit" class="btn btn-primary">Login</button>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
-    </div>
-    <div class="modal fade" id="webcamModal" tabindex="-1" role="dialog" aria-hidden="true">
-	  <div class="modal-dialog modal-lg" style="width: 90%">
-	    <div class="modal-content">
-	      <div class="modal-body">
-	        <iframe src="webcam.html" width="100%" height="600" frameborder="0"></iframe>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-    <div class="modal fade" id="spaceBrewModal" tabindex="-1" role="dialog" aria-hidden="true">
-	  <div class="modal-dialog modal-lg" style="width: 90%">
-	    <div class="modal-content">
-	      <div class="modal-body">
-	        <iframe src="spacebrew-admin/index.html" width="100%" height="600" frameborder="0"></iframe>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-	</footer>
-	<div id="login" class="vertical-center">
-		<div class="content">
-			<form method="post" action="/login" class="form-inline">
-				<input type="email" name="email" placeholder="email" value="wouter.verweirder@gmail.com" class="form-control" />
-				<input type="password" name="password" placeholder="password" value="geheim" class="form-control" />
-				<button type="submit" class="btn btn-primary">Login</button>
-			</form>
+
 		</div>
 	</div>
 	<script src="/socket.io/socket.io.js"></script>
