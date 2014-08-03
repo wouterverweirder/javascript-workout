@@ -178,6 +178,15 @@
 			}
 		},
 		{
+			"name": "020-noble-000",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.020.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
 			"name": "020-noble-001",
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
@@ -322,6 +331,51 @@
 			"name": "lowest-heartrate-game",
 			"mobile": {
 				"url": "slides/text.html?text=Lowest+Heartrate+Game"
+			}
+		},
+		{
+			"name": "firmata-explanation-01",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.040.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Firmata"
+			}
+		},
+		{
+			"name": "firmata-explanation-02",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.041.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Firmata"
+			}
+		},
+		{
+			"name": "firmata-explanation-03",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.042.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Firmata"
+			}
+		},
+		{
+			"name": "firmata-explanation-04",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.043.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Firmata"
+			}
+		},
+		{
+			"name": "firmata-explanation-05",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.044.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Firmata"
 			}
 		},
 		{
