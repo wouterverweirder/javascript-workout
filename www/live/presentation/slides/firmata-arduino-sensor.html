@@ -13,9 +13,10 @@
 board = new five.Board();
 
 board.on("ready", function() {
-
-  var led = new five.Led(13);
-
+  var sensor = new five.Sensor({
+    pin: "A0",
+    freq: 250
+  });
 });</textarea>
 		</div>
 		<button class="btn btn-default">Run</button>

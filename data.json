@@ -396,7 +396,127 @@
 		{
 			"name": "firmata-arduino-led",
 			"mobile": {
-				"url": "slides/text.html?text=Code+Demo"
+				"url": "slides/text.html?text=Firmata+Demo"
+			}
+		},
+		{
+			"name": "firmata-arduino-servo",
+			"mobile": {
+				"url": "slides/text.html?text=Firmata+Demo"
+			}
+		},
+		{
+			"name": "firmata-arduino-sensor",
+			"mobile": {
+				"url": "slides/text.html?text=Firmata+Demo"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-01",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.047.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-02",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.048.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-03",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.049.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-04",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.050.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-05",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.051.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-06",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.052.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-07",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.053.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-08",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.054.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-09",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.055.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-10",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.056.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-11",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.057.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-12",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.058.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
 			}
 		},
 		{
