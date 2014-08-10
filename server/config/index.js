@@ -16,7 +16,7 @@ for (var dev in ifaces) {
 
 
 Config.entryPoint = path.normalize(__dirname + '/../../index.js');
-Config.johnnyFiveEditorFilePath = path.normalize(__dirname + '/../../johnny-five-app.js');
+Config.childAppFilePath = path.normalize(__dirname + '/../../child-app.js');
 Config.ip = ip;
 Config.port = 8080;
 

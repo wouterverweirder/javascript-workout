@@ -36,7 +36,7 @@ module.exports = (function(){
 		SELECT_WINNER : 'selectWinner',
 		BLINK : 'blink',
 
-		JOHNNY_FIVE_RUN_CODE : 'johnnyFiveRunCode'
+		CHILD_APP_RUN_CODE : 'childAppRunCode'
 	};
 
 	return Constants;

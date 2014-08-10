@@ -75,7 +75,7 @@ gulp.task('presentation-js', function(){
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/highest-heartrate-game/index.js', { expose: 'classes/content/highest-heartrate-game'});
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/lowest-heartrate-game/index.js', { expose: 'classes/content/lowest-heartrate-game'});
 
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/johnny-five-editor/index.js', { expose: 'classes/content/johnny-five-editor'});
+			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/node-app-editor/index.js', { expose: 'classes/content/node-app-editor'});
 		})
 		.pipe(concat('script.min.js'))
 		//.pipe(uglify())

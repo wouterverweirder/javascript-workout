@@ -5,18 +5,31 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title></title>
 	<link rel="stylesheet" href="../css/style.css">
+	<style>
+	.CodeMirrorWrapper {
+		width: 80%;
+	}
+	</style>
 </head>
 <body class="slide vertical-center">
 	<div class="content">
 		<div class="CodeMirrorWrapper">
-			<textarea id="code">var five = require("johnny-five");
-board = new five.Board();
-
-board.on("ready", function() {
-
-  var led = new five.Led(13);
-
-});</textarea>
+			<textarea id="code">var Cylon = require('cylon');
+var robot = Cylon.robot({
+  connection: { name: 'arduino', adaptor: 'firmata', port: '/dev/tty.usbmodem14131' },
+  devices: [
+    { name: 'servo', driver: 'servo', pin: 11 },
+    { name: 'sensor', driver: 'analogSensor', pin: 0}
+  ],
+  work: function(my) {
+  	var angle = 0;
+    my.sensor.on('analogRead', function(val){
+      angle = (val).fromScale(0, 1023).toScale(0, 180);
+      my.servo.angle(angle);
+    });
+  }
+});
+robot.start();</textarea>
 		</div>
 		<button class="btn btn-default">Run</button>
 	</div>

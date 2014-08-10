@@ -13,7 +13,13 @@
         "noble": "0.3.1",
         "jsonwebtoken": "0.4.0",
         "socketio-jwt": "2.3.1",
-        "johnny-five": "0.8.1"
+        "johnny-five": "0.8.1",
+        "cylon": "0.17.0",
+        "cylon-firmata": "0.14.0",
+        "cylon-gpio": "0.17.0",
+        "cylon-i2c": "0.13.0",
+        "cylon-leapmotion": "0.11.0",
+        "cylon-opencv": "0.7.0"
     },
     "devDependencies": {
         "gulp": "3.8.6",

@@ -3,7 +3,7 @@ var Clienthandler = require('../ClientHandler'),
 	url = require('url'),
 	Constants = require('../../../shared/Constants'),
 	PolarH7 = require('../../sensors/PolarH7'),
-	JohnnyFiveApp = require('../../childapps/JohnnyFiveApp'),
+	ChildApp = require('../../childapps/ChildApp'),
 	fs = require('fs');
 
 function PresentationClientHandler(role, socket) {
@@ -21,8 +21,8 @@ function PresentationClientHandler(role, socket) {
 	this.socket.on(Constants.SET_SUBSTATE, this.forwardEventHandler.bind(this, Constants.SET_SUBSTATE));
 	this.socket.on(Constants.SELECT_WINNER, this.forwardEventHandler.bind(this, Constants.SELECT_WINNER));
 
-	this._johnnyFiveRunCodeHandler = this.johnnyFiveRunCodeHandler.bind(this);
-	this.socket.on(Constants.JOHNNY_FIVE_RUN_CODE, this._johnnyFiveRunCodeHandler);
+	this._childAppRunCodeHandler = this.childAppRunCodeHandler.bind(this);
+	this.socket.on(Constants.CHILD_APP_RUN_CODE, this._childAppRunCodeHandler);
 }
 
 util.inherits(PresentationClientHandler, Clienthandler);
@@ -40,8 +40,8 @@ PresentationClientHandler.prototype.heartRateHandler = function(heartRate) {
 	this.send(Constants.HEART_RATE_POLAR, heartRate);
 };
 
-PresentationClientHandler.prototype.johnnyFiveRunCodeHandler = function(code) {
-	JohnnyFiveApp.getInstance().runCode(code);
+PresentationClientHandler.prototype.childAppRunCodeHandler = function(code) {
+	ChildApp.getInstance().runCode(code);
 };
 
 module.exports = PresentationClientHandler;

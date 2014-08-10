@@ -412,6 +412,36 @@
 			}
 		},
 		{
+			"name": "cylon-led",
+			"mobile": {
+				"url": "slides/text.html?text=Cylon+Demo"
+			}
+		},
+		{
+			"name": "cylon-servo",
+			"mobile": {
+				"url": "slides/text.html?text=Cylon+Demo"
+			}
+		},
+		{
+			"name": "cylon-sensor",
+			"mobile": {
+				"url": "slides/text.html?text=Cylon+Demo"
+			}
+		},
+		{
+			"name": "cylon-leap",
+			"mobile": {
+				"url": "slides/text.html?text=Cylon+Demo"
+			}
+		},
+		{
+			"name": "cylon-opencv",
+			"mobile": {
+				"url": "slides/text.html?text=Cylon+Demo"
+			}
+		},
+		{
 			"name": "spacebrew-explanation-01",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.047.png"
