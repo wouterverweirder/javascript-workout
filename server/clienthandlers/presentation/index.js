@@ -36,6 +36,11 @@ PresentationClientHandler.prototype.setCurrentSlideIndexHandler = function(curre
 	this.appModel.setCurrentSlideIndex(currentSlideIndex);
 };
 
+PresentationClientHandler.prototype.currentSlideIndexChangedHandler = function(currentSlideIndex, currentSlide) {
+	ChildApp.getInstance().stop();
+	PresentationClientHandler.super_.prototype.currentSlideIndexChangedHandler.apply(this, [currentSlideIndex, currentSlide]);
+};
+
 PresentationClientHandler.prototype.heartRateHandler = function(heartRate) {
 	this.send(Constants.HEART_RATE_POLAR, heartRate);
 };

@@ -22,12 +22,8 @@ ChildApp.prototype.runCode = function(code) {
 	console.log("[ChildApp] runCode");
 	//stop current instance
 	if(this.runner) {
-		this.runner.stdout.removeAllListeners();
-		this.runner.stderr.removeAllListeners();
-		this.runner.stdin.end();
-		this.runner.kill();
+		this.stop();
 		console.log("[ChildApp] kill() executed");
-		this.runner = false;
 		setTimeout(this.runCode.bind(this, code), 500);
 	} else {
 		//write code to file
@@ -45,6 +41,16 @@ ChildApp.prototype.runCode = function(code) {
 		this.runner.stderr.on('data', this.onRunnerData.bind(this));
 		this.runner.on('disconnect', this.onDisconnect.bind(this));
 		this.runner.on('close', this.onClose.bind(this));
+	}
+};
+
+ChildApp.prototype.stop = function() {
+	if(this.runner) {
+		this.runner.stdout.removeAllListeners();
+		this.runner.stderr.removeAllListeners();
+		this.runner.stdin.end();
+		this.runner.kill();
+		this.runner = false;
 	}
 };
 
