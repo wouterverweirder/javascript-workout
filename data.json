@@ -577,6 +577,24 @@
 			}
 		},
 		{
+			"name": "050-spacebrew-yun-setup",
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "050-spacebrew-yun-loop",
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "050-spacebrew-client-demo",
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
 			"name": "050-spacebrew-arduino-dance",
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"

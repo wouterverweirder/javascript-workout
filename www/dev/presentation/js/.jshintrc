@@ -18,6 +18,7 @@
       "console": false,
       "io": false,
       "createjs": false,
-      "CodeMirror": false
+      "CodeMirror": false,
+      "Spacebrew": false
     }
 }

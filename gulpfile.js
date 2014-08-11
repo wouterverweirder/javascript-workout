@@ -90,11 +90,12 @@ gulp.task('presentation-vendors-js', function(){
 			'www/dev/presentation/js/vendors/rAF.js',
 			'www/dev/presentation/js/vendors/easeljs-0.7.1.min.js',
 			'www/dev/presentation/js/vendors/preloadjs-0.4.1.min.js',
+			'www/dev/presentation/js/vendors/sb-1.4.1.js',
 			'www/dev/presentation/codemirror/lib/codemirror.js',
 			'www/dev/presentation/codemirror/mode/javascript/javascript.js',
 			'www/dev/presentation/codemirror/mode/clike/clike.js',
 			'www/dev/presentation/codemirror/addon/hint/show-hint.js',
-			'www/dev/presentation/codemirror/addon/hint/javascript-hint.js'
+			'www/dev/presentation/codemirror/addon/hint/javascript-hint.js',
         ])
 		.pipe(plumber())
 		.pipe(concat('vendors.min.js'))
