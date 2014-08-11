@@ -412,6 +412,24 @@
 			}
 		},
 		{
+			"name": "cylon-explanation-01",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.047.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=CylonJS"
+			}
+		},
+		{
+			"name": "cylon-explanation-02",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.048.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=CylonJS"
+			}
+		},
+		{
 			"name": "cylon-led",
 			"mobile": {
 				"url": "slides/text.html?text=Cylon+Demo"
@@ -444,7 +462,7 @@
 		{
 			"name": "spacebrew-explanation-01",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.047.png"
+				"url": "slides/image.html?image=images/keynote/keynote.050.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -453,7 +471,7 @@
 		{
 			"name": "spacebrew-explanation-02",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.048.png"
+				"url": "slides/image.html?image=images/keynote/keynote.051.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -462,7 +480,7 @@
 		{
 			"name": "spacebrew-explanation-03",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.049.png"
+				"url": "slides/image.html?image=images/keynote/keynote.052.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -471,7 +489,7 @@
 		{
 			"name": "spacebrew-explanation-04",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.050.png"
+				"url": "slides/image.html?image=images/keynote/keynote.053.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -480,7 +498,7 @@
 		{
 			"name": "spacebrew-explanation-05",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.051.png"
+				"url": "slides/image.html?image=images/keynote/keynote.054.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -489,7 +507,7 @@
 		{
 			"name": "spacebrew-explanation-06",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.052.png"
+				"url": "slides/image.html?image=images/keynote/keynote.055.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -498,7 +516,7 @@
 		{
 			"name": "spacebrew-explanation-07",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.053.png"
+				"url": "slides/image.html?image=images/keynote/keynote.056.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -507,7 +525,7 @@
 		{
 			"name": "spacebrew-explanation-08",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.054.png"
+				"url": "slides/image.html?image=images/keynote/keynote.057.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -516,7 +534,7 @@
 		{
 			"name": "spacebrew-explanation-09",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.055.png"
+				"url": "slides/image.html?image=images/keynote/keynote.058.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -525,7 +543,7 @@
 		{
 			"name": "spacebrew-explanation-10",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.056.png"
+				"url": "slides/image.html?image=images/keynote/keynote.059.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -534,7 +552,7 @@
 		{
 			"name": "spacebrew-explanation-11",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.057.png"
+				"url": "slides/image.html?image=images/keynote/keynote.060.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -543,7 +561,7 @@
 		{
 			"name": "spacebrew-explanation-12",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.058.png"
+				"url": "slides/image.html?image=images/keynote/keynote.061.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
