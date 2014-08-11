@@ -39,11 +39,17 @@ module.exports = (function(){
 				password: $('[name=password]').val()
 			}).done(function(result){
 				that.slides = [];
+				var $slideMenu = $('#slideMenu');
 				var numSlides = result.slides.length;
 				for(var i = 0; i < numSlides; i++) {
 					var slide = new Slide(result.slides[i]);
 					that.slides.push(slide);
+					$slideMenu.append('<li><a href="#" data-slidenr="' + i + '">' + (i + 1) + ' ' + slide.name + '</a></li>');
 				}
+				$slideMenu.find('a').on('click', function(event){
+					event.preventDefault();
+					that.tryToSend(Constants.SET_CURRENT_SLIDE_INDEX, $(this).data('slidenr'));
+				});
 				that.connectSocket(result.token);
 			});
 		},

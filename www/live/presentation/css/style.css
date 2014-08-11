@@ -6373,14 +6373,25 @@ iframe.slide-frame {
 #footer .navbar-fixed-bottom {
   position: absolute;
 }
+#footer .navbar-inverse .navbar-text,
+#footer .navbar-inverse .navbar-btn {
+  color: #ccc;
+}
 #footer .navbar-inverse .navbar-btn {
   background-color: #222222;
   border-color: #333333;
-  color: #999999;
 }
 #footer .navbar-inverse .navbar-btn:hover {
   color: #ffffff;
   background-color: #333333;
+}
+#footer .scrollable-menu {
+  font-size: 16px;
+  height: auto;
+  max-height: 200px;
+  overflow-x: hidden;
+  left: auto;
+  right: 0;
 }
 #login {
   position: relative;
