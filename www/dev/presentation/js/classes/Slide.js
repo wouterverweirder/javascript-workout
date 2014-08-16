@@ -24,6 +24,14 @@ module.exports = (function(){
 				w.setState(state);
 			}
 		},
+		setServerInfo: function(ip, port) {
+			this.ip = ip;
+			this.port = port;
+			var w = getIframeWindow(this.iframe);
+			if(w && w.setServerInfo) {
+				w.setServerInfo(ip, port);
+			}
+		},
 		iframeLoadHandler: function(event) {
 			var w = getIframeWindow(this.iframe);
 			if(w) {

@@ -25,6 +25,15 @@ module.exports = (function(){
 			this.showCurrentState();
 		},
 
+		setServerInfo: function(ip, port) {
+			this._super(ip, port);
+			if(port !== 80) {
+				$('#ip').text('http://' + ip  + ':' + port);
+			} else {
+				$('#ip').text('http://' + ip);
+			}
+		},
+
 		setSubstateHandler: function(substate) {
 			if(this.substate !== substate) {
 				this.substate = substate;

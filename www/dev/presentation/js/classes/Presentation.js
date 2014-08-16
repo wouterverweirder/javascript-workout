@@ -12,6 +12,8 @@ module.exports = (function(){
 		iframes: [],
 		numIframes: 3,
 		slides: [],
+		ip: false,
+		port: false,
 		init: function() {
 			console.log("[Presentation] init");
 
@@ -39,6 +41,8 @@ module.exports = (function(){
 				password: $('[name=password]').val()
 			}).done(function(result){
 				that.slides = [];
+				that.ip = result.ip;
+				that.port = parseInt(result.port);
 				var $slideMenu = $('#slideMenu');
 				var numSlides = result.slides.length;
 				for(var i = 0; i < numSlides; i++) {
@@ -88,6 +92,7 @@ module.exports = (function(){
 					currentSlide.attachToIframe(currentIframe, "slides/" + currentSlide.name + '.html?token=' + this.token);
 				}
 				currentSlide.setState(Constants.STATE_ACTIVE);
+				currentSlide.setServerInfo(this.ip, this.port);
 				$(currentIframe).css('left', 0);
 			}
 			var previousIframe = this.getIframeForSlide(previousSlide, [currentSlide, nextSlide]);
@@ -98,6 +103,7 @@ module.exports = (function(){
 					previousSlide.attachToIframe(previousIframe, "slides/" + previousSlide.name + '.html?token=' + this.token);
 				}
 				previousSlide.setState(Constants.STATE_INACTIVE);
+				previousSlide.setServerInfo(this.ip, this.port);
 				$(previousIframe).css('left', '-100%');
 			}
 			var nextIframe = this.getIframeForSlide(nextSlide, [previousSlide, currentSlide]);
@@ -108,6 +114,7 @@ module.exports = (function(){
 					nextSlide.attachToIframe(nextIframe, "slides/" + nextSlide.name + '.html?token=' + this.token);
 				}
 				nextSlide.setState(Constants.STATE_INACTIVE);
+				nextSlide.setServerInfo(this.ip, this.port);
 				$(nextIframe).css('left', '100%');
 			}
 		},

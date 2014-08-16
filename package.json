@@ -19,7 +19,8 @@
         "cylon-gpio": "0.17.0",
         "cylon-i2c": "0.13.0",
         "cylon-leapmotion": "0.11.0",
-        "cylon-opencv": "0.7.0"
+        "cylon-opencv": "0.7.0",
+        "tty.js": "0.2.13"
     },
     "devDependencies": {
         "gulp": "3.8.6",

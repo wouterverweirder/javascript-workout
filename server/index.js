@@ -40,10 +40,10 @@ function Server() {
 				role: 'presentation'
 			};
 			var token = jwt.sign(profile, jwtSecret, {expiresInMinutes: 60*5});
-			res.json({token: token, slides: appModel.slides});
+			res.json({token: token, slides: appModel.slides, ip: config.ip, port: config.port});
 		} else {
 			var token = jwt.sign({}, jwtSecret, {expiresInMinutes: 60*5});
-			res.json({token: token, slides: appModel.slides});
+			res.json({token: token, slides: appModel.slides, ip: config.ip, port: config.port});
 		}
 	});
 

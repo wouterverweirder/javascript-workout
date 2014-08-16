@@ -18,7 +18,8 @@ module.exports = (function(){
 			this.name = name;
 			this.token = $.getUrlVar('token');
 			window.setState = $.proxy(this.setState, this);
-			$(window).on('keydown', $.proxy(this.keydownHandler, this));
+			window.setServerInfo = $.proxy(this.setServerInfo, this);
+			$(window).on('keydown', $.proxy(this.keydownHandler, this));			
 			this.__drawLoop = $.proxy(this._drawLoop, this);
 			this._interval = 1000 / this.fps;
 
@@ -40,6 +41,11 @@ module.exports = (function(){
 			}
 		},
 
+		setServerInfo: function(ip, port) {
+			this.ip = ip;
+			this.port = port;
+		},
+
 		onStateChanged: function() {
 		},
 
@@ -49,11 +55,11 @@ module.exports = (function(){
 		    this._delta = (this._currentTime - this._lastTime);
 		    if(this._delta > this._interval) {
 		    	this.currentFrame++;
-		    	this.drawLoop();
+		    	this.drawLoop(this._delta);
 		    	this._lastTime = this._currentTime - (this._delta % this._interval);
 		    }
 		},
-		drawLoop: function() {
+		drawLoop: function(delta) {
 		},
 
 		keydownHandler: function(event) {
