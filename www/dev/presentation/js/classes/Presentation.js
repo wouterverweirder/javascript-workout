@@ -17,12 +17,18 @@ module.exports = (function(){
 		init: function() {
 			console.log("[Presentation] init");
 
+			$('#consoleModal').on('show.bs.modal', function (e) {
+				var w = $('#consoleModal iframe')[0].contentWindow;
+				w.postMessage('consoleModalOpen', 'http://localhost:3000');
+			});
+
 			this.createIframes();
 
 			$("#login form").on('submit', $.proxy(this.loginSubmitHandler, this));
 			$(window).on('keydown', $.proxy(this.keydownHandler, this));
 			$('body').on(Constants.GO_TO_PREVIOUS_SLIDE, $.proxy(this.goToPreviousSlide, this));
 			$('body').on(Constants.GO_TO_NEXT_SLIDE, $.proxy(this.goToNextSlide, this));
+			$('body').on(Constants.OPEN_COMMAND_LINE, $.proxy(this.openCommandLine, this));
 		},
 
 		createIframes: function() {
@@ -170,6 +176,10 @@ module.exports = (function(){
 
 		goToNextSlide: function() {
 			this.tryToSend(Constants.SET_CURRENT_SLIDE_INDEX, this.currentSlideIndex + 1);
+		},
+
+		openCommandLine: function() {
+			$('#consoleModal').modal('show');
 		},
 
 		tryToSend: function() {

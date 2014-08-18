@@ -9,6 +9,7 @@ var app = tty.createServer({
   shell: 'bash',
   port: 3000,
   cwd: ".",
+  localOnly: true,
   static: "./www/live/presentation/tty"
 });
 

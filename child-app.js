@@ -2,8 +2,9 @@ var five = require("johnny-five");
 board = new five.Board();
 
 board.on("ready", function() {
-
-  var servo = new five.Servo(11);
-  servo.sweep();
-
+  var sensor = new five.Sensor({
+    pin: "A0",
+    freq: 250
+  });
+  //hello test
 });

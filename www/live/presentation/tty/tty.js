@@ -164,11 +164,6 @@ tty.open = function() {
 
   tty.emit('load');
   tty.emit('open');
-
-  setTimeout(function(){
-    var w = new Window;
-    w.maximize();
-  }, 100);
 };
 
 /**

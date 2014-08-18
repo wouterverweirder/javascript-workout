@@ -21,8 +21,8 @@ function PresentationClientHandler(role, socket) {
 	this.socket.on(Constants.SET_SUBSTATE, this.forwardEventHandler.bind(this, Constants.SET_SUBSTATE));
 	this.socket.on(Constants.SELECT_WINNER, this.forwardEventHandler.bind(this, Constants.SELECT_WINNER));
 
-	this._childAppRunCodeHandler = this.childAppRunCodeHandler.bind(this);
-	this.socket.on(Constants.CHILD_APP_RUN_CODE, this._childAppRunCodeHandler);
+	this._childAppSaveCodeHandler = this.childAppSaveCodeHandler.bind(this);
+	this.socket.on(Constants.CHILD_APP_SAVE_CODE, this._childAppSaveCodeHandler);
 }
 
 util.inherits(PresentationClientHandler, Clienthandler);
@@ -45,8 +45,8 @@ PresentationClientHandler.prototype.heartRateHandler = function(heartRate) {
 	this.send(Constants.HEART_RATE_POLAR, heartRate);
 };
 
-PresentationClientHandler.prototype.childAppRunCodeHandler = function(code) {
-	ChildApp.getInstance().runCode(code);
+PresentationClientHandler.prototype.childAppSaveCodeHandler = function(code) {
+	ChildApp.getInstance().saveCode(code);
 };
 
 module.exports = PresentationClientHandler;

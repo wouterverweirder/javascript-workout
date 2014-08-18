@@ -18,6 +18,16 @@ ChildApp.getInstance = function() {
 	return ChildApp.instance;
 };
 
+ChildApp.prototype.saveCode = function(code) {
+	fs.writeFile(Config.childAppFilePath, code, function(err) {
+	    if(err) {
+	        console.log(err);
+	    } else {
+	        console.log("[ChildApp] The file was saved!");
+	    }
+	});
+};
+
 ChildApp.prototype.runCode = function(code) {
 	console.log("[ChildApp] runCode");
 	//stop current instance
@@ -27,13 +37,7 @@ ChildApp.prototype.runCode = function(code) {
 		setTimeout(this.runCode.bind(this, code), 500);
 	} else {
 		//write code to file
-		fs.writeFile(Config.childAppFilePath, code, function(err) {
-		    if(err) {
-		        console.log(err);
-		    } else {
-		        console.log("The file was saved!");
-		    }
-		}); 
+		this.saveCode(code);
 
 		//run the code
 		this.runner = process.spawn("node", [Config.childAppFilePath]);

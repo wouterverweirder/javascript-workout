@@ -40,7 +40,8 @@ module.exports = (function(){
 		SELECT_WINNER : 'selectWinner',
 		BLINK : 'blink',
 
-		CHILD_APP_RUN_CODE : 'childAppRunCode'
+		CHILD_APP_SAVE_CODE : 'childAppSaveCode',
+		OPEN_COMMAND_LINE: 'openCommandLine'
 	};
 
 	return Constants;
