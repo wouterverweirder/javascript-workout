@@ -38,6 +38,9 @@ module.exports = (function(){
 				if(w.setState) {
 					w.setState(this.state);
 				}
+				if(w.setServerInfo) {
+					w.setServerInfo(this.ip, this.port);
+				}
 			}
 		}
 	});

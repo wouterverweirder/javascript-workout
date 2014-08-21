@@ -36,6 +36,14 @@ SlideHandler.prototype.onClientHandlerAdded = function(clientHandler, isAddFromI
 SlideHandler.prototype.onClientHandlerRemoved = function(clientHandler) {
 };
 
+SlideHandler.prototype.sendTo = function(targets) {
+	var args = Array.prototype.slice.call(arguments);
+	args.shift();
+	for (var i = targets.length - 1; i >= 0; i--) {
+		targets[i].send.apply(targets[i], args);
+	};
+};
+
 SlideHandler.prototype.sendToAll = function() {
 	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
 		this.clientHandlers[i].send.apply(this.clientHandlers[i], arguments);

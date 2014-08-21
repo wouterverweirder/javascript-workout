@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="../css/style.css">
+	<style>
+	.react-phones-slider, .react-phones-slides-container, .react-phones-slide, .react-phones-slide-text-wrapper, .react-phones-slide-text {
+		width: 100%;
+		height: 100%;
+	}
+	.react-phones-slider {
+		overflow: hidden;
+		white-space: nowrap;
+		position: relative;
+	}
+	.react-phones-slides-container {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.react-phones-slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		border: solid 10px black;
+		color: white;
+	}
+	.react-phones-slide-text-wrapper {
+		display: table;
+	}
+	.react-phones-slide-text {
+		display: table-cell;
+		vertical-align: middle;
+		text-transform: uppercase;
+	}
+	</style>
+</head>
+<body class="slide vertical-center">
+	<div class="background">
+	</div>
+	<div class="content container-fluid">
+		<div class="substate substate-intro">
+			<h1>Waiting For Game To Start...</h1>
+		</div>
+		<div class="substate substate-finished">
+			<h1>Finished</h1>
+		</div>
+		<div id="game" class="fill" style="position: absolute; left: 0; top: 0; z-index: -1">
+			<div style="height: 20%">
+				<div class="react-phones-slider">
+					<div class="react-phones-slides-container">
+						<div class="react-phones-slide react-phones-slide-1">
+							<div class="react-phones-slide-text-wrapper">
+								<div class="react-phones-slide-text">One</div>
+							</div>
+						</div>
+						<div class="react-phones-slide react-phones-slide-2">
+							<div class="react-phones-slide-text-wrapper">
+								<div class="react-phones-slide-text">Two</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div style="height: 80%">
+				<a class="touchbutton" style="width: 100%; height: 50%;"><span style="background: #c6363d;">Red</span></a>
+				<a class="touchbutton" style="width: 100%; height: 50%;"><span style="background: #0684AF;">Blue</span></a>
+			</div>
+		</div>
+	</div>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="../js/vendors.min.js"></script>
+	<script src="../js/script.min.js"></script>
+	<script>
+	(function(){
+
+		var ReactPhones = require('classes/content/react-phones');
+		new ReactPhones();
+
+	})();
+	</script>
+</body>
+</html>

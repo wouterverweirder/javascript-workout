@@ -1,10 +1,15 @@
-var five = require("johnny-five");
-board = new five.Board();
-
-board.on("ready", function() {
-  var sensor = new five.Sensor({
-    pin: "A0",
-    freq: 250
-  });
-  //hello test
+var Cylon = require('cylon');
+var robot = Cylon.robot({
+  connection: { 
+  	name: 'arduino', 
+  	adaptor: 'firmata', 
+  	port: '/dev/tty.usbmodem14131' 
+  },
+  device: { name: 'led', driver: 'led', pin: 13 },
+  work: function(my) {
+    setInterval(function(){
+      my.led.toggle();
+    }, 250);
+  }
 });
+robot.start();

@@ -601,6 +601,9 @@
 			}
 		},
 		{
+			"name": "react-phones"
+		},
+		{
 			"name": "thank-you",
 			"mobile": {
 				"url": "slides/text.html?text=Thank+You"

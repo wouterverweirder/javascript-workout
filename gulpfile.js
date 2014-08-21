@@ -30,6 +30,7 @@ gulp.task('mobile-js', function(){
 			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
 			//content
 			bundle.require(__dirname + '/www/dev/mobile/js/classes/content/shake-your-phones/index.js', { expose: 'classes/content/shake-your-phones'});
+			bundle.require(__dirname + '/www/dev/mobile/js/classes/content/react-phones/index.js', { expose: 'classes/content/react-phones'});
 		})
 		.pipe(concat('script.min.js'))
 		//.pipe(uglify())
@@ -72,6 +73,7 @@ gulp.task('presentation-js', function(){
 			//content
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/intro-poster/index.js', { expose: 'classes/content/intro-poster'});
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/shake-your-phones/index.js', { expose: 'classes/content/shake-your-phones'});
+			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/react-phones/index.js', { expose: 'classes/content/react-phones'});
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/highest-heartrate-game/index.js', { expose: 'classes/content/highest-heartrate-game'});
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/lowest-heartrate-game/index.js', { expose: 'classes/content/lowest-heartrate-game'});
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/dance-pad-game/index.js', { expose: 'classes/content/dance-pad-game'});
@@ -108,7 +110,8 @@ gulp.task('mobile-vendors-js', function(){
 	return gulp.src([
 			'www/dev/mobile/js/vendors/jquery.min.js',
 			'www/dev/mobile/js/vendors/jquery.geturlvars.js',
-			'www/dev/mobile/js/vendors/rAF.js'
+			'www/dev/mobile/js/vendors/rAF.js',
+			'www/dev/mobile/js/vendors/modernizr.min.js'
         ])
 		.pipe(plumber())
 		.pipe(concat('vendors.min.js'))

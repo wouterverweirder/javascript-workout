@@ -58,7 +58,12 @@ module.exports = (function(){
 		},
 
 		blinkHandler: function(event, text, backgroundColor) {
-			console.log('blinkHandler');
+			console.log(text, backgroundColor);
+			if(text instanceof Array && text.length > 1) {
+				console.log('split it');
+				backgroundColor = text[1];
+				text = text[0];
+			}
 			console.log(text, backgroundColor);
 			//overlay important, blinking text
 			this.$overlay.find('.content').html(text);

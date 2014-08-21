@@ -30,11 +30,21 @@ module.exports = (function(){
 		LOWEST_HEARTRATE_GAME_GAME : 'lowestHeartrateGameGame',
 		LOWEST_HEARTRATE_GAME_FINISHED : 'lowestHeartrateGameFinished',
 
+		REACT_PHONES_INTRO : 'reactPhonesIntro',
+		REACT_PHONES_GAME : 'reactPhonesGame',
+		REACT_PHONES_FINISHED : 'reactPhonesFinished',
+
+		REACT_PHONES_CLIENT_ADDED : 'reactPhonesClientAdded',
+		REACT_PHONES_CLIENT_REMOVED : 'reactPhonesClientRemoved',
+		REACT_PHONES_CLIENT_LIST : 'reactPhonesClientList',
+		REACT_PHONES_CLIENT_UPDATE : 'reactPhonesClientUpdate',
+
 		DANCE_PAD_GAME_INTRO : 'dancePadGameIntro',
 		DANCE_PAD_GAME_GAME : 'dancePadGameGame',
 		DANCE_PAD_GAME_FINISHED : 'dancePadGameFinished',
 
 		UPDATE_MAXIMUM_MOTION : 'updateMaximumMotion',
+		UPDATE_REACTION_SPEED : 'updateReactionSpeed',
 		HEART_RATE_POLAR : 'heartRatePolar',
 		HEART_RATE_SPARK : 'heartRateSpark',
 		SELECT_WINNER : 'selectWinner',

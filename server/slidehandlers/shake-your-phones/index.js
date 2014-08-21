@@ -31,7 +31,7 @@ ShakeYourPhonesSlideHandler.prototype.onInitializationComplete = function() {
 	this.sendList();
 };
 
-ShakeYourPhonesSlideHandler.prototype.sendList = function() {
+ShakeYourPhonesSlideHandler.prototype.sendList = function(targets) {
 	var list = [];
 	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
 		if(this.clientHandlers[i].socketTargetSlide === this.slide.name && this.clientHandlers[i].role === Constants.ROLE_MOBILE) {
@@ -41,7 +41,11 @@ ShakeYourPhonesSlideHandler.prototype.sendList = function() {
 			});
 		}
 	}
-	this.sendToClientsByRole(Constants.ROLE_PRESENTATION, Constants.SHAKE_YOUR_PHONES_CLIENT_LIST, list);
+	if(!targets) {
+		this.sendToClientsByRole(Constants.ROLE_PRESENTATION, Constants.SHAKE_YOUR_PHONES_CLIENT_LIST, list);
+	} else {
+		this.sendTo(targets, Constants.SHAKE_YOUR_PHONES_CLIENT_LIST, list);
+	}
 };
 
 ShakeYourPhonesSlideHandler.prototype.onClientHandlerAdded = function(clientHandler, isAddFromInitialization) {
@@ -52,6 +56,7 @@ ShakeYourPhonesSlideHandler.prototype.onClientHandlerAdded = function(clientHand
 	} else if(clientHandler.role === Constants.ROLE_PRESENTATION) {
 		clientHandler.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
 		clientHandler.on(Constants.SELECT_WINNER, this._selectWinnerHandler);
+		this.sendList([clientHandler]);
 	}
 	if(!isAddFromInitialization) {
 		if(clientHandler.socketTargetSlide === this.slide.name && clientHandler.role === Constants.ROLE_MOBILE) {
@@ -104,9 +109,10 @@ ShakeYourPhonesSlideHandler.prototype.selectWinnerHandler = function() {
 	for (var i = this.clientHandlers.length - 1; i >= 0; i--) {
 		if(this.clientHandlers[i].role === Constants.ROLE_MOBILE && !this.clientHandlers[i].shakeWinner && this.clientHandlers[i].maximumMotion > maximumMotion) {
 			winningClientHandler = this.clientHandlers[i];
+			maximumMotion = winningClientHandler.maximumMotion;
 		}
 	}
-	console.log(winningClientHandler);
+	console.log('[ShakeYourPhonesSlideHandler] winningClientHandler', winningClientHandler);
 	if(winningClientHandler) {
 		winningClientHandler.shakeWinner = true;
 		winningClientHandler.send(Constants.BLINK, ['<h1>Spectacular, You Win!</h1>', 'red']);

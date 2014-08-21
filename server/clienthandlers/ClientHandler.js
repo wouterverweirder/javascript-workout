@@ -19,6 +19,7 @@ function ClientHandler(role, socket) {
 
 	this.socket.on('disconnect', this.forwardEventHandler.bind(this, 'disconnect'));
 	this.socket.on(Constants.UPDATE_MAXIMUM_MOTION, this.forwardEventHandler.bind(this, Constants.UPDATE_MAXIMUM_MOTION));
+	this.socket.on(Constants.UPDATE_REACTION_SPEED, this.forwardEventHandler.bind(this, Constants.UPDATE_REACTION_SPEED));
 
 	this._currentSlideIndexChangedHandler = this.currentSlideIndexChangedHandler.bind(this);
 	this.appModel.on(AppModel.CURRENT_SLIDE_INDEX_CHANGED, this._currentSlideIndexChangedHandler);

@@ -2,11 +2,11 @@ module.exports = (function(){
 	var ContentBase = require('../ContentBase');
 	var Constants = require('Constants');
 
-	var ShakeYourPhones = ContentBase.extend({
+	var ReactPhones = ContentBase.extend({
 		gameDuration: 10, //game lasts 30 seconds
 		init: function(name) {
 			this._super(name);
-			console.log("[ShakeYourPhones] init");
+			console.log("[ReactPhones] init");
 
 			this.clientsMap = {};
 
@@ -14,10 +14,10 @@ module.exports = (function(){
 
 			this.socket.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
 
-			this.socket.on(Constants.SHAKE_YOUR_PHONES_CLIENT_ADDED, $.proxy(this.clientAddedHandler, this));
-			this.socket.on(Constants.SHAKE_YOUR_PHONES_CLIENT_REMOVED, $.proxy(this.clientRemovedHandler, this));
-			this.socket.on(Constants.SHAKE_YOUR_PHONES_CLIENT_UPDATE, $.proxy(this.clientUpdateHandler, this));
-			this.socket.on(Constants.SHAKE_YOUR_PHONES_CLIENT_LIST, $.proxy(this.clientListHandler, this));
+			this.socket.on(Constants.REACT_PHONES_CLIENT_ADDED, $.proxy(this.clientAddedHandler, this));
+			this.socket.on(Constants.REACT_PHONES_CLIENT_REMOVED, $.proxy(this.clientRemovedHandler, this));
+			this.socket.on(Constants.REACT_PHONES_CLIENT_UPDATE, $.proxy(this.clientUpdateHandler, this));
+			this.socket.on(Constants.REACT_PHONES_CLIENT_LIST, $.proxy(this.clientListHandler, this));
 
 			$('.substate-intro .btn').on('click', $.proxy(this.startClickHandler, this));
 			$('.substate-finished .btn').on('click', $.proxy(this.winnerClickHandler, this));
@@ -38,7 +38,7 @@ module.exports = (function(){
 		},
 
 		startClickHandler: function() {
-			this.socket.emit(Constants.SET_SUBSTATE, Constants.SHAKE_YOUR_PHONES_GAME);
+			this.socket.emit(Constants.SET_SUBSTATE, Constants.REACT_PHONES_GAME);
 		},
 
 		winnerClickHandler: function() {
@@ -46,7 +46,7 @@ module.exports = (function(){
 		},
 
 		clientAddedHandler: function(clientInfo) {
-			//console.log('[ShakeYourPhones] client added', clientInfo);
+			console.log('[ReactPhones] client added', clientInfo);
 			this.clientsMap[clientInfo.id] = clientInfo;
 			this.clientsMap[clientInfo.id].size = 10;
 			this.clientsMap[clientInfo.id].$div = $('<div class="circle">').css({
@@ -62,19 +62,19 @@ module.exports = (function(){
 		},
 
 		clientRemovedHandler: function(clientInfo) {
-			//console.log('[ShakeYourPhones] client removed', clientInfo);
+			console.log('[ReactPhones] client removed', clientInfo);
 			this.clientsMap[clientInfo.id].$div.remove();
 			delete this.clientsMap[clientInfo.id];
 			this.numClientsChanged();
 		},
 
 		clientUpdateHandler: function(clientInfo) {
-			//console.log('[ShakeYourPhones] client update', clientInfo);
+			//console.log('[ReactPhones] client update', clientInfo);
 			$.extend(this.clientsMap[clientInfo.id], clientInfo);
 		},
 
 		clientListHandler: function(list) {
-			console.log('[ShakeYourPhones] client list', list);
+			console.log('[ReactPhones] client list', list);
 			this.clientsMap = {};
 			$('.background .substate-game').html('');
 			for (var i = list.length - 1; i >= 0; i--) {
@@ -106,11 +106,11 @@ module.exports = (function(){
 			$('body').css({
 				backgroundImage: 'none'
 			});
-			if(this.substate === Constants.SHAKE_YOUR_PHONES_GAME) {
+			if(this.substate === Constants.REACT_PHONES_GAME) {
 				$('.substate-game .countdown').html(this.gameDuration);
 				$('.substate-game').addClass('active');
 				this.countDownTimeout = setTimeout($.proxy(this.countDownHandler, this, this.gameDuration - 1), 1000);
-			} else if(this.substate === Constants.SHAKE_YOUR_PHONES_FINISHED) {
+			} else if(this.substate === Constants.REACT_PHONES_FINISHED) {
 				$('.substate-finished').addClass('active');
 			} else {
 				$('body').css({
@@ -128,12 +128,13 @@ module.exports = (function(){
 			if(timeLeft > 0) {
 				this.countDownTimeout = setTimeout($.proxy(this.countDownHandler, this, timeLeft - 1), 1000);
 			} else {
-				this.socket.emit(Constants.SET_SUBSTATE, Constants.SHAKE_YOUR_PHONES_FINISHED);
+				this.socket.emit(Constants.SET_SUBSTATE, Constants.REACT_PHONES_FINISHED);
 			}
 		},
 
 		drawLoop: function() {
-			if(this.substate === Constants.SHAKE_YOUR_PHONES_GAME) {
+			if(this.substate === Constants.REACT_PHONES_GAME) {
+				/*
 				$.each(this.clientsMap, function(key, value){
 					var target = 3 * Math.max(10, value.maximumMotion);
 					value.size += (target - value.size) * 0.2;
@@ -142,10 +143,11 @@ module.exports = (function(){
 						height: value.size + 'px'
 					});
 				});
+				*/
 			}
 		},
 	});
 
-	return ShakeYourPhones;
+	return ReactPhones;
 
 })();
