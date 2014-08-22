@@ -45,8 +45,8 @@ PresentationClientHandler.prototype.heartRateHandler = function(heartRate) {
 	this.send(Constants.HEART_RATE_POLAR, heartRate);
 };
 
-PresentationClientHandler.prototype.childAppSaveCodeHandler = function(code) {
-	ChildApp.getInstance().saveCode(code);
+PresentationClientHandler.prototype.childAppSaveCodeHandler = function(data) {
+	ChildApp.getInstance().saveCode(data.code, data.type);
 };
 
 module.exports = PresentationClientHandler;

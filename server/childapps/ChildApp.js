@@ -18,8 +18,12 @@ ChildApp.getInstance = function() {
 	return ChildApp.instance;
 };
 
-ChildApp.prototype.saveCode = function(code) {
-	fs.writeFile(Config.childAppFilePath, code, function(err) {
+ChildApp.prototype.saveCode = function(code, type) {
+	var filePath = Config.childNodeAppFilePath;
+	if(type === 'tessel') {
+		filePath = Config.childTesselAppFilePath;
+	}
+	fs.writeFile(filePath, code, function(err) {
 	    if(err) {
 	        console.log(err);
 	    } else {
@@ -28,7 +32,7 @@ ChildApp.prototype.saveCode = function(code) {
 	});
 };
 
-ChildApp.prototype.runCode = function(code) {
+ChildApp.prototype.runCode = function(code, type) {
 	console.log("[ChildApp] runCode");
 	//stop current instance
 	if(this.runner) {
@@ -37,7 +41,7 @@ ChildApp.prototype.runCode = function(code) {
 		setTimeout(this.runCode.bind(this, code), 500);
 	} else {
 		//write code to file
-		this.saveCode(code);
+		this.saveCode(code, type);
 
 		//run the code
 		this.runner = process.spawn("node", [Config.childAppFilePath]);

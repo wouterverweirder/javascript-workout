@@ -79,6 +79,7 @@ gulp.task('presentation-js', function(){
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/dance-pad-game/index.js', { expose: 'classes/content/dance-pad-game'});
 
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/node-app-editor/index.js', { expose: 'classes/content/node-app-editor'});
+			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/tessel-app-editor/index.js', { expose: 'classes/content/tessel-app-editor'});
 		})
 		.pipe(concat('script.min.js'))
 		//.pipe(uglify())

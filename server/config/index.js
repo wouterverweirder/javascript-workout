@@ -16,7 +16,8 @@ for (var dev in ifaces) {
 
 
 Config.entryPoint = path.normalize(__dirname + '/../../index.js');
-Config.childAppFilePath = path.normalize(__dirname + '/../../child-app.js');
+Config.childNodeAppFilePath = path.normalize(__dirname + '/../../child-app/node/app.js');
+Config.childTesselAppFilePath = path.normalize(__dirname + '/../../child-app/tessel/app.js');
 Config.ip = ip;
 Config.port = 8080;
 
