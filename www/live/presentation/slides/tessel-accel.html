@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="slide vertical-center">
+	<div class="content">
+		<div class="CodeMirrorWrapper">
+			<textarea id="code">var tessel = require('tessel');
+var accelLib = require('accel-mma84');
+var accel = accelLib.use(tessel.port['A']);
+
+accel.on('ready', function () {
+  accel.on('data', function (xyz) {
+    console.log('x:', xyz[0].toFixed(2),
+      'y:', xyz[1].toFixed(2),
+      'z:', xyz[2].toFixed(2));
+  });
+
+});</textarea>
+		</div>
+		<button class="btn btn-default">Run</button>
+	</div>
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/presentation/js/vendors.min.js"></script>
+	<script src="/presentation/js/script.min.js"></script>
+	<script>
+	(function(){
+		var TesselAppEditor = require('classes/content/tessel-app-editor');
+		new TesselAppEditor("codemirror-test");
+	})();
+	</script>
+</body>
+</html>

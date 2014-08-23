@@ -496,67 +496,52 @@
 			}
 		},
 		{
-			"name": "tessel-led",
+			"name": "tessel-onboard-led",
+			"mobile": {
+				"url": "slides/text.html?text=Tessel"
+			}
+		},
+		{
+			"name": "tessel-gpio-led",
+			"mobile": {
+				"url": "slides/text.html?text=Tessel"
+			}
+		},
+		{
+			"name": "050-tessel-explanation-03",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.056.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Tessel"
+			}
+		},
+		{
+			"name": "tessel-accel",
+			"mobile": {
+				"url": "slides/text.html?text=Tessel"
+			}
+		},
+		{
+			"name": "tessel-ambient",
+			"mobile": {
+				"url": "slides/text.html?text=Tessel"
+			}
+		},
+		{
+			"name": "tessel-ambient-trigger",
+			"mobile": {
+				"url": "slides/text.html?text=Tessel"
+			}
+		},
+		{
+			"name": "tessel-ambient-trigger-led",
 			"mobile": {
 				"url": "slides/text.html?text=Tessel"
 			}
 		},
 		{
 			"name": "spacebrew-explanation-01",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.055.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Spacebrew"
-			}
-		},
-		{
-			"name": "spacebrew-explanation-02",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.056.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Spacebrew"
-			}
-		},
-		{
-			"name": "spacebrew-explanation-03",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.057.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Spacebrew"
-			}
-		},
-		{
-			"name": "spacebrew-explanation-04",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.058.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Spacebrew"
-			}
-		},
-		{
-			"name": "spacebrew-explanation-05",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.059.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Spacebrew"
-			}
-		},
-		{
-			"name": "spacebrew-explanation-06",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.060.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Spacebrew"
-			}
-		},
-		{
-			"name": "spacebrew-explanation-07",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.061.png"
 			},
@@ -565,7 +550,7 @@
 			}
 		},
 		{
-			"name": "spacebrew-explanation-08",
+			"name": "spacebrew-explanation-02",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.062.png"
 			},
@@ -574,7 +559,7 @@
 			}
 		},
 		{
-			"name": "spacebrew-explanation-09",
+			"name": "spacebrew-explanation-03",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.063.png"
 			},
@@ -583,7 +568,7 @@
 			}
 		},
 		{
-			"name": "spacebrew-explanation-10",
+			"name": "spacebrew-explanation-04",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.064.png"
 			},
@@ -592,9 +577,63 @@
 			}
 		},
 		{
-			"name": "spacebrew-explanation-11",
+			"name": "spacebrew-explanation-05",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.065.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-06",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.066.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-07",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.067.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-08",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.068.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-09",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.069.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-10",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.070.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "spacebrew-explanation-11",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.071.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
