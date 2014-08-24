@@ -38,6 +38,8 @@ module.exports = (function(){
 
 			this.socket.on(Constants.SET_SUBSTATE, this._setSubstateHandler);
 
+			console.log($('.substate-intro .btn'));
+
 			$('.substate-intro .btn').on('click', $.proxy(this.startClickHandler, this));
 			$('.substate-game .btn').on('click', $.proxy(this.stopClickHandler, this));
 
@@ -181,6 +183,7 @@ module.exports = (function(){
 		},
 
 		setSubstateHandler: function(substate) {
+			console.log('setSubstateHandler', this.substate, substate);
 			if(this.substate !== substate) {
 				this.substate = substate;
 				this.showCurrentState();
@@ -209,6 +212,7 @@ module.exports = (function(){
 		},
 
 		showCurrentState: function() {
+			console.log('showCurrentState', this.substate);
 			$('.substate').removeClass('active');
 			if(this.substate === Constants.DANCE_PAD_GAME_GAME) {
 				this.resetGame();

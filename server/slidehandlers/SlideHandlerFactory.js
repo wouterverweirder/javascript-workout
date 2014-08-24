@@ -13,7 +13,7 @@ module.exports = {
 			case "shake-your-phones": return new ShakeYourPhonesSlideHandler(slide);
 			case "highest-heartrate-game": return new HighestHeartrateGameSlideHandler(slide);
 			case "lowest-heartrate-game": return new LowestHeartrateGameSlideHandler(slide);
-			case "050-spacebrew-arduino-dance": return new DancePadGameSlideHandler(slide);
+			case "060-spacebrew-arduino-dance": return new DancePadGameSlideHandler(slide);
 			case "react-phones": return new ReactPhonesSlideHandler(slide);
 		}
 		return new SlideHandler(slide);

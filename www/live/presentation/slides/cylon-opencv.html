@@ -22,13 +22,14 @@ Cylon.robot({
   ],
   devices: [
     { name: 'servo', driver: 'servo', pin: 11, connection: "arduino" },
-    { name: 'camera', driver: 'camera', camera: 0, connection: "opencv", haarcascade: __dirname + "/haarcascade_frontalface_alt.xml" }
+    { name: 'camera', driver: 'camera', camera: 1, connection: "opencv", haarcascade: __dirname + "/haarcascade_frontalface_alt.xml" }
   ],
   work: function(my) {
     var angle = 0;
     my.camera.once('cameraReady', function() {
       my.camera.on('facesDetected', function(err, im, faces) {
         if(faces.length > 0) {
+          console.log(faces.length, faces[0].x);
           angle = (faces[0].x).fromScale(1024, 0).toScale(0, 180);
           my.servo.angle(angle);
         }
