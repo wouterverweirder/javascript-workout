@@ -9,6 +9,7 @@ module.exports = (function(){
 			console.log("[IntroPoster] init");
 
 			this.heartRateCanvas = new HeartRateCanvas(document.getElementById('polarHeartRateCanvas'));
+			this.heartRateCanvas.showHeartRateTextInBackground = true;
 			this.heartRateCanvas.updateHeartRate(60);//default 60 bpm
 			this.resizeHeartRateCanvas();
 
@@ -29,6 +30,7 @@ module.exports = (function(){
 
 		heartRatePolarHandler: function(heartRate) {
 			this.heartRateCanvas.updateHeartRate(heartRate);
+			$('.background.heartrate').text(heartRate);
 		},
 
 		resizeHandler: function() {

@@ -50,10 +50,11 @@ module.exports = (function(){
 		},
 		tick: function() {
 			this.frameNr++;
+
 			this.drawingShape.graphics.clear()
-				.beginFill(this.backgroundColor)
-				.drawRect(0, 0, this.width, this.height)
-				.endFill()
+				//.beginFill(this.backgroundColor)
+				//.drawRect(0, 0, this.width, this.height)
+				//.endFill()
 				.beginStroke(this.strokeColor);
 
 			this.drawingShape.graphics.moveTo(0, this.canvasVerticalCenter - (this.canvasVerticalCenter * this.values[0]));
