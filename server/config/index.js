@@ -21,4 +21,9 @@ Config.childTesselAppFilePath = path.normalize(__dirname + '/../../child-app/tes
 Config.ip = ip;
 Config.port = 8080;
 
+Config.twitterConsumerKey = '';
+Config.twitterConsumerSecret = '';
+Config.twitterAccessToken = '';
+Config.twitterAccessTokenSecret = '';
+
 module.exports = Config;
