@@ -21,9 +21,15 @@ Config.childTesselAppFilePath = path.normalize(__dirname + '/../../child-app/tes
 Config.ip = ip;
 Config.port = 8080;
 
+//set this to your twitter api credentials
 Config.twitterConsumerKey = '';
 Config.twitterConsumerSecret = '';
 Config.twitterAccessToken = '';
 Config.twitterAccessTokenSecret = '';
+
+try {
+	require('./twitter.js')(Config);
+} catch(e) {
+}
 
 module.exports = Config;

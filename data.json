@@ -487,15 +487,6 @@
 			}
 		},
 		{
-			"name": "050-tessel-explanation-02",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.053.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Tessel"
-			}
-		},
-		{
 			"name": "tessel-onboard-led",
 			"mobile": {
 				"url": "slides/text.html?text=Tessel"
@@ -510,7 +501,7 @@
 		{
 			"name": "050-tessel-explanation-03",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.056.png"
+				"url": "slides/image.html?image=images/keynote/keynote.055.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Tessel"
@@ -543,7 +534,7 @@
 		{
 			"name": "spacebrew-explanation-01",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.061.png"
+				"url": "slides/image.html?image=images/keynote/keynote.060.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -552,7 +543,7 @@
 		{
 			"name": "spacebrew-explanation-02",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.062.png"
+				"url": "slides/image.html?image=images/keynote/keynote.061.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -561,7 +552,7 @@
 		{
 			"name": "spacebrew-explanation-03",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.063.png"
+				"url": "slides/image.html?image=images/keynote/keynote.062.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -570,7 +561,7 @@
 		{
 			"name": "spacebrew-explanation-04",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.064.png"
+				"url": "slides/image.html?image=images/keynote/keynote.063.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -579,7 +570,7 @@
 		{
 			"name": "spacebrew-explanation-05",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.065.png"
+				"url": "slides/image.html?image=images/keynote/keynote.064.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -588,7 +579,7 @@
 		{
 			"name": "spacebrew-explanation-06",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.066.png"
+				"url": "slides/image.html?image=images/keynote/keynote.065.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -597,7 +588,7 @@
 		{
 			"name": "spacebrew-explanation-07",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.067.png"
+				"url": "slides/image.html?image=images/keynote/keynote.066.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -606,7 +597,7 @@
 		{
 			"name": "spacebrew-explanation-08",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.068.png"
+				"url": "slides/image.html?image=images/keynote/keynote.067.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -615,7 +606,7 @@
 		{
 			"name": "spacebrew-explanation-09",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.069.png"
+				"url": "slides/image.html?image=images/keynote/keynote.068.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -624,7 +615,7 @@
 		{
 			"name": "spacebrew-explanation-10",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.070.png"
+				"url": "slides/image.html?image=images/keynote/keynote.069.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -633,7 +624,7 @@
 		{
 			"name": "spacebrew-explanation-11",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.071.png"
+				"url": "slides/image.html?image=images/keynote/keynote.070.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -664,6 +655,12 @@
 			"name": "060-spacebrew-arduino-dance",
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
+			}
+		},
+		{
+			"name": "raffle",
+			"mobile": {
+				"url": "slides/text.html?text=Raffle!"
 			}
 		},
 		{

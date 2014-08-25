@@ -50,6 +50,10 @@ module.exports = (function(){
 		SELECT_WINNER : 'selectWinner',
 		BLINK : 'blink',
 
+		TWEET : 'tweet',
+		GET_ALL_TWEETS : 'getAllTweets',
+		GET_ALL_TWEETS_RESULT : 'getAllTweetsResult',
+
 		CHILD_APP_SAVE_CODE : 'childAppSaveCode',
 		OPEN_COMMAND_LINE: 'openCommandLine'
 	};

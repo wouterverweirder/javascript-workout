@@ -23,6 +23,10 @@ function PresentationClientHandler(role, socket) {
 
 	this._childAppSaveCodeHandler = this.childAppSaveCodeHandler.bind(this);
 	this.socket.on(Constants.CHILD_APP_SAVE_CODE, this._childAppSaveCodeHandler);
+
+	this._tweetHandler = this.tweetHandler.bind(this);
+	this.appModel.on(Constants.TWEET, this._tweetHandler);
+	this.socket.on(Constants.GET_ALL_TWEETS, this.getAllTweets.bind(this));
 }
 
 util.inherits(PresentationClientHandler, Clienthandler);
@@ -30,6 +34,7 @@ util.inherits(PresentationClientHandler, Clienthandler);
 PresentationClientHandler.prototype.dispose = function() {
 	PresentationClientHandler.super_.prototype.dispose.apply(this);
 	this.polarH7.removeListener(PolarH7.HEART_RATE, this._heartRateHandler);
+	this.appModel.removeListener(Constants.TWEET, this._tweetHandler);
 };
 
 PresentationClientHandler.prototype.setCurrentSlideIndexHandler = function(currentSlideIndex) {
@@ -47,6 +52,15 @@ PresentationClientHandler.prototype.heartRateHandler = function(heartRate) {
 
 PresentationClientHandler.prototype.childAppSaveCodeHandler = function(data) {
 	ChildApp.getInstance().saveCode(data.code, data.type);
+};
+
+PresentationClientHandler.prototype.tweetHandler = function(tweet) {
+	console.log('[PresentationClientHandler] emit tweet');
+	this.send(Constants.TWEET, tweet);
+};
+
+PresentationClientHandler.prototype.getAllTweets = function() {
+	this.send(Constants.GET_ALL_TWEETS_RESULT, this.appModel.tweets);
 };
 
 module.exports = PresentationClientHandler;
