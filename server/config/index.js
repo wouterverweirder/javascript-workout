@@ -19,7 +19,7 @@ Config.entryPoint = path.normalize(__dirname + '/../../index.js');
 Config.childNodeAppFilePath = path.normalize(__dirname + '/../../child-app/node/app.js');
 Config.childTesselAppFilePath = path.normalize(__dirname + '/../../child-app/tessel/app.js');
 Config.ip = ip;
-Config.port = 8080;
+Config.port = 8000;
 
 //set this to your twitter api credentials
 Config.twitterConsumerKey = '';
