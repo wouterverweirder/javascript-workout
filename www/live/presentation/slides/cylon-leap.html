@@ -17,7 +17,7 @@
 			<textarea id="code">var Cylon = require('cylon');
 var robot = Cylon.robot({
   connections: [
-    { name: 'arduino', adaptor: 'firmata', port: '/dev/tty.usbmodem14131' },
+    { name: 'arduino', adaptor: 'firmata', port: '/dev/tty.usbmodem14111' },
     { name: 'leapmotion', adaptor: 'leapmotion', port: '127.0.0.1:6437' }
   ],
   devices: [
@@ -38,7 +38,8 @@ var robot = Cylon.robot({
 });
 robot.start();</textarea>
 		</div>
-		<button class="btn btn-default">Run</button>
+		<button class="btn btn-default btn-save">Save</button>
+		<button class="btn btn-default btn-run">Run</button>
 	</div>
 
 	<script src="/socket.io/socket.io.js"></script>

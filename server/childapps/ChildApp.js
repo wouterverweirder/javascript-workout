@@ -2,7 +2,8 @@ var Config = require('../config'),
 	events = require('events'),
 	fs = require('fs'),
 	process = require('child_process'),
-	util = require('util');
+	util = require('util'),
+	path = require('path');
 
 function ChildApp() {
 	events.EventEmitter.call(this);
@@ -44,7 +45,11 @@ ChildApp.prototype.runCode = function(code, type) {
 		this.saveCode(code, type);
 
 		//run the code
-		this.runner = process.spawn("node", [Config.childAppFilePath]);
+		if(type === 'tessel') {
+			this.runner = process.spawn("tessel", ["run", Config.childTesselAppFilePath], {cwd: path.dirname(Config.childTesselAppFilePath)});
+		} else {
+			this.runner = process.spawn("node", [Config.childNodeAppFilePath], {cwd: path.dirname(Config.childNodeAppFilePath)});
+		}
 		this.runner.stdout.on('data', this.onRunnerData.bind(this));
 		this.runner.stderr.on('data', this.onRunnerData.bind(this));
 		this.runner.on('disconnect', this.onDisconnect.bind(this));

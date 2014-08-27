@@ -19,7 +19,7 @@ var robot = Cylon.robot({
   connection: { 
   	name: 'arduino', 
   	adaptor: 'firmata', 
-  	port: '/dev/tty.usbmodem14131' 
+  	port: '/dev/tty.usbmodem14111' 
   },
   device: { name: 'led', driver: 'led', pin: 13 },
   work: function(my) {
@@ -30,7 +30,8 @@ var robot = Cylon.robot({
 });
 robot.start();</textarea>
 		</div>
-		<button class="btn btn-default">Run</button>
+		<button class="btn btn-default btn-save">Save</button>
+		<button class="btn btn-default btn-run">Run</button>
 	</div>
 
 	<script src="/socket.io/socket.io.js"></script>

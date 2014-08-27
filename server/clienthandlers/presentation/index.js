@@ -24,6 +24,9 @@ function PresentationClientHandler(role, socket) {
 	this._childAppSaveCodeHandler = this.childAppSaveCodeHandler.bind(this);
 	this.socket.on(Constants.CHILD_APP_SAVE_CODE, this._childAppSaveCodeHandler);
 
+	this._childAppRunCodeHandler = this.childAppRunCodeHandler.bind(this);
+	this.socket.on(Constants.CHILD_APP_RUN_CODE, this._childAppRunCodeHandler);
+
 	this._tweetHandler = this.tweetHandler.bind(this);
 	this.appModel.on(Constants.TWEET, this._tweetHandler);
 	this.socket.on(Constants.GET_ALL_TWEETS, this.getAllTweets.bind(this));
@@ -52,6 +55,10 @@ PresentationClientHandler.prototype.heartRateHandler = function(heartRate) {
 
 PresentationClientHandler.prototype.childAppSaveCodeHandler = function(data) {
 	ChildApp.getInstance().saveCode(data.code, data.type);
+};
+
+PresentationClientHandler.prototype.childAppRunCodeHandler = function(data) {
+	ChildApp.getInstance().runCode(data.code, data.type);
 };
 
 PresentationClientHandler.prototype.tweetHandler = function(tweet) {

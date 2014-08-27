@@ -16,7 +16,7 @@
 		<div class="CodeMirrorWrapper">
 			<textarea id="code">var Cylon = require('cylon');
 var robot = Cylon.robot({
-  connection: { name: 'arduino', adaptor: 'firmata', port: '/dev/tty.usbmodem14131' },
+  connection: { name: 'arduino', adaptor: 'firmata', port: '/dev/tty.usbmodem14111' },
   devices: [
     { name: 'servo', driver: 'servo', pin: 11 },
     { name: 'sensor', driver: 'analogSensor', pin: 0}
@@ -31,7 +31,8 @@ var robot = Cylon.robot({
 });
 robot.start();</textarea>
 		</div>
-		<button class="btn btn-default">Run</button>
+		<button class="btn btn-default btn-save">Save</button>
+		<button class="btn btn-default btn-run">Run</button>
 	</div>
 
 	<script src="/socket.io/socket.io.js"></script>

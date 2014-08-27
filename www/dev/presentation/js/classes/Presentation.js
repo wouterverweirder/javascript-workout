@@ -34,6 +34,7 @@ module.exports = (function(){
 			$('body').on(Constants.GO_TO_PREVIOUS_SLIDE, $.proxy(this.goToPreviousSlide, this));
 			$('body').on(Constants.GO_TO_NEXT_SLIDE, $.proxy(this.goToNextSlide, this));
 			$('body').on(Constants.OPEN_COMMAND_LINE, $.proxy(this.openCommandLine, this));
+			$('body').on(Constants.OPEN_CAMERA, $.proxy(this.openCamera, this));
 		},
 
 		toggleElevatorMusic: function() {
@@ -194,6 +195,10 @@ module.exports = (function(){
 
 		openCommandLine: function() {
 			$('#consoleModal').modal('show');
+		},
+
+		openCamera: function() {
+			$('#webcamModal').modal('show');
 		},
 
 		tryToSend: function() {

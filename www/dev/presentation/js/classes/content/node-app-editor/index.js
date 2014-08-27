@@ -14,16 +14,24 @@ module.exports = (function(){
 				extraKeys: {"Ctrl-Space": "autocomplete"}
 		    });
 
-		    $('.btn').on('click', $.proxy(this.runClickHandler, this));
+		    $('.btn-save').on('click', $.proxy(this.saveClickHandler, this));
+		    $('.btn-run').on('click', $.proxy(this.runClickHandler, this));
+		},
+
+		saveClickHandler: function() {
+			//send the content to nodejs to save
+			var code = this.codeMirror.getValue();
+			this.socket.emit(Constants.CHILD_APP_SAVE_CODE, {code: code, type: 'node'});
+			//open the command line
+			parent.$('body').trigger(Constants.OPEN_COMMAND_LINE);
 		},
 
 		runClickHandler: function() {
 			//send the content to nodejs to save
 			var code = this.codeMirror.getValue();
-			this.socket.emit(Constants.CHILD_APP_SAVE_CODE, {code: code, type: 'node'});
-			//open the command line
-
-			parent.$('body').trigger(Constants.OPEN_COMMAND_LINE);
+			this.socket.emit(Constants.CHILD_APP_RUN_CODE, {code: code, type: 'node'});
+			//open the camera window
+			parent.$('body').trigger(Constants.OPEN_CAMERA);
 		}
 	});
 
