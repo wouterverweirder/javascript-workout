@@ -1,12 +1,12 @@
 var Cylon = require('cylon');
 Cylon.robot({
   connections: [
-    { name: 'arduino', adaptor: 'firmata', port: '/dev/tty.usbmodem141211' },
+    { name: 'arduino', adaptor: 'firmata', port: '/dev/tty.usbmodem14111' },
     { name: 'opencv', adaptor: 'opencv' }
   ],
   devices: [
     { name: 'servo', driver: 'servo', pin: 11, connection: "arduino" },
-    { name: 'camera', driver: 'camera', camera: 1, connection: "opencv", haarcascade: __dirname + "/haarcascade_frontalface_alt.xml" }
+    { name: 'camera', driver: 'camera', camera: 0, connection: "opencv", haarcascade: __dirname + "/haarcascade_frontalface_alt.xml" }
   ],
   work: function(my) {
     var angle = 0;

@@ -14,6 +14,8 @@ module.exports = (function(){
 		slides: [],
 		ip: false,
 		port: false,
+		elevatorMusicPlaying: false,
+		elevatorMusic: false,
 		init: function() {
 			console.log("[Presentation] init");
 
@@ -22,6 +24,9 @@ module.exports = (function(){
 				w.postMessage('consoleModalOpen', 'http://localhost:3000');
 			});
 
+			this.elevatorMusic = $('#elevatormusic')[0];
+			$('.elevator-button').on('click', $.proxy(this.toggleElevatorMusic, this));
+
 			this.createIframes();
 
 			$("#login form").on('submit', $.proxy(this.loginSubmitHandler, this));
@@ -29,6 +34,15 @@ module.exports = (function(){
 			$('body').on(Constants.GO_TO_PREVIOUS_SLIDE, $.proxy(this.goToPreviousSlide, this));
 			$('body').on(Constants.GO_TO_NEXT_SLIDE, $.proxy(this.goToNextSlide, this));
 			$('body').on(Constants.OPEN_COMMAND_LINE, $.proxy(this.openCommandLine, this));
+		},
+
+		toggleElevatorMusic: function() {
+			this.elevatorMusicPlaying = !this.elevatorMusicPlaying;
+			if(this.elevatorMusicPlaying) {
+				this.elevatorMusic.play();
+			} else {
+				this.elevatorMusic.pause();
+			}
 		},
 
 		createIframes: function() {
