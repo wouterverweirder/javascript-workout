@@ -35,6 +35,9 @@ AppModel.prototype.init = function() {
 	});
 	this.tweets = [];
 	this.stream = this.twit.stream('statuses/filter', { track: '@wouter' });
+	this.stream.on('error', function(e){
+		console.log('[Twit] Error', e.code);
+	});
 	this.stream.on('tweet', this.onTweet.bind(this));
 };
 
