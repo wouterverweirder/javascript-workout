@@ -7,10 +7,7 @@
 			}
 		},
 		{
-			"name": "010-intro-01",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.001.png"
-			},
+			"name": "title",
 			"mobile": {
 				"url": "slides/text.html?text=Hello"
 			}

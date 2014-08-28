@@ -70,6 +70,8 @@ gulp.task('presentation-js', function(){
 		.on('prebundle', function(bundle) {
 			bundle.require(__dirname + '/shared/Constants.js', { expose: 'Constants'});
 			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
+			//other
+			bundle.require(__dirname + '/www/dev/presentation/js/classes/SmokeCanvas.js', { expose: 'classes/SmokeCanvas' });
 			//content
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/intro-poster/index.js', { expose: 'classes/content/intro-poster'});
 			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/shake-your-phones/index.js', { expose: 'classes/content/shake-your-phones'});
