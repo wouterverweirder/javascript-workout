@@ -3,12 +3,13 @@ module.exports = (function(){
 	var Constants = require('Constants');
 
 	var ReactPhones = ContentBase.extend({
-		gameDuration: 10, //game lasts 30 seconds
+		gameDuration: 11, //game lasts 11 seconds
 		init: function(name) {
 			this._super(name);
 			console.log("[ReactPhones] init");
 
 			this.clientsMap = {};
+			this.music = $('#music')[0];
 
 			this._setSubstateHandler = $.proxy(this.setSubstateHandler, this);
 
@@ -47,17 +48,6 @@ module.exports = (function(){
 
 		clientAddedHandler: function(clientInfo) {
 			console.log('[ReactPhones] client added', clientInfo);
-			this.clientsMap[clientInfo.id] = clientInfo;
-			this.clientsMap[clientInfo.id].size = 10;
-			this.clientsMap[clientInfo.id].$div = $('<div class="circle">').css({
-				position: 'absolute',
-				left: Math.random() * 100 + '%',
-				top: Math.random() * 100 + '%',
-				backgroundColor: 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ', 0.5)',
-				width: '10px',
-				height: '10px'
-			});
-			$('.background .substate-game').append(this.clientsMap[clientInfo.id].$div);
 			this.numClientsChanged();
 		},
 
@@ -75,21 +65,6 @@ module.exports = (function(){
 
 		clientListHandler: function(list) {
 			console.log('[ReactPhones] client list', list);
-			this.clientsMap = {};
-			$('.background .substate-game').html('');
-			for (var i = list.length - 1; i >= 0; i--) {
-				this.clientsMap[list[i].id] = list[i];
-				this.clientsMap[list[i].id].size = 10;
-				this.clientsMap[list[i].id].$div = $('<div class="circle">').css({
-					position: 'absolute',
-					left: Math.random() * 100 + '%',
-					top: Math.random() * 100 + '%',
-					backgroundColor: 'rgba(' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ', 0.5)',
-					width: '10px',
-					height: '10px'
-				});
-				$('.background .substate-game').append(this.clientsMap[list[i].id].$div);
-			}
 			this.numClientsChanged();
 		},
 
@@ -107,6 +82,7 @@ module.exports = (function(){
 				backgroundImage: 'none'
 			});
 			if(this.substate === Constants.REACT_PHONES_GAME) {
+				this.music.play();
 				$('.substate-game .countdown').html(this.gameDuration);
 				$('.substate-game').addClass('active');
 				this.countDownTimeout = setTimeout($.proxy(this.countDownHandler, this, this.gameDuration - 1), 1000);

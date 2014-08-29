@@ -23,6 +23,12 @@
 			<button class="btn btn-primary">Who's The Fastest?</button>
 		</div>
 	</div>
+	<div class="background">
+		<div class="substate substate-game flashy-background fill"></div>
+	</div>
+	<audio id="music">
+		<source src="../assets/thunderdome.mp3" type="audio/mpeg" />
+	</audio>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="/presentation/js/vendors.min.js"></script>
 	<script src="/presentation/js/script.min.js"></script>
@@ -34,9 +40,5 @@
 
 	})();
 	</script>
-	<div class="background">
-		<div class="substate substate-game substate-finished fill">
-		</div>
-	</div>
 </body>
 </html>
