@@ -8,7 +8,7 @@ module.exports = (function(){
 		winner: false,
 		flagDropped: false,
 		sparkIdMap: {},
-		minHeartRate: 60,
+		minHeartRate: 130,
 		maxHeartRate: 200,
 		init: function(name) {
 			this._super(name);

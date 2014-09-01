@@ -7,6 +7,7 @@ module.exports = (function(){
 	var LowestHeartrateGame = ContentBase.extend({
 		sparkIdMap: {},
 		beamPosition: 0.5,
+		maxHeartRate: 70,
 		winner: false,
 		init: function(name) {
 			this._super(name);
@@ -213,7 +214,7 @@ module.exports = (function(){
 				this.gohan.update();
 
 				//update beamPosition according to heart rates
-				if(this.goku.heartRate > 0 && this.gohan.heartRate > 0) {
+				if(this.goku.heartRate > 0 && this.gohan.heartRate > 0 && this.goku.heartRate < this.maxHeartRate && this.gohan.heartRate < this.maxHeartRate) {
 					var heartRateDiff = this.gohan.heartRate - this.goku.heartRate;
 					var newBeamPosition = this.beamPosition + (heartRateDiff * 0.0001);
 					this.setBeamPosition(newBeamPosition);

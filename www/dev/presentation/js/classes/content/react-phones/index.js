@@ -48,6 +48,7 @@ module.exports = (function(){
 
 		clientAddedHandler: function(clientInfo) {
 			console.log('[ReactPhones] client added', clientInfo);
+			this.clientsMap[clientInfo.id] = clientInfo;
 			this.numClientsChanged();
 		},
 
@@ -65,6 +66,10 @@ module.exports = (function(){
 
 		clientListHandler: function(list) {
 			console.log('[ReactPhones] client list', list);
+			this.clientsMap = {};
+			for (var i = list.length - 1; i >= 0; i--) {
+				this.clientsMap[list[i].id] = list[i];
+			}
 			this.numClientsChanged();
 		},
 
@@ -73,6 +78,7 @@ module.exports = (function(){
 			$.each(this.clientsMap, function(key, value){
 				numClients++;
 			});
+			console.log('[ReactPhones] num clients:', numClients);
 			$('#connections span').text(numClients);
 		},
 

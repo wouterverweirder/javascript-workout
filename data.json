@@ -37,25 +37,25 @@
 			}
 		},
 		{
-			"name": "ble-explanation-01",
+			"name": "010-intro-05",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.004.png"
 			},
 			"mobile": {
-				"url": "slides/text.html?text=BLE"
+				"url": "slides/text.html?text=Hello"
 			}
 		},
 		{
-			"name": "ble-explanation-02",
+			"name": "010-intro-06",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.005.png"
 			},
 			"mobile": {
-				"url": "slides/text.html?text=BLE"
+				"url": "slides/text.html?text=Hello"
 			}
 		},
 		{
-			"name": "ble-explanation-03",
+			"name": "ble-explanation-01",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.006.png"
 			},
@@ -64,7 +64,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-04",
+			"name": "ble-explanation-02",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.007.png"
 			},
@@ -73,7 +73,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-05",
+			"name": "ble-explanation-03",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.008.png"
 			},
@@ -82,7 +82,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-06",
+			"name": "ble-explanation-04",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.009.png"
 			},
@@ -91,7 +91,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-07",
+			"name": "ble-explanation-05",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.010.png"
 			},
@@ -100,7 +100,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-08",
+			"name": "ble-explanation-06",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.011.png"
 			},
@@ -109,7 +109,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-09",
+			"name": "ble-explanation-07",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.012.png"
 			},
@@ -118,7 +118,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-10",
+			"name": "ble-explanation-08",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.013.png"
 			},
@@ -127,7 +127,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-11",
+			"name": "ble-explanation-09",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.014.png"
 			},
@@ -136,7 +136,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-12",
+			"name": "ble-explanation-10",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.015.png"
 			},
@@ -145,7 +145,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-13",
+			"name": "ble-explanation-11",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.016.png"
 			},
@@ -154,7 +154,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-14",
+			"name": "ble-explanation-12",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.017.png"
 			},
@@ -163,7 +163,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-15",
+			"name": "ble-explanation-13",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.018.png"
 			},
@@ -172,7 +172,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-16",
+			"name": "ble-explanation-14",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.019.png"
 			},
@@ -181,7 +181,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-17",
+			"name": "ble-explanation-15",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.020.png"
 			},
@@ -190,7 +190,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-18",
+			"name": "ble-explanation-16",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.021.png"
 			},
@@ -199,7 +199,7 @@
 			}
 		},
 		{
-			"name": "ble-explanation-19",
+			"name": "ble-explanation-17",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.022.png"
 			},
@@ -208,9 +208,27 @@
 			}
 		},
 		{
-			"name": "020-noble-000",
+			"name": "ble-explanation-18",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.023.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "ble-explanation-19",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.024.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=BLE"
+			}
+		},
+		{
+			"name": "020-noble-000",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.025.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=BLE"
@@ -267,7 +285,7 @@
 		{
 			"name": "pulse-explanation-01",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.032.png"
+				"url": "slides/image.html?image=images/keynote/keynote.034.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -276,7 +294,7 @@
 		{
 			"name": "pulse-explanation-02",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.033.png"
+				"url": "slides/image.html?image=images/keynote/keynote.035.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -285,7 +303,7 @@
 		{
 			"name": "pulse-explanation-03",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.034.png"
+				"url": "slides/image.html?image=images/keynote/keynote.036.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -294,7 +312,7 @@
 		{
 			"name": "pulse-explanation-04",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.035.png"
+				"url": "slides/image.html?image=images/keynote/keynote.037.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -303,7 +321,7 @@
 		{
 			"name": "pulse-explanation-05",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.036.png"
+				"url": "slides/image.html?image=images/keynote/keynote.038.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -312,7 +330,7 @@
 		{
 			"name": "pulse-explanation-06",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.037.png"
+				"url": "slides/image.html?image=images/keynote/keynote.039.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -321,7 +339,7 @@
 		{
 			"name": "pulse-explanation-07",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.038.png"
+				"url": "slides/image.html?image=images/keynote/keynote.040.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -330,7 +348,7 @@
 		{
 			"name": "pulse-explanation-08",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.039.png"
+				"url": "slides/image.html?image=images/keynote/keynote.041.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Pulse+Sensor"
@@ -366,7 +384,7 @@
 		{
 			"name": "firmata-explanation-01",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.043.png"
+				"url": "slides/image.html?image=images/keynote/keynote.045.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Firmata"
@@ -375,7 +393,7 @@
 		{
 			"name": "firmata-explanation-02",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.044.png"
+				"url": "slides/image.html?image=images/keynote/keynote.046.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Firmata"
@@ -384,7 +402,7 @@
 		{
 			"name": "firmata-explanation-03",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.045.png"
+				"url": "slides/image.html?image=images/keynote/keynote.047.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Firmata"
@@ -393,7 +411,7 @@
 		{
 			"name": "firmata-explanation-04",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.046.png"
+				"url": "slides/image.html?image=images/keynote/keynote.048.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Firmata"
@@ -402,7 +420,7 @@
 		{
 			"name": "firmata-explanation-05",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.047.png"
+				"url": "slides/image.html?image=images/keynote/keynote.049.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Firmata"
@@ -429,7 +447,7 @@
 		{
 			"name": "cylon-explanation-01",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.049.png"
+				"url": "slides/image.html?image=images/keynote/keynote.051.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=CylonJS"
@@ -438,7 +456,7 @@
 		{
 			"name": "cylon-explanation-02",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.050.png"
+				"url": "slides/image.html?image=images/keynote/keynote.052.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=CylonJS"
@@ -477,7 +495,7 @@
 		{
 			"name": "050-tessel-explanation-01",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.052.png"
+				"url": "slides/image.html?image=images/keynote/keynote.054.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Tessel"
@@ -498,7 +516,7 @@
 		{
 			"name": "050-tessel-explanation-03",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.055.png"
+				"url": "slides/image.html?image=images/keynote/keynote.057.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Tessel"
@@ -531,7 +549,7 @@
 		{
 			"name": "spacebrew-explanation-01",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.060.png"
+				"url": "slides/image.html?image=images/keynote/keynote.062.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -540,7 +558,7 @@
 		{
 			"name": "spacebrew-explanation-02",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.061.png"
+				"url": "slides/image.html?image=images/keynote/keynote.063.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -549,7 +567,7 @@
 		{
 			"name": "spacebrew-explanation-03",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.062.png"
+				"url": "slides/image.html?image=images/keynote/keynote.064.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -558,7 +576,7 @@
 		{
 			"name": "spacebrew-explanation-04",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.063.png"
+				"url": "slides/image.html?image=images/keynote/keynote.065.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -567,7 +585,7 @@
 		{
 			"name": "spacebrew-explanation-05",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.064.png"
+				"url": "slides/image.html?image=images/keynote/keynote.066.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -576,7 +594,7 @@
 		{
 			"name": "spacebrew-explanation-06",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.065.png"
+				"url": "slides/image.html?image=images/keynote/keynote.067.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -585,7 +603,7 @@
 		{
 			"name": "spacebrew-explanation-07",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.066.png"
+				"url": "slides/image.html?image=images/keynote/keynote.068.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -594,7 +612,7 @@
 		{
 			"name": "spacebrew-explanation-08",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.067.png"
+				"url": "slides/image.html?image=images/keynote/keynote.069.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -603,7 +621,7 @@
 		{
 			"name": "spacebrew-explanation-09",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.068.png"
+				"url": "slides/image.html?image=images/keynote/keynote.070.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -612,7 +630,7 @@
 		{
 			"name": "spacebrew-explanation-10",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.069.png"
+				"url": "slides/image.html?image=images/keynote/keynote.071.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -621,7 +639,7 @@
 		{
 			"name": "spacebrew-explanation-11",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.070.png"
+				"url": "slides/image.html?image=images/keynote/keynote.072.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
@@ -663,7 +681,7 @@
 		{
 			"name": "thank-you",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.074.png"
+				"url": "slides/image.html?image=images/keynote/keynote.076.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Thank+You"
