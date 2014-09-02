@@ -1,6 +1,6 @@
 {
     "name": "reasons-2014-slides",
-    "description": "server app of my reasons 2 be creative 2014 talk",
+    "description": "reasons 2 be creative 2014 slide engine",
     "version": "0.0.1",
     "private": true,
     "scripts": {
