@@ -1,12 +1,25 @@
 var tessel = require('tessel');
-var accelLib = require('accel-mma84');
-var accel = accelLib.use(tessel.port['A']);
+var gpio = tessel.port['GPIO'];
+var isOn = false;
+var ambientlib = require('ambient-attx4');
 
-accel.on('ready', function () {
-  accel.on('data', function (xyz) {
-    console.log('x:', xyz[0].toFixed(2),
-      'y:', xyz[1].toFixed(2),
-      'z:', xyz[2].toFixed(2));
+var ambient = ambientlib.use(tessel.port['A']);
+
+ambient.on('ready', function () {
+
+  ambient.setSoundTrigger(0.1);
+
+  ambient.on('sound-trigger', function(data) {
+    isOn = !isOn;
+    gpio.pin['G3'].write(isOn);
+
+    ambient.clearSoundTrigger();
+    setTimeout(function () { 
+        ambient.setSoundTrigger(0.1);
+    },1500);
   });
+});
 
+ambient.on('error', function (err) {
+  console.log(err)
 });

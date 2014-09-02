@@ -64,6 +64,9 @@ module.exports = (function(){
 				that.slides = [];
 				that.ip = result.ip;
 				that.port = parseInt(result.port);
+
+				$('.ip').text('http://' + result.ip);
+
 				var $slideMenu = $('#slideMenu');
 				var numSlides = result.slides.length;
 				for(var i = 0; i < numSlides; i++) {

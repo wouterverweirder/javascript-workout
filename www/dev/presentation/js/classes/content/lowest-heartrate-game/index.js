@@ -7,7 +7,7 @@ module.exports = (function(){
 	var LowestHeartrateGame = ContentBase.extend({
 		sparkIdMap: {},
 		beamPosition: 0.5,
-		maxHeartRate: 70,
+		maxHeartRate: 90,
 		winner: false,
 		init: function(name) {
 			this._super(name);
