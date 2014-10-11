@@ -1,5 +1,3 @@
-Presentation given at reasons to be creative 2014
-
 Run using nodejs: `node index.js`
 
 And point your browser to http://localhost:8000
