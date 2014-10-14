@@ -7,45 +7,6 @@
 			}
 		},
 		{
-			"name": "title",
-			"mobile": {
-				"url": "slides/text.html?text=Hello"
-			}
-		},
-		{
-			"name": "010-belgians",
-			"mobile": {
-				"url": "slides/text.html?text=Hello"
-			}
-		},
-		{
-			"name": "010-intro-03",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.002.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Hello"
-			}
-		},
-		{
-			"name": "010-intro-04",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.003.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Hello"
-			}
-		},
-		{
-			"name": "010-intro-05",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.004.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Hello"
-			}
-		},
-		{
 			"name": "010-intro-06",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.005.png"
@@ -592,15 +553,6 @@
 			}
 		},
 		{
-			"name": "spacebrew-explanation-06",
-			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.067.png"
-			},
-			"mobile": {
-				"url": "slides/text.html?text=Spacebrew"
-			}
-		},
-		{
 			"name": "spacebrew-explanation-07",
 			"presentation": {
 				"url": "slides/image.html?image=images/keynote/keynote.068.png"
@@ -670,12 +622,6 @@
 			"name": "060-spacebrew-arduino-dance",
 			"mobile": {
 				"url": "slides/text.html?text=Spacebrew"
-			}
-		},
-		{
-			"name": "raffle",
-			"mobile": {
-				"url": "slides/text.html?text=Raffle!"
 			}
 		},
 		{

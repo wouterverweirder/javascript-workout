@@ -3,7 +3,8 @@ var events = require('events'),
 	fs = require('fs'),
 	Twit = require('twit'),
 	Config = require('../config')
-	Constants = require('../../shared/Constants');
+	Constants = require('../../shared/Constants')
+	data = require('../../data.json');
 
 var instance = false;
 
@@ -54,7 +55,6 @@ AppModel.prototype.onTweet = function(origTweet) {
 };
 
 AppModel.prototype.loadSlidesData = function() {
-	var data = JSON.parse(fs.readFileSync(__dirname + '/../../data.json', {encoding: "utf8"}));
 	this.slides = data.slides;
 };
 
