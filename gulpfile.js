@@ -6,6 +6,7 @@ var gulp = require('gulp'),
 	uncss = require('gulp-uncss'),
 	concat = require('gulp-concat'),
 	jshint = require('gulp-jshint'),
+	nodemon = require('gulp-nodemon'),
 	plumber = require('gulp-plumber'),
 	uglify = require('gulp-uglify');
 
@@ -123,7 +124,15 @@ gulp.task('mobile-vendors-js', function(){
 		.pipe(gulp.dest('www/live/mobile/js/'));
 });
 
-gulp.task('watch', function(){
+gulp.task('watch', [
+		'mobile-styles',
+		'presentation-styles',
+		'mobile-js',
+		'mobile-vendors-js',
+		'presentation-styles',
+		'presentation-js',
+		'presentation-vendors-js'
+	], function(){
 	gulp.watch('www/dev/shared/css/**/*.less', ['mobile-styles', 'presentation-styles']);
 	gulp.watch('www/dev/mobile/css/**/*.less', ['mobile-styles']);
 	gulp.watch(['www/dev/mobile/js/**/*.js', 'shared/**/*.js'], ['mobile-js']);
@@ -132,3 +141,9 @@ gulp.task('watch', function(){
 	gulp.watch(['www/dev/presentation/js/**/*.js', 'shared/**/*.js'], ['presentation-js']);
 	gulp.watch('www/dev/presentation/js/vendors/**/*.js', ['presentation-vendors-js']);
 });
+
+gulp.task('serve', function(){
+	nodemon({ script: 'index.js', ext: 'js', ignore: ['child-app/', 'www/'] });
+});
+
+gulp.task('default', ['watch', 'serve']);
