@@ -16,17 +16,21 @@
 		<div class="CodeMirrorWrapper">
 			<textarea id="code">var Cylon = require('cylon');
 var robot = Cylon.robot({
-  connection: { name: 'arduino', adaptor: 'firmata', port: '/dev/tty.usbmodem14111' },
-  devices: [
-    { name: 'servo', driver: 'servo', pin: 11 },
-    { name: 'sensor', driver: 'analogSensor', pin: 0}
-  ],
-  work: function(my) {
-  	var angle = 0;
-    my.sensor.on('analogRead', function(val){
-      angle = (val).fromScale(0, 1023).toScale(0, 180);
-      my.servo.angle(angle);
-    });
+	connections: {
+		arduino: {
+			adaptor: 'firmata', port: '/dev/tty.usbmodem14111',
+			devices: {
+				servo:    { driver: 'servo', pin: 11 },
+				sensor:		{ driver: 'analogSensor', pin: 0 }
+			}
+		}
+	},
+	work: function(my) {
+		var angle = 0;
+		my.sensor.on('analogRead', function(val){
+			angle = (val).fromScale(0, 1023).toScale(0, 180);
+			my.servo.angle(angle);
+		});
   }
 });
 robot.start();</textarea>

@@ -1,23 +1,17 @@
 var tessel = require('tessel');
-var gpio = tessel.port['GPIO'];
-var isOn = false;
 var ambientlib = require('ambient-attx4');
 
-var ambient = ambientlib.use(tessel.port['A']);
+var ambient = ambientlib.use(tessel.port['B']);
 
 ambient.on('ready', function () {
-
-  ambient.setSoundTrigger(0.1);
-
-  ambient.on('sound-trigger', function(data) {
-    isOn = !isOn;
-    gpio.pin['G3'].write(isOn);
-
-    ambient.clearSoundTrigger();
-    setTimeout(function () { 
-        ambient.setSoundTrigger(0.1);
-    },1500);
-  });
+  setInterval( function () {
+    ambient.getLightLevel( function(err, ldata) {
+      if (err) throw err;
+      ambient.getSoundLevel( function(err, sdata) {
+        if (err) throw err;
+        console.log("Light level:", ldata.toFixed(8), " ", "Sound Level:", sdata.toFixed(8));
+    });
+  })}, 500);
 });
 
 ambient.on('error', function (err) {

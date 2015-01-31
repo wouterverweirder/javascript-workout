@@ -19,7 +19,7 @@ var gpio = tessel.port['GPIO'];
 var isOn = false;
 var ambientlib = require('ambient-attx4');
 
-var ambient = ambientlib.use(tessel.port['A']);
+var ambient = ambientlib.use(tessel.port['B']);
 
 ambient.on('ready', function () {
 
