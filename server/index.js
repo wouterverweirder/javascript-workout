@@ -3,6 +3,7 @@ var config = require('./config'),
 	util = require('util'),
 	express = require('express'),
 	bodyParser = require('body-parser'),
+	FtpClient = require('ftp'),
 	app = express(),
 	server = require('http').createServer(app),
 	io = require('socket.io').listen(server),
@@ -25,6 +26,24 @@ function Server() {
 	appModel.on(AppModel.CURRENT_SLIDE_INDEX_CHANGED, this._currentSlideIndexChangedHandler);
 	server.listen(config.port);
 	console.log("[Server] Listening on", config.ip + ':' + config.port);
+
+	//update ip via ftp
+	var ftpClient = new FtpClient();
+	ftpClient.on('ready', function(){
+		console.log('ftp ready');
+		var contents = new Buffer("<?php\nheader('Cache-Control: no-cache');\nheader('Pragma: no-cache');\nheader('Location: http://" + config.ip + ':' + config.port + "');");
+		ftpClient.put(contents, config.ftpPath + 'index.php', function(err){
+			if(err) {
+				console.log(err);
+			}
+			ftpClient.end();
+		});
+	});
+	ftpClient.connect({
+		host: config.ftpHost,
+		user: config.ftpUser,
+		password: config.ftpPass
+	});
 
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({

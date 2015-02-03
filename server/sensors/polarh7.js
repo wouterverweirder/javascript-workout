@@ -72,9 +72,10 @@ PolarH7.prototype.onConnect = function(error) {
 };
 
 PolarH7.prototype.onPeripheralDiscoverServices = function(error, services) {
+	console.log("[PolarH7] onPeripheralDiscoverServices");
 	for (var i = services.length - 1; i >= 0; i--) {
 		if(services[i].name) {
-			//console.log(services[i].uuid, services[i].name);
+			console.log(services[i].uuid, services[i].name);
 			services[i].discoverCharacteristics([], this.onPeripheralServiceDiscoverCharacteristics.bind(this));
 		}
 	}	

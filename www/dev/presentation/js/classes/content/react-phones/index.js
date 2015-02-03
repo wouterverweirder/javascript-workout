@@ -28,7 +28,8 @@ module.exports = (function(){
 
 		setServerInfo: function(ip, port) {
 			this._super(ip, port);
-			$('#ip').text('http://' + ip);
+			//$('#ip').text('http://' + ip);
+			$('#ip').text('http://ip.aboutme.be');
 		},
 
 		setSubstateHandler: function(substate) {

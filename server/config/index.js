@@ -32,4 +32,16 @@ try {
 } catch(e) {
 }
 
+Config.url = 'ip.aboutme.be';
+//set this to ftp server credentials for dynamic ftp redirect
+Config.ftpHost = '';
+Config.ftpUser = '';
+Config.ftpPass = '';
+Config.ftpPath = 'ip.aboutme.be/';
+
+try {
+	require('./ftp.js')(Config);
+} catch(e) {
+}
+
 module.exports = Config;
