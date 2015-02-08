@@ -23,7 +23,12 @@ var robot = Cylon.robot({
 				servo:    { driver: 'servo', pin: 11 },
 			}
 		},
-		leap: { adaptor: 'leapmotion' }
+		leap: {
+			adaptor: 'leapmotion',
+			devices: {
+				leap: 		{ driver: 'leapmotion' }
+			}
+		}
 	},
 	work: function(my) {
 		var angle = 0;
