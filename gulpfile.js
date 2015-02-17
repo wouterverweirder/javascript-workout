@@ -1,149 +1,174 @@
 var gulp = require('gulp'),
-	browserify = require('gulp-browserify'),
-	browserifyHandlebars = require('browserify-handlebars'),
-	path = require('path'),
-	less = require('gulp-less'),
-	uncss = require('gulp-uncss'),
-	concat = require('gulp-concat'),
-	jshint = require('gulp-jshint'),
-	nodemon = require('gulp-nodemon'),
-	plumber = require('gulp-plumber'),
-	uglify = require('gulp-uglify');
+		gutil = require('gulp-util'),
+		browserify = require('browserify'),
+		buffer = require('gulp-buffer'),
+		concat = require('gulp-concat'),
+		jshint = require('gulp-jshint'),
+		less = require('gulp-less'),
+		minifyCSS = require('gulp-minify-css'),
+		source = require('vinyl-source-stream'),
+		sourcemaps = require('gulp-sourcemaps'),
+		stylish = require('jshint-stylish'),
+		uglify = require('gulp-uglify');
 
-gulp.task('mobile-styles', function(){
-	return gulp.src('www/dev/mobile/css/style.less')
-		.pipe(less())
-		.pipe(gulp.dest('www/live/mobile/css'));
+var production = false;
+
+gulp.task('default', ['watch']);
+
+gulp.task('presentation-lint', function(){
+	return gulp.src('./presentation/js/src/**/*.js')
+		.pipe(jshint())
+		.pipe(jshint.reporter(stylish));
 });
 
-gulp.task('mobile-js', function(){
-	gulp.src(['www/dev/mobile/js/**/*.js', '!www/dev/mobile/js/vendors/**/*.js'])
-		.pipe(plumber())
-		.pipe(jshint('www/dev/mobile/js/.jshintrc'))
-		.pipe(jshint.reporter('default'));
-	return gulp.src(['www/dev/mobile/js/script.js'])
-		.pipe(plumber())
-		.pipe(browserify({
-			transform: [browserifyHandlebars]
-		}))
-		.on('prebundle', function(bundle) {
-			bundle.require(__dirname + '/shared/Constants.js', { expose: 'Constants'});
-			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
-			//content
-			bundle.require(__dirname + '/www/dev/mobile/js/classes/content/shake-your-phones/index.js', { expose: 'classes/content/shake-your-phones'});
-			bundle.require(__dirname + '/www/dev/mobile/js/classes/content/react-phones/index.js', { expose: 'classes/content/react-phones'});
+gulp.task('presentation-js', ['presentation-lint'], function(){
+
+	var bundler = browserify({
+		entries: ['./presentation/js/src/script.js'],
+		debug: !production
+	});
+
+	bundler.require(__dirname + '/shared/js/Constants.js', { expose: 'Constants'});
+	bundler.require(__dirname + '/shared/js/classes/slides/ContentBase.js', { expose: 'shared/ContentBase'});
+	bundler.require(__dirname + '/shared/js/classes/IFrameBridge.js', { expose: 'shared/IFrameBridge'});
+	bundler.require(__dirname + '/shared/js/classes/Presentation.js', { expose: 'shared/Presentation'});
+	bundler.require(__dirname + '/shared/js/classes/MobileServerBridge.js', { expose: 'shared/MobileServerBridge'});
+
+	bundler.require(__dirname + '/presentation/js/src/classes/slides/title/index.js', { expose: 'slides/TitleSlide'});
+	bundler.require(__dirname + '/presentation/js/src/classes/slides/intro-poster/index.js', { expose: 'slides/IntroPoster'});
+	bundler.require(__dirname + '/presentation/js/src/classes/slides/video-slide/index.js', { expose: 'slides/VideoSlide'});
+	bundler.require(__dirname + '/presentation/js/src/classes/slides/shake-your-phones/index.js', { expose: 'slides/ShakeYourPhones'});
+	bundler.require(__dirname + '/presentation/js/src/classes/slides/highest-heartrate-game/index.js', { expose: 'slides/HighestHeartrateGame'});
+	bundler.require(__dirname + '/presentation/js/src/classes/slides/lowest-heartrate-game/index.js', { expose: 'slides/LowestHeartrateGame'});
+	bundler.require(__dirname + '/presentation/js/src/classes/slides/childapp-editor/index.js', { expose: 'slides/ChildAppEditor'});
+	bundler.require(__dirname + '/presentation/js/src/classes/slides/react-phones/index.js', { expose: 'slides/ReactPhones'});
+	bundler.require(__dirname + '/presentation/js/src/classes/slides/spacebrew-dance-game/index.js', { expose: 'slides/SpacebrewDanceGame'});
+
+	return bundler.bundle()
+		.on('error', function(err) {
+			gutil.log(err.message);
+			gutil.beep();
+			this.emit('end');
 		})
-		.pipe(concat('script.min.js'))
-		//.pipe(uglify())
-		.pipe(gulp.dest('www/live/mobile/js/'));
+		.pipe(source('script.min.js'))
+		.pipe(buffer())
+		.pipe(production ? gutil.noop() : sourcemaps.init({loadMaps: true}))
+    .pipe(production ? uglify() : gutil.noop())
+    .pipe(production ? gutil.noop() : sourcemaps.write('./', {}))
+    .pipe(gulp.dest('./presentation/js'));
 });
 
 gulp.task('presentation-styles', function(){
-	return gulp.src('www/dev/presentation/css/style.less')
+	return gulp.src('./presentation/css/src/style.less')
+		.pipe(sourcemaps.init())
 		.pipe(less())
-		/*.pipe(uncss({
-			html: [
-				'www/live/presentation/index.html',
-				'www/live/presentation/slides/highest-heartrate-game.html',
-				'www/live/presentation/slides/intro-poster.html',
-				'www/live/presentation/slides/shake-your-phones.html',
-				'www/live/presentation/slides/thank-you.html'
-			],
-			ignore: [
-				'iframe',
-				'.substate.active'
-			]
-		}))*/
-		.pipe(gulp.dest('www/live/presentation/css'));
-
-});
-
-gulp.task('presentation-js', function(){
-	gulp.src(['www/dev/presentation/js/**/*.js', '!www/dev/presentation/js/vendors/**/*.js'])
-		.pipe(plumber())
-		.pipe(jshint('www/dev/presentation/js/.jshintrc'))
-		.pipe(jshint.reporter('default'));
-	return gulp.src(['www/dev/presentation/js/script.js'])
-		.pipe(plumber())
-		.pipe(browserify({
-			transform: [browserifyHandlebars]
-		}))
-		.on('prebundle', function(bundle) {
-			bundle.require(__dirname + '/shared/Constants.js', { expose: 'Constants'});
-			bundle.require(__dirname + '/www/dev/shared/js/classes/core/Class.js', { expose: 'core/Class' });
-			//other
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/SmokeCanvas.js', { expose: 'classes/SmokeCanvas' });
-			//content
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/intro-poster/index.js', { expose: 'classes/content/intro-poster'});
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/shake-your-phones/index.js', { expose: 'classes/content/shake-your-phones'});
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/react-phones/index.js', { expose: 'classes/content/react-phones'});
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/highest-heartrate-game/index.js', { expose: 'classes/content/highest-heartrate-game'});
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/lowest-heartrate-game/index.js', { expose: 'classes/content/lowest-heartrate-game'});
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/dance-pad-game/index.js', { expose: 'classes/content/dance-pad-game'});
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/raffle/index.js', { expose: 'classes/content/raffle'});
-
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/node-app-editor/index.js', { expose: 'classes/content/node-app-editor'});
-			bundle.require(__dirname + '/www/dev/presentation/js/classes/content/tessel-app-editor/index.js', { expose: 'classes/content/tessel-app-editor'});
+		.pipe(sourcemaps.write('./'))
+		.on('error', function(err) {
+			gutil.log(err.message);
+			gutil.beep();
+			this.emit('end');
 		})
-		.pipe(concat('script.min.js'))
-		//.pipe(uglify())
-		.pipe(gulp.dest('www/live/presentation/js/'));
+		.pipe(production ? minifyCSS() : gutil.noop())
+		.pipe(gulp.dest('./presentation/css'));
 });
 
 gulp.task('presentation-vendors-js', function(){
 	return gulp.src([
-			'www/dev/presentation/js/vendors/jquery.min.js',
-			'www/dev/presentation/js/vendors/bootstrap.js',
-			'www/dev/presentation/js/vendors/jquery.geturlvars.js',
-			'www/dev/presentation/js/vendors/rAF.js',
-			'www/dev/presentation/js/vendors/easeljs-0.7.1.min.js',
-			'www/dev/presentation/js/vendors/preloadjs-0.4.1.min.js',
-			'www/dev/presentation/js/vendors/sb-1.4.1.js',
-			'www/dev/presentation/codemirror/lib/codemirror.js',
-			'www/dev/presentation/codemirror/mode/javascript/javascript.js',
-			'www/dev/presentation/codemirror/mode/clike/clike.js',
-			'www/dev/presentation/codemirror/addon/hint/show-hint.js',
-			'www/dev/presentation/codemirror/addon/hint/javascript-hint.js',
-        ])
-		.pipe(plumber())
-		.pipe(concat('vendors.min.js'))
-		//.pipe(uglify())
-		.pipe(gulp.dest('www/live/presentation/js/'));
+		'presentation/js/vendors/jquery.min.js',
+		'presentation/js/vendors/underscore.min.js',
+		'presentation/js/vendors/bean.min.js',
+		'presentation/js/vendors/bootstrap.js',
+		'presentation/js/vendors/jquery.geturlvars.js',
+		'presentation/js/vendors/rAF.js',
+		'presentation/js/vendors/easeljs-0.7.1.min.js',
+		'presentation/js/vendors/preloadjs-0.4.1.min.js',
+		'presentation/js/vendors/sb-1.4.1.js',
+		'presentation/codemirror/lib/codemirror.js',
+		'presentation/codemirror/mode/javascript/javascript.js',
+		'presentation/codemirror/mode/clike/clike.js',
+		'presentation/codemirror/addon/hint/show-hint.js',
+		'presentation/codemirror/addon/hint/javascript-hint.js',
+      ])
+	.pipe(concat('vendors.min.js'))
+	//.pipe(uglify())
+	.pipe(gulp.dest('./presentation/js'));
+});
+
+gulp.task('server-lint', function(){
+	return gulp.src('./server.js')
+		.pipe(jshint())
+		.pipe(jshint.reporter(stylish));
+});
+
+gulp.task('mobile-lint', function(){
+	return gulp.src(['./server/www/src/js/**/*.js', '!./server/www/src/js/vendors/**/*.js'])
+		.pipe(jshint())
+		.pipe(jshint.reporter(stylish));
+});
+
+gulp.task('mobile-js', ['mobile-lint'], function(){
+
+	var bundler = browserify({
+		entries: ['./server/www/src/js/script.js'],
+		debug: !production
+	});
+
+	bundler.require(__dirname + '/shared/js/Constants.js', { expose: 'Constants'});
+	bundler.require(__dirname + '/shared/js/classes/slides/ContentBase.js', { expose: 'shared/ContentBase'});
+	bundler.require(__dirname + '/shared/js/classes/IFrameBridge.js', { expose: 'shared/IFrameBridge'});
+	bundler.require(__dirname + '/shared/js/classes/Presentation.js', { expose: 'shared/Presentation'});
+	bundler.require(__dirname + '/shared/js/classes/MobileServerBridge.js', { expose: 'shared/MobileServerBridge'});
+
+	bundler.require(__dirname + '/server/www/src/js/classes/slides/shake-your-phones/index.js', { expose: 'slides/ShakeYourPhones'});
+	bundler.require(__dirname + '/server/www/src/js/classes/slides/react-phones/index.js', { expose: 'slides/ReactPhones'});
+
+	return bundler.bundle()
+		.on('error', function(err) {
+			gutil.log(err.message);
+			gutil.beep();
+			this.emit('end');
+		})
+		.pipe(source('script.min.js'))
+		.pipe(buffer())
+		.pipe(production ? gutil.noop() : sourcemaps.init({loadMaps: true}))
+    .pipe(production ? uglify() : gutil.noop())
+    .pipe(production ? gutil.noop() : sourcemaps.write('./', {}))
+    .pipe(gulp.dest('./server/www/live/js'));
+});
+
+gulp.task('mobile-styles', function(){
+	return gulp.src('./server/www/src/css/style.less')
+		.pipe(sourcemaps.init())
+		.pipe(less())
+		.pipe(sourcemaps.write('./'))
+		.on('error', function(err) {
+			gutil.log(err.message);
+			gutil.beep();
+			this.emit('end');
+		})
+		.pipe(production ? minifyCSS() : gutil.noop())
+		.pipe(gulp.dest('./server/www/live/css'));
 });
 
 gulp.task('mobile-vendors-js', function(){
 	return gulp.src([
-			'www/dev/mobile/js/vendors/jquery.min.js',
-			'www/dev/mobile/js/vendors/jquery.geturlvars.js',
-			'www/dev/mobile/js/vendors/rAF.js',
-			'www/dev/mobile/js/vendors/modernizr.min.js'
-        ])
-		.pipe(plumber())
-		.pipe(concat('vendors.min.js'))
-		//.pipe(uglify())
-		.pipe(gulp.dest('www/live/mobile/js/'));
+		'./server/www/src/js/vendors/jquery.min.js',
+		'./server/www/src/js/vendors/bean.min.js',
+		'./server/www/src/js/vendors/modernizr.min.js',
+	])
+	.pipe(concat('vendors.min.js'))
+	//.pipe(uglify())
+	.pipe(gulp.dest('./server/www/live/js'));
 });
 
-gulp.task('watch', [
-		'mobile-styles',
-		'presentation-styles',
-		'mobile-js',
-		'mobile-vendors-js',
-		'presentation-styles',
-		'presentation-js',
-		'presentation-vendors-js'
-	], function(){
-	gulp.watch('www/dev/shared/css/**/*.less', ['mobile-styles', 'presentation-styles']);
-	gulp.watch('www/dev/mobile/css/**/*.less', ['mobile-styles']);
-	gulp.watch(['www/dev/mobile/js/**/*.js', 'shared/**/*.js'], ['mobile-js']);
-	gulp.watch('www/dev/mobile/js/vendors/**/*.js', ['mobile-vendors-js']);
-	gulp.watch('www/dev/presentation/css/**/*.less', ['presentation-styles']);
-	gulp.watch(['www/dev/presentation/js/**/*.js', 'shared/**/*.js'], ['presentation-js']);
-	gulp.watch('www/dev/presentation/js/vendors/**/*.js', ['presentation-vendors-js']);
-});
+gulp.task('default', ['watch']);
 
-gulp.task('serve', function(){
-	nodemon({ script: 'index.js', ext: 'js', ignore: ['child-app/', 'www/'] });
-});
+gulp.task('watch', ['presentation-js', 'presentation-styles', 'mobile-js', 'mobile-styles'], function(){
+	gulp.watch('presentation/js/src/**/**', ['presentation-js']);
+	gulp.watch('presentation/css/src/**/*.less', ['presentation-styles']);
 
-gulp.task('default', ['watch', 'serve']);
+	gulp.watch('server/www/src/js/**/**', ['mobile-js']);
+	gulp.watch('server/www/src/css/**/*.less', ['mobile-styles']);
+
+	gulp.watch('shared/js/**/**', ['presentation-js', 'mobile-js']);
+});

@@ -1,0 +1,1 @@
+module.exports = __dirname;// jshint ignore:line

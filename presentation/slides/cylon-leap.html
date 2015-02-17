@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="../css/style.css">
+	<script>
+		window.requireNode = window.require;
+    window.require = undefined;
+	</script>
+	<style>
+	.CodeMirrorWrapper {
+		width: 80%;
+	}
+	</style>
+</head>
+<body class="slide vertical-center">
+	<div class="content">
+		<div class="CodeMirrorWrapper">
+			<textarea id="code">var Cylon = require('cylon');
+var robot = Cylon.robot({
+	connections: {
+		arduino: {
+			adaptor: 'firmata', port: '/dev/tty.usbmodem14111',
+			devices: {
+				servo:    { driver: 'servo', pin: 11 },
+			}
+		},
+		leap: {
+			adaptor: 'leapmotion',
+			devices: {
+				leap: 		{ driver: 'leapmotion' }
+			}
+		}
+	},
+	work: function(my) {
+		var angle = 0;
+		var handX = 0;
+		my.leap.on('frame', function(frame){
+			if(frame.hands.length > 0) {
+				handX = frame.hands[0].palmPosition[0];
+				angle = (handX).fromScale(-255, 255).toScale(0, 180);
+				my.servo.angle(angle);
+			}
+		});
+  }
+});
+robot.start();</textarea>
+		</div>
+		<button class="btn btn-default btn-save">Save</button>
+		<button class="btn btn-default btn-run">Run</button>
+	</div>
+	<script src="../js/vendors.min.js"></script>
+	<script src="../js/script.min.js"></script>
+	<script>
+	(function(){
+		var ChildAppEditor = require('slides/ChildAppEditor');
+		new ChildAppEditor('cylon-leap', 'node');
+	})();
+	</script>
+</body>
+</html>

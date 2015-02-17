@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="../css/style.css">
+	<script>
+		window.requireNode = window.require;
+    window.require = undefined;
+	</script>
+</head>
+<body class="slide vertical-center">
+	<div class="content">
+		<div class="CodeMirrorWrapper">
+			<textarea id="code">var tessel = require('tessel');
+var gpio = tessel.port['GPIO'];
+var isOn = false;
+
+setInterval(function () {
+  gpio.pin['G3'].write(isOn);
+  isOn = !isOn;
+}, 500);</textarea>
+		</div>
+		<button class="btn btn-default btn-save">Save</button>
+		<button class="btn btn-default btn-run">Run</button>
+	</div>
+	<script src="../js/vendors.min.js"></script>
+	<script src="../js/script.min.js"></script>
+	<script>
+	(function(){
+		var ChildAppEditor = require('slides/ChildAppEditor');
+		new ChildAppEditor('tessel-gpio-led', 'tessel');
+	})();
+	</script>
+</body>
+</html>

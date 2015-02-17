@@ -1,0 +1,160 @@
+// Core variables and mixins
+@import "variables.less";
+@import "../../../shared/css/bootstrap/mixins.less";
+
+// Reset and dependencies
+@import "../../../shared/css/bootstrap/normalize.less";
+@import "../../../shared/css/bootstrap/print.less";
+@import "../../../shared/css/bootstrap/glyphicons.less";
+
+// Core CSS
+@import "../../../shared/css/bootstrap/scaffolding.less";
+@import "../../../shared/css/bootstrap/type.less";
+@import "../../../shared/css/bootstrap/code.less";
+@import "../../../shared/css/bootstrap/grid.less";
+@import "../../../shared/css/bootstrap/tables.less";
+@import "../../../shared/css/bootstrap/forms.less";
+@import "../../../shared/css/bootstrap/buttons.less";
+
+// Components
+@import "../../../shared/css/bootstrap/component-animations.less";
+@import "../../../shared/css/bootstrap/dropdowns.less";
+@import "../../../shared/css/bootstrap/button-groups.less";
+@import "../../../shared/css/bootstrap/input-groups.less";
+@import "../../../shared/css/bootstrap/navs.less";
+@import "../../../shared/css/bootstrap/navbar.less";
+@import "../../../shared/css/bootstrap/breadcrumbs.less";
+@import "../../../shared/css/bootstrap/pagination.less";
+@import "../../../shared/css/bootstrap/pager.less";
+@import "../../../shared/css/bootstrap/labels.less";
+@import "../../../shared/css/bootstrap/badges.less";
+@import "../../../shared/css/bootstrap/jumbotron.less";
+@import "../../../shared/css/bootstrap/thumbnails.less";
+@import "../../../shared/css/bootstrap/alerts.less";
+@import "../../../shared/css/bootstrap/progress-bars.less";
+@import "../../../shared/css/bootstrap/media.less";
+@import "../../../shared/css/bootstrap/list-group.less";
+@import "../../../shared/css/bootstrap/panels.less";
+@import "../../../shared/css/bootstrap/responsive-embed.less";
+@import "../../../shared/css/bootstrap/wells.less";
+@import "../../../shared/css/bootstrap/close.less";
+
+// Components w/ JavaScript
+@import "../../../shared/css/bootstrap/modals.less";
+@import "../../../shared/css/bootstrap/tooltip.less";
+@import "../../../shared/css/bootstrap/popovers.less";
+@import "../../../shared/css/bootstrap/carousel.less";
+
+// Utility classes
+@import "../../../shared/css/bootstrap/utilities.less";
+@import "../../../shared/css/bootstrap/responsive-utilities.less";
+
+@import "../../../shared/css/shared.less";
+
+@import (inline) "../../codemirror/lib/codemirror.css";
+@import (inline) "../../codemirror/addon/hint/show-hint.css";
+
+#presentation {
+	bottom: 50px;
+}
+
+#wrapper {
+	position: relative;
+	width: 1280px;
+	height: 720px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: white;
+}
+
+#footer {
+	background-color: red;
+	overflow: hidden;
+	.navbar {
+		min-height: 10px;
+	}
+	.container-fluid {
+		padding: 0;
+	}
+	.btn-xs {
+		font-size: 16px;
+		margin-top: 8px;
+		margin-bottom: 8px;
+	}
+	.navbar-fixed-bottom {
+		position: absolute;
+	}
+	.navbar-inverse .navbar-text,
+	.navbar-inverse .navbar-btn {
+		color: #ccc;
+	}
+	.navbar-inverse .navbar-btn {
+		background-color: #222222;
+		border-color: #333333;
+	}
+	.navbar-inverse .navbar-btn:hover {
+		color: #ffffff;
+		background-color: #333333;
+	}
+	.scrollable-menu {
+		font-size: 16px;
+	    height: auto;
+	    max-height: 200px;
+	    overflow-x: hidden;
+	    left: auto;
+	    right: 0;
+	}
+	#global-heart-rate {
+	}
+	.info {
+		position: absolute; 
+		width: 100%; 
+		text-align: center;
+		color: #ccc;
+		font-size: 0.9em;
+		padding-top: 0.2em;
+		.ip {
+
+		}
+		.twitter {
+			&:before {
+				content: ' - ';
+			}
+		}
+	}
+}
+
+.CodeMirrorWrapper {
+	text-align: left;
+	margin-left: auto;
+	margin-right: auto;
+	width: 60%;
+	margin-bottom: 1em;
+	overflow: hidden;
+}
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+  line-height: 1.2em;
+}
+
+.CodeMirror-scroll { 
+ 	max-height: 500px; 
+} 
+
+.flashy-background {
+	background-size: 200px 200px;
+	background-image: linear-gradient(
+	45deg, 
+		#c6363d  25%, 
+		#0684AF  25%, 
+		#0684AF  50%, 
+		#c6363d  50%, 
+		#c6363d  75%, 
+		#0684AF  75%, 
+		#0684AF
+	);
+	.animation(barberpole 0.15s linear infinite);
+}
+
+.keyframes(~'barberpole, 0%{ background-position: 0 0; } 100%{ background-position: 400px 200px; }');

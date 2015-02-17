@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="../css/style.css">
+	<script>
+		window.requireNode = window.require;
+    window.require = undefined;
+	</script>
+	<style>
+	.CodeMirrorWrapper {
+		width: 85%;
+	}
+	</style>
+</head>
+<body class="slide vertical-center">
+	<div class="content">
+		<div style="margin-bottom: 1em;">
+			<button type="button" id="blue-up" class="btn btn-primary btn-lg" style="display: none;">
+				<span class="glyphicon glyphicon-arrow-up"></span>
+			</button>
+			<button type="button" id="blue-down" class="btn btn-primary btn-lg" style="display: none;">
+				<span class="glyphicon glyphicon-arrow-down"></span>
+			</button>
+		</div>
+		<div class="CodeMirrorWrapper">
+			<textarea id="code">var sb = new Spacebrew.Client("localhost", "DDR Demo");
+
+sb.addSubscribe( "blue-up", "boolean" );
+sb.addSubscribe( "blue-down", "boolean" );
+
+sb.onBooleanMessage = function(name, value){
+	$('#' + name).toggle(value);
+};
+
+sb.connect();</textarea>
+		</div>
+		<h4>Browser<br />Listen for Spacebrew buttons</h4>
+	</div>
+	<script src="../js/vendors.min.js"></script>
+	<script src="../js/script.min.js"></script>
+	<script>
+	(function(){
+		var codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
+			lineNumbers: true,
+			mode: "javascript",
+			extraKeys: {"Ctrl-Space": "autocomplete"}
+    });
+
+    var sb = new Spacebrew.Client("localhost", "DDR Demo");
+
+		sb.addSubscribe( "blue-up", "boolean" );
+		sb.addSubscribe( "blue-down", "boolean" );
+
+		sb.onBooleanMessage = function(name, value){
+			$('#' + name).toggle(value);
+		};
+
+		sb.connect();
+	})();
+	</script>
+</body>
+</html>

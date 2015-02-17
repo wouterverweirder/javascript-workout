@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="../css/style.css">
+	<script>
+		window.requireNode = window.require;
+    window.require = undefined;
+	</script>
+</head>
+<body class="slide vertical-center">
+	<div class="content">
+		<div class="substate substate-intro">
+			<button class="btn btn-primary">Start Game</button>
+		</div>
+		<div class="substate substate-game">
+			<button class="btn btn-primary">Stop Game</button>
+		</div>
+		<div class="substate substate-finished">
+		</div>
+	</div>
+	<div class="background">
+		<video src="../assets/disco-background.mp4" width="1280" height="720" autoplay loop />
+	</div>
+	<div class="background">
+		<canvas id="game"></canvas>
+	</div>
+	<audio src="../assets/never-gonna-give-you-up.mp3" style="display: none;" />
+	<script src="../js/vendors.min.js"></script>
+	<script src="../js/script.min.js"></script>
+	<script>
+	(function(){
+		var SpacebrewDanceGame = require('slides/SpacebrewDanceGame');
+		new SpacebrewDanceGame();
+	})();
+	</script>
+</body>
+</html>

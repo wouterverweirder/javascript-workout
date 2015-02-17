@@ -3,7 +3,7 @@
 		{
 			"name": "title-slide",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.001.png"
+				"url": "slides/title.html"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Hello"
