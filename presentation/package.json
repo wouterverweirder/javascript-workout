@@ -9,14 +9,14 @@
   "license": "MIT",
   "window": {
     "title": "Presentation",
-    "toolbar": true,
-    "frame": true,
+    "toolbar": false,
+    "frame": false,
     "width": 1280,
     "height": 768,
     "position": "center",
     "min_width": 400,
     "min_height": 200,
-    "fullscreen": false
+    "fullscreen": true
   },
   "chromium-args": "--enable-touch-events --enable-pinch",
   "webkit": {

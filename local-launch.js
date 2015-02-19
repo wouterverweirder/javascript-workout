@@ -25,7 +25,7 @@ var ttyApp = tty.createServer({
   port: 3000,
   cwd: ".",
   localOnly: true,
-  static: "./www/live/presentation/tty"
+  static: "./presentation/tty"
 });
 
 ttyApp.listen();
