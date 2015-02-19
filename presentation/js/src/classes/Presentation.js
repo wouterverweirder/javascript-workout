@@ -28,6 +28,8 @@ module.exports = (function(){
 		this.elevatorMusic = $('#elevatormusic')[0];
 		$('.elevator-button').on('click', $.proxy(this.toggleElevatorMusic, this));
 
+		$('.info .ip').text('jsworkout.herokuapp.com');
+
 		$(window).on('keydown', $.proxy(this.keydownHandler, this));
 
 		$('body').on(Constants.GO_TO_PREVIOUS_SLIDE, $.proxy(this.goToPreviousSlide, this));

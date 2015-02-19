@@ -9,6 +9,8 @@ module.exports = (function(){
 		this.gameDuration = 10; //game lasts 10 seconds
 		this.clientsMap = {};
 
+		$('#ip').text('jsworkout.herokuapp.com');
+
 		$('.substate-intro .btn').on('click', this.startClickHandler.bind(this));
 		$('.substate-finished .btn').on('click', this.winnerClickHandler.bind(this));
 

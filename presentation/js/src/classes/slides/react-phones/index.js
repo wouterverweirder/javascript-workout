@@ -10,6 +10,8 @@ module.exports = (function(){
 		this.clientsMap = {};
 		this.music = $('#music')[0];
 
+		$('#ip').text('jsworkout.herokuapp.com');
+
 		$('.substate-intro .btn').on('click', this.startClickHandler.bind(this));
 		$('.substate-finished .btn').on('click', this.winnerClickHandler.bind(this));
 
@@ -109,7 +111,7 @@ module.exports = (function(){
 
 	ReactPhones.prototype.resetAllReactionSpeeds = function() {
 		for(var id in this.clientsMap) {
-			this.clientsMap[id].reactionSpeed = 0;
+			this.clientsMap[id].reactionSpeed = 99999999999;
 			this.clientsMap[id].speedWinner = false;
 		}
 	};

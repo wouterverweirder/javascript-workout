@@ -22,8 +22,8 @@ Config.childNodeAppFilePath = path.normalize(__dirname + '/../../../../../child-
 Config.childTesselAppFilePath = path.normalize(__dirname + '/../../../../../child-app/tessel/app.js');
 Config.ip = ip;
 
-//Config.mobileServerUrl = "http://jsworkout.herokuapp.com";
-Config.mobileServerUrl = "http://localhost:5000";
+Config.mobileServerUrl = "http://jsworkout.herokuapp.com";
+//Config.mobileServerUrl = "http://localhost:5000";
 Config.mobileServerUsername = "wouter.verweirder@gmail.com";
 Config.mobileServerPassword = "geheim";
 
