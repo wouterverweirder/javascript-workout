@@ -12,7 +12,7 @@ module.exports = (function(){
 		this.winner = false;
 		this.flagDropped = false;
 		this.sparkIdMap = {};
-		this.minHeartRate = 130;
+		this.minHeartRate = 60;
 		this.maxHeartRate = 200;
 
 		this._udpErrorHandler = this.udpErrorHandler.bind(this);

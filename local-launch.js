@@ -30,4 +30,10 @@ var ttyApp = tty.createServer({
 
 ttyApp.listen();
 
-//todo: launch presentation
+//launch presentation - place node-webkit.app inside presentation directory!
+var presentationProcess =  spawn('node-webkit.app/Contents/MacOS/node-webkit', ['.'], {cwd: 'presentation'});
+presentationProcess.stdout.pipe(process.stdout);
+presentationProcess.stderr.pipe(process.stderr);
+presentationProcess.on('close', function (code) {
+	console.log('[presentation] exited with code ' + code);
+});

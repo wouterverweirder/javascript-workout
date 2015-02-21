@@ -51,7 +51,6 @@ ChildApp.prototype.runCode = function(code, type) {
 		if(type === 'tessel') {
 			this.runner = process.spawn("tessel", ["run", Config.childTesselAppFilePath], {cwd: path.dirname(Config.childTesselAppFilePath)});
 		} else {
-			console.log("[ChildApp] spawn node", Config.childNodeAppFilePath);
 			this.runner = process.spawn("node", [Config.childNodeAppFilePath], {cwd: path.dirname(Config.childNodeAppFilePath)});
 		}
 		this.runner.stdout.on('data', this.onRunnerData.bind(this));
