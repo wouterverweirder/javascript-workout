@@ -649,9 +649,15 @@
 			}
 		},
 		{
+			"name": "raffle",
+			"mobile": {
+				"url": "slides/text.html?text=Raffle"
+			}
+		},
+		{
 			"name": "thank-you",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.073.png"
+				"url": "slides/image.html?image=images/keynote/keynote.074.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Thank+You"

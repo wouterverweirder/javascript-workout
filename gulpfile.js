@@ -43,6 +43,7 @@ gulp.task('presentation-js', ['presentation-lint'], function(){
 	bundler.require(__dirname + '/presentation/js/src/classes/slides/childapp-editor/index.js', { expose: 'slides/ChildAppEditor'});
 	bundler.require(__dirname + '/presentation/js/src/classes/slides/react-phones/index.js', { expose: 'slides/ReactPhones'});
 	bundler.require(__dirname + '/presentation/js/src/classes/slides/spacebrew-dance-game/index.js', { expose: 'slides/SpacebrewDanceGame'});
+	bundler.require(__dirname + '/presentation/js/src/classes/slides/raffle/index.js', { expose: 'slides/Raffle'});
 
 	return bundler.bundle()
 		.on('error', function(err) {

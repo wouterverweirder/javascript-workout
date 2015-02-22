@@ -8,10 +8,17 @@ module.exports = (function(){
 	var ChildApp = require('./childapps/ChildApp');
 	var MobileServerBridge = require('./MobileServerBridge');
 
+	var Twit = requireNode('twit');
+
 	var KEYCODE_LEFT = 37;
 	var KEYCODE_RIGHT = 39;
 
-	function Presentation(data, role) {
+	function Presentation(data, role, settings) {
+		if(settings) {
+			for(var key in settings) {
+				Config[key] = settings[key];
+			}
+		}
 		PresentationBase.call(this, data, 'presentation');
 
 		this.elevatorMusicPlaying = false;
@@ -19,6 +26,19 @@ module.exports = (function(){
 
 		this.polarH7 = new PolarH7();
 		this.polarH7.on(PolarH7.HEART_RATE, this.heartRatePolarHandler.bind(this));
+
+		this.twit = new Twit({
+			consumer_key:         Config.twitterConsumerKey,
+			consumer_secret:      Config.twitterConsumerSecret,
+			access_token: 				Config.twitterAccessToken,
+			access_token_secret: 	Config.twitterAccessTokenSecret
+		});
+		this.tweets = [];
+		this.stream = this.twit.stream('statuses/filter', { track: '@wouter' });
+		this.stream.on('error', function(e){
+			console.log('[Twit] Error', e.code);
+		});
+		this.stream.on('tweet', this.onTweet.bind(this));
 
 		$('#consoleModal').on('show.bs.modal', function (e) {
 			var w = $('#consoleModal iframe')[0].contentWindow;
@@ -39,6 +59,16 @@ module.exports = (function(){
 	}
 
 	Presentation.prototype = Object.create(PresentationBase.prototype);
+
+	Presentation.prototype.onTweet = function(origTweet) {
+		var tweet = {
+			user: origTweet.user.screen_name,
+			name: origTweet.user.name,
+			image: origTweet.user.profile_image_url,
+			text: origTweet.text
+		};
+		this.tweets.push(tweet);
+	};
 
 	Presentation.prototype.createMobileServerBridge = function() {
 		return new MobileServerBridge(this, Config.mobileServerUrl);
@@ -85,6 +115,15 @@ module.exports = (function(){
 				break;
 			case Constants.OPEN_CAMERA:
 				this.openCamera();
+				break;
+			case Constants.GET_ALL_TWEETS:
+				var currentIFrameBridge = this.getIFrameBridgeByIndex(this.currentSlideIndex);
+				if(currentIFrameBridge) {
+					currentIFrameBridge.tryToPostMessage({
+						action: Constants.GET_ALL_TWEETS_RESULT,
+						tweets: this.tweets
+					});
+				}
 				break;
 			case Constants.CHILD_APP_SAVE_CODE:
 				ChildApp.getInstance().saveCode(event.data.code, event.data.type);
