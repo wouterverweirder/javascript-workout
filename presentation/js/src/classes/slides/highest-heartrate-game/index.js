@@ -88,33 +88,49 @@ module.exports = (function(){
 
 	HighestHeartrateGame.prototype.setHeartRate = function(id, heartRate) {
 		heartRate = parseInt(heartRate);
-		if(this.peach) {
-			//assets are ready
-			if(!this.sparkIdMap[id]) {
+		//save it in the sparkIdMap
+		if(!this.sparkIdMap[id]) {
+			this.sparkIdMap[id] = {};
+		}
+		this.sparkIdMap[id].heartRate = heartRate;
+		this.assignSparkIdsToCharacters();
+		this.setHeartRates();
+	};
+
+	HighestHeartrateGame.prototype.assignSparkIdsToCharacters = function() {
+		if(!this.peach) {
+			return;
+		}
+		for(var id in this.sparkIdMap) {
+			if(!this.sparkIdMap[id].heartRate) {
+				this.sparkIdMap[id].heartRate = 60;
+			}
+			if(!this.sparkIdMap[id].character) {
 				if(!this.peach.sparkId) {
-					this.sparkIdMap[id] = {
-						character: this.peach,
-						heartRateCanvas: this.peachCanvas,
-						$col: $('.col-peach')
-					};
 					this.peach.sparkId = id;
+					this.sparkIdMap[id].character = this.peach;
+					this.sparkIdMap[id].heartRateCanvas = this.peachCanvas;
+					this.sparkIdMap[id].$col = $('.col-peach');
 				} else if(!this.mario.sparkId) {
-					this.sparkIdMap[id] = {
-						character: this.mario,
-						heartRateCanvas: this.marioCanvas,
-						$col: $('.col-mario')
-					};
 					this.mario.sparkId = id;
+					this.sparkIdMap[id].character = this.mario;
+					this.sparkIdMap[id].heartRateCanvas = this.marioCanvas;
+					this.sparkIdMap[id].$col = $('.col-mario');
 				}
 			}
-			if(this.sparkIdMap[id]) {
+		}
+	};
+
+	HighestHeartrateGame.prototype.setHeartRates = function() {
+		for(var id in this.sparkIdMap) {
+			if(this.sparkIdMap[id].character) {
 				//update canvas
-				this.sparkIdMap[id].heartRateCanvas.updateHeartRate(heartRate);
+				this.sparkIdMap[id].heartRateCanvas.updateHeartRate(this.sparkIdMap[id].heartRate);
 				//update text
-				this.sparkIdMap[id].$col.find('.heartRate').text(heartRate);
+				this.sparkIdMap[id].$col.find('.heartRate').text(this.sparkIdMap[id].heartRate);
 				//update character speed
 				if(this.substate === Constants.HIGHEST_HEARTRATE_GAME_GAME && !this.winner) {
-					var targetSpeed = Math.min(1, Math.max(0, this.map(heartRate, this.minHeartRate, this.maxHeartRate, 0, 1)));
+					var targetSpeed = Math.min(1, Math.max(0, this.map(this.sparkIdMap[id].heartRate, this.minHeartRate, this.maxHeartRate, 0, 1)));
 					this.sparkIdMap[id].character.setSpeedX(targetSpeed);
 				}
 			}
@@ -203,6 +219,7 @@ module.exports = (function(){
 		} else {
 			$('.substate-intro').addClass('active');
 		}
+		this.setHeartRates();
 	};
 
 	HighestHeartrateGame.prototype.map = function(value, istart, istop, ostart, ostop) {

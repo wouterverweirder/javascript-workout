@@ -187,32 +187,48 @@ module.exports = (function(){
 
 	LowestHeartrateGame.prototype.setHeartRate = function(id, heartRate) {
 		heartRate = parseInt(heartRate);
-		if(this.goku) {
-			//assets are ready
-			if(!this.sparkIdMap[id]) {
-				if(!this.goku.sparkId) {
-					this.sparkIdMap[id] = {
-						character: this.goku,
-						heartRateCanvas: this.gokuCanvas,
-						$col: $('.col-goku')
-					};
-					this.goku.sparkId = id;
-				} else if(!this.gohan.sparkId) {
-					this.sparkIdMap[id] = {
-						character: this.gohan,
-						heartRateCanvas: this.gohanCanvas,
-						$col: $('.col-gohan')
-					};
+		//save it in the sparkIdMap
+		if(!this.sparkIdMap[id]) {
+			this.sparkIdMap[id] = {};
+		}
+		this.sparkIdMap[id].heartRate = heartRate;
+		this.assignSparkIdsToCharacters();
+		this.setHeartRates();
+	};
+
+	LowestHeartrateGame.prototype.assignSparkIdsToCharacters = function() {
+		if(!this.gohan) {
+			return;
+		}
+		for(var id in this.sparkIdMap) {
+			if(!this.sparkIdMap[id].heartRate) {
+				this.sparkIdMap[id].heartRate = 60;
+			}
+			if(!this.sparkIdMap[id].character) {
+				if(!this.gohan.sparkId) {
 					this.gohan.sparkId = id;
+					this.sparkIdMap[id].character = this.gohan;
+					this.sparkIdMap[id].heartRateCanvas = this.gohanCanvas;
+					this.sparkIdMap[id].$col = $('.col-gohan');
+				} else if(!this.goku.sparkId) {
+					this.goku.sparkId = id;
+					this.sparkIdMap[id].character = this.goku;
+					this.sparkIdMap[id].heartRateCanvas = this.gokuCanvas;
+					this.sparkIdMap[id].$col = $('.col-goku');
 				}
 			}
-			if(this.sparkIdMap[id]) {
+		}
+	};
+
+	LowestHeartrateGame.prototype.setHeartRates = function() {
+		for(var id in this.sparkIdMap) {
+			if(this.sparkIdMap[id].character) {
 				//update canvas
-				this.sparkIdMap[id].heartRateCanvas.updateHeartRate(heartRate);
+				this.sparkIdMap[id].heartRateCanvas.updateHeartRate(this.sparkIdMap[id].heartRate);
 				//update text
-				this.sparkIdMap[id].$col.find('.heartRate').text(heartRate);
+				this.sparkIdMap[id].$col.find('.heartRate').text(this.sparkIdMap[id].heartRate);
 				//update heart rate
-				this.sparkIdMap[id].character.heartRate = heartRate;
+				this.sparkIdMap[id].character.heartRate = this.sparkIdMap[id].heartRate;
 			}
 		}
 	};
@@ -235,6 +251,7 @@ module.exports = (function(){
 		} else {
 			$('.substate-intro').addClass('active');
 		}
+		this.setHeartRates();
 	};
 
 	LowestHeartrateGame.prototype.resetGame = function() {

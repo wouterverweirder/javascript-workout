@@ -36,6 +36,7 @@ module.exports = (function(){
 		this.tweets = [];
 		this.stream = this.twit.stream('statuses/filter', { track: '@wouter' });
 		this.stream.on('error', function(e){
+			//TODO: reconnect on error
 			console.log('[Twit] Error', e.code);
 		});
 		this.stream.on('tweet', this.onTweet.bind(this));
@@ -68,6 +69,7 @@ module.exports = (function(){
 			text: origTweet.text
 		};
 		this.tweets.push(tweet);
+		console.log(this.tweets.length + ': ' + tweet.text);
 	};
 
 	Presentation.prototype.createMobileServerBridge = function() {

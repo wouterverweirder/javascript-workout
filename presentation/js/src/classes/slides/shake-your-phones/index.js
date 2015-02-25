@@ -6,8 +6,9 @@ module.exports = (function(){
 	function ShakeYourPhones() {
 		ContentBase.call(this, 'shake-your-phones');
 
-		this.gameDuration = 10; //game lasts 10 seconds
+		this.gameDuration = 13; //game lasts 10 seconds
 		this.clientsMap = {};
+		this.music = $('#music')[0];
 
 		$('#ip').text('jsworkout.herokuapp.com');
 
@@ -135,6 +136,7 @@ module.exports = (function(){
 			backgroundImage: 'none'
 		});
 		if(this.substate === Constants.SHAKE_YOUR_PHONES_GAME) {
+			this.music.play();
 			$('.substate-game .countdown').html(this.gameDuration);
 			$('.substate-game').addClass('active');
 			this.countDownTimeout = setTimeout(this.countDownHandler.bind(this, this.gameDuration - 1), 1000);
