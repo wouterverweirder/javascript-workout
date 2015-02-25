@@ -1,6 +1,24 @@
-#node-webkit with MP3 & MP4 support
+#presentation setup
 
-Presentation is a node webkit application. For MP3 and MP4 support, you'll need to build node-webkit yourself.
+##npm installs
+
+npm install in this directory, the spacebrew directory and spark/server/js directory
+
+##node-webkit
+The presentation is a node webkit application (http://nwjs.io/). Download node-webkit (I used v0.11.5) and place it in the presentation directory.
+
+##launch
+Launch the presentation by executing the local-launch.js file with node:
+
+	node ./local-launch.js
+
+This will start the tty.js server, the local spark core cloud, the spacebrew server and the node-webkit presentation
+
+##optional
+
+###node-webkit with MP3 & MP4 support
+
+For MP3 and MP4 support, you'll need to build node-webkit yourself.
 
 Here's what I did (OSX Yosemite):
 
@@ -57,11 +75,8 @@ Here's what I did (OSX Yosemite):
 
 I used the steps above to build a node-webkit version with MP3 & MP4 support.
 
-#npm installs
-
-npm install in this directory, the spacebrew directory and spark/server/js directory
-
-#spark core
+###spark core (heartrate)
+To link a spark-core to your local cloud, do the following:
 
 1. Identify the spark core: press mode until blue > run spark identify
 2. Put the spark core into DFU by pressing mode + reset, release reset while holding mode for about 3 seconds (until led flashes yellow)
