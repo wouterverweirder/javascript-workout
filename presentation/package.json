@@ -2,7 +2,7 @@
   "//": "     //as this is node-webkit, the following modules need nw-gyp rebuilds (nw-gyp rebuild --target=\"$NWVER\") in the following directories: node_modules/noble , node_modules/noble/node_modules/xpc-connection",
   "name": "jsworkout",
   "description": "presentation demonstrating usage of javascript with electronics in different scenarios",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "main": "index.html",
   "author": "Wouter Verweirder <wouter.verweirder@gmail.com>",
@@ -23,8 +23,8 @@
     "plugin": true
   },
   "dependencies": {
-    "noble": "^0.3.9",
-    "tty.js": "^0.2.13",
+    "noble": "^1.0.1",
+    "tty.js": "^0.2.14-1",
     "twit": "^1.1.20"
   }
 }
