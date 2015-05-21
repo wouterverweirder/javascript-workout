@@ -4,7 +4,6 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
-        "tessel": "latest",
         "accel-mma84": "latest",
         "ambient-attx4": "latest"
     }

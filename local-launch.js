@@ -4,7 +4,7 @@ var tty = require('tty.js'),
 console.log('[javascript-workout] starting...');
 
 //start the spark core server
-var sparkProcess =  spawn('node', ['main.js'], {cwd: 'spark/server/js'});
+var sparkProcess =  spawn('node', ['main.js'], {cwd: 'spark/spark-server'});
 sparkProcess.stdout.pipe(process.stdout);
 sparkProcess.stderr.pipe(process.stderr);
 sparkProcess.on('close', function (code) {
