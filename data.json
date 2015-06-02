@@ -309,7 +309,7 @@
 				"url": "slides/image.html?image=images/keynote/keynote.037.png"
 			},
 			"mobile": {
-				"url": "slides/text.html?text=Pulse+Sensor"
+				"url": "slides/text.html?text=Spark+Core"
 			}
 		},
 		{
@@ -318,7 +318,7 @@
 				"url": "slides/image.html?image=images/keynote/keynote.038.png"
 			},
 			"mobile": {
-				"url": "slides/text.html?text=Pulse+Sensor"
+				"url": "slides/text.html?text=Spark+Core"
 			}
 		},
 		{
@@ -327,7 +327,7 @@
 				"url": "slides/image.html?image=images/keynote/keynote.039.png"
 			},
 			"mobile": {
-				"url": "slides/text.html?text=Pulse+Sensor"
+				"url": "slides/text.html?text=Spark+Core"
 			}
 		},
 		{
@@ -336,19 +336,19 @@
 				"url": "slides/image.html?image=images/keynote/keynote.040.png"
 			},
 			"mobile": {
-				"url": "slides/text.html?text=Pulse+Sensor"
+				"url": "slides/text.html?text=Spark+Core"
 			}
 		},
 		{
 			"name": "030-pulse-001",
 			"mobile": {
-				"url": "slides/text.html?text=Pulse+Sensor"
+				"url": "slides/text.html?text=Spark+Core"
 			}
 		},
 		{
 			"name": "030-pulse-002",
 			"mobile": {
-				"url": "slides/text.html?text=Pulse+Sensor"
+				"url": "slides/text.html?text=Spark+Core"
 			}
 		},
 		{
@@ -649,15 +649,45 @@
 			}
 		},
 		{
-			"name": "raffle",
+			"name": "buy-01",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.073.png"
+			},
 			"mobile": {
-				"url": "slides/text.html?text=Raffle"
+				"url": "slides/text.html?text=Buy"
+			}
+		},
+		{
+			"name": "buy-02",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.074.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Buy"
+			}
+		},
+		{
+			"name": "buy-03",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.075.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Buy"
+			}
+		},
+		{
+			"name": "buy-04",
+			"presentation": {
+				"url": "slides/image.html?image=images/keynote/keynote.076.png"
+			},
+			"mobile": {
+				"url": "slides/text.html?text=Buy"
 			}
 		},
 		{
 			"name": "thank-you",
 			"presentation": {
-				"url": "slides/image.html?image=images/keynote/keynote.074.png"
+				"url": "slides/image.html?image=images/keynote/keynote.077.png"
 			},
 			"mobile": {
 				"url": "slides/text.html?text=Thank+You"
