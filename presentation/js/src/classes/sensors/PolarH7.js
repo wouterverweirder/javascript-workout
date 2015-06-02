@@ -1,4 +1,6 @@
-var events = requireNode('events'),
+var Config = require('../config'),
+	events = requireNode('events'),
+	fs = requireNode('fs'),
 	util = requireNode('util');
 
 var POLARH7_HRM_HEART_RATE_SERVICE_UUID = "180d";
@@ -94,6 +96,10 @@ PolarH7.prototype.onHeartRateRead = function(data, isNotification) {
 		var heartRate = data[1];
 		if(heartRate) {
 			this.emit(PolarH7.HEART_RATE, heartRate);
+			var filePath = Config.heartRateFilePath;
+			fs.appendFile(filePath, new Date().getTime() + ":" + heartRate + "\n", function (err) {
+				console.log(err);
+			});
 		}
 	}
 };

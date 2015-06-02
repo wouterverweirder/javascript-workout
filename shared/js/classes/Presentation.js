@@ -172,7 +172,7 @@ module.exports = (function(){
 				src = iFrameBridge.data[this.role].url;
 			}
 			if(iFrameBridge.isAlreadyCorrectlyAttached(iFrame, src)) {
-				console.log(iFrameBridge.name + ' already attached');
+				//console.log(iFrameBridge.name + ' already attached');
 			} else {
 				//leave previous channel of this iframe
 				if(this.mobileServerBridge) {

@@ -20,6 +20,7 @@ module.exports = (function(){
 			}
 		}
 
+		global.Config.heartRateFilePath = path.normalize(__dirname + '/../../../../../heartrate.json');
 		global.Config.childNodeAppFilePath = path.normalize(__dirname + '/../../../../../child-app/node/app.js');
 		global.Config.childTesselAppFilePath = path.normalize(__dirname + '/../../../../../child-app/tessel/app.js');
 		global.Config.ip = ip;
