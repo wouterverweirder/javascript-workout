@@ -1,32 +1,31 @@
-#presentation setup
+#Javascript Workout
 
-##npm installs
+Interactive presentation built with electron & nodejs. (Using electron 1.3.4 on node 4.2.2)
 
-run npm installs in the following directories:
+## building
 
-- this one
-- spacebrew
-- spark/spark-server
-- child-app/node
-- child-app/tessel
+```bash
+npm run develop
+```
 
-##nw.js
-The presentation is a nw.js application (http://nwjs.io/). Download nw.js (I used v0.12.0) and place it in the presentation directory.
+## running
 
-##launch
-Launch the presentation by executing the local-launch.js file with node:
+Presentation:
 
-	node ./local-launch.js
+```bash
+npm run presentation
+```
 
-This will start the tty.js server, the local spark core cloud, the spacebrew server and the nw.js presentation
+Server (optional):
 
-##optional
+```bash
+npm run server
+```
 
-###nw.js with MP3 & MP4 support
+People can surf to http://REPLACE_WITH_YOUR_IP:5000 and follow the slides on their screen.
 
-https://github.com/nwjs/nw.js/wiki/Using-MP3-&-MP4-%28H.264%29-using-the--video--&--audio--tags.
+##spark core (heartrate)
 
-###spark core (heartrate)
 To link a spark-core to your local cloud, do the following after installing the particle-cli:
 
 1. Identify the spark core: press mode until blue > run particle identify
@@ -36,3 +35,11 @@ To link a spark-core to your local cloud, do the following after installing the 
 5. Place core into DFU
 6. particle keys save INPUT_CORE_ID_HERE
 7. reset the core
+
+You will need to flash the firmware (spark/pulsesensor-udp) to the spark-core:
+
+1. `particle compile core pulsesensor-udp/ --saveTo firmware.bin`
+2. `particle flash --usb firmware.bin`
+
+
+https://github.com/chuank/spark-protocol

@@ -1,175 +1,173 @@
-var gulp = require('gulp'),
-		gutil = require('gulp-util'),
-		browserify = require('browserify'),
-		buffer = require('gulp-buffer'),
-		concat = require('gulp-concat'),
-		jshint = require('gulp-jshint'),
-		less = require('gulp-less'),
-		minifyCSS = require('gulp-minify-css'),
-		source = require('vinyl-source-stream'),
-		sourcemaps = require('gulp-sourcemaps'),
-		stylish = require('jshint-stylish'),
-		uglify = require('gulp-uglify');
+'use strict';
 
-var production = false;
+const config = {
+  shared: {
+    js: {
+      src: `./src/shared/js`
+    },
+    scss: {
+      src: `./src/shared/scss`
+    }
+  },
+  presentation: {
+    js: {
+      src: `./src/presentation/js`,
+      dst: `./dist/presentation/js`
+    },
+    scss: {
+      src: `./src/presentation/scss`,
+      dst: `./dist/presentation/css`
+    }
+  },
+  server: {
+    js: {
+      src: `./src/server`,
+      dst: `./dist/server`
+    }
+  },
+  mobile: {
+    js: {
+      src: `./src/mobile/js`,
+      dst: `./dist/mobile/js`
+    },
+    scss: {
+      src: `./src/mobile/scss`,
+      dst: `./dist/mobile/css`
+    }
+  }
+};
 
-gulp.task('default', ['watch']);
+const autoprefixer = require(`autoprefixer`);
+const babelify = require(`babelify`);
+const babel = require(`gulp-babel`);
+const browserify = require(`browserify`);
+const buffer = require(`vinyl-buffer`);
+const cssnano = require(`gulp-cssnano`);
+const gulp = require(`gulp`);
+const gutil = require(`gulp-util`);
+const postcss = require(`gulp-postcss`);
+const sass = require(`gulp-sass`);
+const combineMq = require(`gulp-combine-mq`);
+const sourcemaps = require(`gulp-sourcemaps`);
+const source = require(`vinyl-source-stream`);
+const uglify = require(`gulp-uglify`);
+const watchify = require(`watchify`);
 
-gulp.task('presentation-lint', function(){
-	return gulp.src('./presentation/js/src/**/*.js')
-		.pipe(jshint())
-		.pipe(jshint.reporter(stylish));
+const stylesTask = function(src, dst) {
+  const processors = [
+    autoprefixer({browsers: [`IE >= 10`, `last 2 version`], cascade: false}),
+  ];
+  return gulp.src(`${src  }/**/*.scss`)
+    .pipe(sass().on(`error`, sass.logError))
+    .pipe(postcss(processors))
+    .pipe(combineMq({
+      beautify: true
+    }))
+    .pipe(gutil.env.type === `production` ? cssnano() : gutil.noop())
+    .pipe(gulp.dest(dst));
+};
+
+const scriptsTask = function(b, watch, name, dst) {
+  const bundler = (watch) ? watchify(b) : b;
+
+  function rebundle() {
+    console.log(`-> bundling ${  dst  }/${  name}`);
+    return bundler.bundle()
+      .on(`error`, function(err) { console.error(err); this.emit(`end`); })
+      .pipe(source(name))
+      .pipe(buffer())
+      .pipe(sourcemaps.init({ loadMaps: true }))
+      .pipe(gutil.env.type === `production` ? uglify() : gutil.noop())
+      .pipe(sourcemaps.write(`./`))
+      .pipe(gulp.dest(dst));
+  }
+
+  if (watch) {
+    bundler.on(`update`, function() {
+      rebundle();
+    });
+  }
+
+  return rebundle();
+};
+
+const presentationStylesTask = function() {
+  return stylesTask(config.presentation.scss.src, config.presentation.scss.dst);
+};
+
+const presentationScriptsTask = function(watch) {
+  const b = browserify(`${config.presentation.js.src  }/script.js`, { debug: gutil.env.type !== `production` })
+    .require(`${__dirname  }/${  config.shared.js.src  }/classes/ContentBase.js`, { expose: `ContentBase`})
+    .require(`${__dirname  }/${  config.presentation.js.src  }/classes/live-code-slide/index.js`, { expose: `LiveCodeSlide`})
+    .require(`${__dirname  }/${  config.presentation.js.src  }/classes/video-slide/index.js`, { expose: `VideoSlide`})
+    .require(`${__dirname  }/${  config.presentation.js.src  }/classes/heart-rate-slide/index.js`, { expose: `HeartRateSlide`})
+    .require(`${__dirname  }/${  config.presentation.js.src  }/classes/shake-your-phones-slide/index.js`, { expose: `ShakeYourPhonesSlide`})
+    .require(`${__dirname  }/${  config.presentation.js.src  }/classes/highest-heartrate-game-slide/index.js`, { expose: `HighestHeartrateGameSlide`})
+    .require(`${__dirname  }/${  config.presentation.js.src  }/classes/lowest-heartrate-game-slide/index.js`, { expose: `LowestHeartrateGameSlide`})
+    .require(`${__dirname  }/${  config.presentation.js.src  }/classes/react-phones-slide/index.js`, { expose: `ReactPhonesSlide`})
+    .require(`${__dirname  }/${  config.presentation.js.src  }/classes/spacebrew-dance-game-slide/index.js`, { expose: `SpacebrewDanceGameSlide`})
+    .transform(babelify);
+
+  return scriptsTask(b, watch, `script.js`, config.presentation.js.dst);
+};
+
+const presentationVendorsTask = function(watch) {
+  const b = browserify(`${config.presentation.js.src  }/vendors.js`, { debug: gutil.env.type !== `production` })
+    .transform(babelify);
+
+  return scriptsTask(b, watch, `vendors.js`, config.presentation.js.dst);
+};
+
+const mobileStylesTask = function() {
+  return stylesTask(config.mobile.scss.src, config.mobile.scss.dst);
+};
+
+const mobileScriptsTask = function(watch) {
+  const b = browserify(`${config.mobile.js.src  }/script.js`, { debug: gutil.env.type !== `production` })
+    .require(`${__dirname  }/${  config.mobile.js.src  }/classes/shake-your-phones-slide/index.js`, { expose: `ShakeYourPhonesSlide`})
+    .require(`${__dirname  }/${  config.mobile.js.src  }/classes/react-phones-slide/index.js`, { expose: `ReactPhonesSlide`})
+    .transform(babelify);
+
+  return scriptsTask(b, watch, `script.js`, config.mobile.js.dst);
+};
+
+const mobileVendorsTask = function(watch) {
+  const b = browserify(`${config.mobile.js.src  }/vendors.js`, { debug: gutil.env.type !== `production` })
+    .transform(babelify);
+
+  return scriptsTask(b, watch, `vendors.js`, config.mobile.js.dst);
+};
+
+const serverScriptsTask = function() {
+  return gulp.src(`${config.server.js.src  }/**/*.js`)
+    .pipe(babel())
+    .pipe(gulp.dest(config.server.js.dst));
+};
+
+gulp.task(`presentation-styles`, presentationStylesTask);
+gulp.task(`presentation-scripts`, function() {
+  return presentationScriptsTask(false);
+});
+gulp.task(`presentation-vendors`, function() {
+  return presentationVendorsTask(false);
 });
 
-gulp.task('presentation-js', ['presentation-lint'], function(){
-
-	var bundler = browserify({
-		entries: ['./presentation/js/src/script.js'],
-		debug: !production
-	});
-
-	bundler.require(__dirname + '/shared/js/Constants.js', { expose: 'Constants'});
-	bundler.require(__dirname + '/shared/js/classes/slides/ContentBase.js', { expose: 'shared/ContentBase'});
-	bundler.require(__dirname + '/shared/js/classes/IFrameBridge.js', { expose: 'shared/IFrameBridge'});
-	bundler.require(__dirname + '/shared/js/classes/Presentation.js', { expose: 'shared/Presentation'});
-	bundler.require(__dirname + '/shared/js/classes/MobileServerBridge.js', { expose: 'shared/MobileServerBridge'});
-
-	bundler.require(__dirname + '/presentation/js/src/classes/slides/title/index.js', { expose: 'slides/TitleSlide'});
-	bundler.require(__dirname + '/presentation/js/src/classes/slides/intro-poster/index.js', { expose: 'slides/IntroPoster'});
-	bundler.require(__dirname + '/presentation/js/src/classes/slides/video-slide/index.js', { expose: 'slides/VideoSlide'});
-	bundler.require(__dirname + '/presentation/js/src/classes/slides/shake-your-phones/index.js', { expose: 'slides/ShakeYourPhones'});
-	bundler.require(__dirname + '/presentation/js/src/classes/slides/highest-heartrate-game/index.js', { expose: 'slides/HighestHeartrateGame'});
-	bundler.require(__dirname + '/presentation/js/src/classes/slides/lowest-heartrate-game/index.js', { expose: 'slides/LowestHeartrateGame'});
-	bundler.require(__dirname + '/presentation/js/src/classes/slides/childapp-editor/index.js', { expose: 'slides/ChildAppEditor'});
-	bundler.require(__dirname + '/presentation/js/src/classes/slides/react-phones/index.js', { expose: 'slides/ReactPhones'});
-	bundler.require(__dirname + '/presentation/js/src/classes/slides/spacebrew-dance-game/index.js', { expose: 'slides/SpacebrewDanceGame'});
-	bundler.require(__dirname + '/presentation/js/src/classes/slides/raffle/index.js', { expose: 'slides/Raffle'});
-
-	return bundler.bundle()
-		.on('error', function(err) {
-			gutil.log(err.message);
-			gutil.beep();
-			this.emit('end');
-		})
-		.pipe(source('script.min.js'))
-		.pipe(buffer())
-		.pipe(production ? gutil.noop() : sourcemaps.init({loadMaps: true}))
-    .pipe(production ? uglify() : gutil.noop())
-    .pipe(production ? gutil.noop() : sourcemaps.write('./', {}))
-    .pipe(gulp.dest('./presentation/js'));
+gulp.task(`mobile-styles`, mobileStylesTask);
+gulp.task(`mobile-scripts`, function() {
+  return mobileScriptsTask(false);
+});
+gulp.task(`mobile-vendors`, function() {
+  return mobileVendorsTask(false);
 });
 
-gulp.task('presentation-styles', function(){
-	return gulp.src('./presentation/css/src/style.less')
-		.pipe(sourcemaps.init())
-		.pipe(less())
-		.pipe(sourcemaps.write('./'))
-		.on('error', function(err) {
-			gutil.log(err.message);
-			gutil.beep();
-			this.emit('end');
-		})
-		.pipe(production ? minifyCSS() : gutil.noop())
-		.pipe(gulp.dest('./presentation/css'));
+gulp.task(`server-scripts`, serverScriptsTask);
+
+gulp.task(`watch`, [`presentation-styles`, `mobile-styles`, `server-scripts`], function() {
+  gulp.watch(`${config.presentation.scss.src  }/**/*.scss`, [`presentation-styles`]);
+  gulp.watch(`${config.mobile.scss.src  }/**/*.scss`, [`mobile-styles`]);
+  gulp.watch(`${config.server.js.src  }/**/*.js`, [`server-scripts`]);
+  presentationScriptsTask(true);
+  mobileScriptsTask(true);
 });
 
-gulp.task('presentation-vendors-js', function(){
-	return gulp.src([
-		'presentation/js/vendors/jquery.min.js',
-		'presentation/js/vendors/underscore.min.js',
-		'presentation/js/vendors/bean.min.js',
-		'presentation/js/vendors/bootstrap.js',
-		'presentation/js/vendors/jquery.geturlvars.js',
-		'presentation/js/vendors/rAF.js',
-		'presentation/js/vendors/easeljs-0.7.1.min.js',
-		'presentation/js/vendors/preloadjs-0.4.1.min.js',
-		'presentation/js/vendors/sb-1.4.1.js',
-		'presentation/codemirror/lib/codemirror.js',
-		'presentation/codemirror/mode/javascript/javascript.js',
-		'presentation/codemirror/mode/clike/clike.js',
-		'presentation/codemirror/addon/hint/show-hint.js',
-		'presentation/codemirror/addon/hint/javascript-hint.js',
-      ])
-	.pipe(concat('vendors.min.js'))
-	//.pipe(uglify())
-	.pipe(gulp.dest('./presentation/js'));
-});
-
-gulp.task('server-lint', function(){
-	return gulp.src('./server.js')
-		.pipe(jshint())
-		.pipe(jshint.reporter(stylish));
-});
-
-gulp.task('mobile-lint', function(){
-	return gulp.src(['./server/www/src/js/**/*.js', '!./server/www/src/js/vendors/**/*.js'])
-		.pipe(jshint())
-		.pipe(jshint.reporter(stylish));
-});
-
-gulp.task('mobile-js', ['mobile-lint'], function(){
-
-	var bundler = browserify({
-		entries: ['./server/www/src/js/script.js'],
-		debug: !production
-	});
-
-	bundler.require(__dirname + '/shared/js/Constants.js', { expose: 'Constants'});
-	bundler.require(__dirname + '/shared/js/classes/slides/ContentBase.js', { expose: 'shared/ContentBase'});
-	bundler.require(__dirname + '/shared/js/classes/IFrameBridge.js', { expose: 'shared/IFrameBridge'});
-	bundler.require(__dirname + '/shared/js/classes/Presentation.js', { expose: 'shared/Presentation'});
-	bundler.require(__dirname + '/shared/js/classes/MobileServerBridge.js', { expose: 'shared/MobileServerBridge'});
-
-	bundler.require(__dirname + '/server/www/src/js/classes/slides/shake-your-phones/index.js', { expose: 'slides/ShakeYourPhones'});
-	bundler.require(__dirname + '/server/www/src/js/classes/slides/react-phones/index.js', { expose: 'slides/ReactPhones'});
-
-	return bundler.bundle()
-		.on('error', function(err) {
-			gutil.log(err.message);
-			gutil.beep();
-			this.emit('end');
-		})
-		.pipe(source('script.min.js'))
-		.pipe(buffer())
-		.pipe(production ? gutil.noop() : sourcemaps.init({loadMaps: true}))
-    .pipe(production ? uglify() : gutil.noop())
-    .pipe(production ? gutil.noop() : sourcemaps.write('./', {}))
-    .pipe(gulp.dest('./server/www/live/js'));
-});
-
-gulp.task('mobile-styles', function(){
-	return gulp.src('./server/www/src/css/style.less')
-		.pipe(sourcemaps.init())
-		.pipe(less())
-		.pipe(sourcemaps.write('./'))
-		.on('error', function(err) {
-			gutil.log(err.message);
-			gutil.beep();
-			this.emit('end');
-		})
-		.pipe(production ? minifyCSS() : gutil.noop())
-		.pipe(gulp.dest('./server/www/live/css'));
-});
-
-gulp.task('mobile-vendors-js', function(){
-	return gulp.src([
-		'./server/www/src/js/vendors/jquery.min.js',
-		'./server/www/src/js/vendors/bean.min.js',
-		'./server/www/src/js/vendors/modernizr.min.js',
-	])
-	.pipe(concat('vendors.min.js'))
-	//.pipe(uglify())
-	.pipe(gulp.dest('./server/www/live/js'));
-});
-
-gulp.task('default', ['watch']);
-
-gulp.task('watch', ['presentation-js', 'presentation-styles', 'mobile-js', 'mobile-styles'], function(){
-	gulp.watch('presentation/js/src/**/**', ['presentation-js']);
-	gulp.watch('presentation/css/src/**/*.less', ['presentation-styles']);
-
-	gulp.watch('server/www/src/js/**/**', ['mobile-js']);
-	gulp.watch('server/www/src/css/**/*.less', ['mobile-styles']);
-
-	gulp.watch('shared/js/**/**', ['presentation-js', 'mobile-js']);
-});
+gulp.task(`default`, [`watch`]);

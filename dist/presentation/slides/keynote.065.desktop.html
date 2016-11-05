@@ -1,0 +1,66 @@
+<template>
+  <div class="slide" style="display: flex; width: 100%;">
+    <div class="slide-content" style="display: flex; width: 100%;">
+      <div class="live-code" style="display: flex; width: 100%;" data-entry-path="demos/demo-tessel-ambient" data-output-path="tmp/demo-tessel-ambient">
+        <div class="split-pane fixed-left">
+          <div class="split-pane-component" style="width: 20em; background: black; display: flex; align-items: center;">
+            <canvas data-type="webcam" data-source="#webcam-video" style="width: 100%;"></canvas>
+          </div>
+          <div class="split-pane-divider divider" style="background: #aaa; left: 20em; width: 5px;"></div>
+          <div class="split-pane-component" style="left: 20em; margin-left: 5px; display: flex; flex-direction: column;">
+
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item"><a class="nav-link" href="#" aria-controls="index.js" role="tab">index.js</a></li>
+              <li class="nav-item"><a class="nav-link" href="#" aria-controls="terminal" role="tab">Terminal</a></li>
+            </ul>
+            <div class="tab-content" style="height: 100%; overflow: auto;">
+              <div role="tabpanel" class="tab-pane" data-tab-id="index.js" style="position: relative;">
+                <textarea data-type="code" data-mode="javascript" data-language="javascript" data-file="index.js"></textarea>
+              </div>
+              <div role="tabpanel" class="tab-pane tab-pane-full-height" data-tab-id="terminal" style="position: relative;">
+                <div data-type="terminal" data-dir="tmp/demo-tessel-ambient" data-autorun="yarn"></div>
+              </div>
+            </div>
+
+            <div class="btn-group" role="group" style="position: absolute; top: 0; right: 0; z-index: 10;">
+              <button type="button" data-target="all" data-type="save-button" class="btn btn-secondary"><i class="fa fa-4x fa-save"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script type="text/template">
+($slideHolder => {
+
+  const LiveCodeSlide = require('LiveCodeSlide').default;
+
+  const init = () => {
+    const liveCode = new LiveCodeSlide($slideHolder, {}, () => {
+      //livecode created callback
+    });
+
+    //manual manage tabs, as we don't want to work with element ids
+    $slideHolder.find(`a[role=tab]`).click(e => {
+      e.preventDefault();
+      const tabId = $(e.target).attr(`aria-controls`);
+      const $tab = $slideHolder.find(`[data-tab-id="${tabId}"]`);
+      $slideHolder.find(`.nav-tabs .active, .tab-content .active`).removeClass(`active`);
+      $(e.target).addClass(`active`);
+      $tab.addClass(`active`);
+      liveCode.layout();
+    });
+
+    //enable split pane
+    $slideHolder.find(`div.split-pane`).splitPane();
+    $slideHolder.find(`div.split-pane`).on(`resize`, () => liveCode.layout());
+
+    //select the first tab
+    requestAnimationFrame(() => $slideHolder.find(`a[role=tab]`).first().click());
+  }
+
+  init();
+
+})(document.$slideHolder);
+</script><img onLoad="var s = document.createElement('script'); s.innerHTML = this.previousSibling.innerHTML; document.$slideHolder = $(this).closest('.slide-frame'); this.parentNode.appendChild(s);" style="display: none;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="/>
+</template>

@@ -1,4 +1,2 @@
-/child-app
-/presentation
-/spacebrew
-/spark
+/dist/presentation/demos
+/dist/presentation/vendors

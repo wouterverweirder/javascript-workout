@@ -1,0 +1,140 @@
+{"frames": {
+
+"flag-moving1.png":
+{
+	"frame": {"x":1,"y":985,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"flag-moving2.png":
+{
+	"frame": {"x":35,"y":985,"w":29,"h":32},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":29,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"flag-moving3.png":
+{
+	"frame": {"x":66,"y":985,"w":23,"h":32},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":23,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+"flagpole.png":
+{
+	"frame": {"x":1,"y":431,"w":32,"h":336},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":336},
+	"sourceSize": {"w":32,"h":336}
+},
+"ground.png":
+{
+	"frame": {"x":1,"y":769,"w":88,"h":82},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":88,"h":82},
+	"sourceSize": {"w":88,"h":82}
+},
+"hills.png":
+{
+	"frame": {"x":1,"y":1,"w":510,"h":428},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":510,"h":428},
+	"sourceSize": {"w":510,"h":428}
+},
+"mario-jump.png":
+{
+	"frame": {"x":91,"y":967,"w":32,"h":54},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":5,"w":32,"h":54},
+	"sourceSize": {"w":32,"h":64}
+},
+"mario-run-1.png":
+{
+	"frame": {"x":69,"y":910,"w":31,"h":55},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":1,"y":9,"w":31,"h":55},
+	"sourceSize": {"w":32,"h":64}
+},
+"mario-run-2.png":
+{
+	"frame": {"x":69,"y":853,"w":32,"h":55},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":9,"w":32,"h":55},
+	"sourceSize": {"w":32,"h":64}
+},
+"mario-run-3.png":
+{
+	"frame": {"x":102,"y":910,"w":32,"h":54},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":9,"w":32,"h":54},
+	"sourceSize": {"w":32,"h":64}
+},
+"mario-run-4.png":
+{
+	"frame": {"x":69,"y":853,"w":32,"h":55},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":9,"w":32,"h":55},
+	"sourceSize": {"w":32,"h":64}
+},
+"peach-jump.png":
+{
+	"frame": {"x":1,"y":853,"w":32,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":64},
+	"sourceSize": {"w":32,"h":64}
+},
+"peach-run-1.png":
+{
+	"frame": {"x":1,"y":919,"w":32,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":64},
+	"sourceSize": {"w":32,"h":64}
+},
+"peach-run-2.png":
+{
+	"frame": {"x":35,"y":853,"w":32,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":64},
+	"sourceSize": {"w":32,"h":64}
+},
+"peach-run-3.png":
+{
+	"frame": {"x":35,"y":919,"w":32,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":64},
+	"sourceSize": {"w":32,"h":64}
+},
+"peach-run-4.png":
+{
+	"frame": {"x":35,"y":853,"w":32,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":64},
+	"sourceSize": {"w":32,"h":64}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "mario-graphics.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:ce855f89539aaa912ef5a618716be2aa:626fda315a0ea2c4a7b67dcf776b1cf2:850609434311c76dcfba5595d7fa6dae$"
+}
+}
