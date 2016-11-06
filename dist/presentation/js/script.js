@@ -5926,8 +5926,8 @@ require('es6-promise').polyfill();
   var init = function init() {
     var settings = {
       presentationPath: presentationPath,
-      // mobileServerUrl: 'https://bbridges.herokuapp.com',
-      mobileServerUrl: 'http://localhost:5000',
+      mobileServerUrl: 'https://jsworkout.herokuapp.com',
+      // mobileServerUrl: `http://localhost:5000`,
       mobileServerUsername: 'wouter.verweirder@gmail.com',
       mobileServerPassword: 'geheim'
     };

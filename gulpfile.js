@@ -17,7 +17,8 @@ const config = {
     scss: {
       src: `./src/presentation/scss`,
       dst: `./dist/presentation/css`
-    }
+    },
+    slides: `./dist/presentation/slides`
   },
   server: {
     js: {
@@ -45,6 +46,8 @@ const buffer = require(`vinyl-buffer`);
 const cssnano = require(`gulp-cssnano`);
 const gulp = require(`gulp`);
 const gutil = require(`gulp-util`);
+const imagemin = require(`gulp-imagemin`);
+const imageminJpegRecompress = require(`imagemin-jpeg-recompress`);
 const postcss = require(`gulp-postcss`);
 const sass = require(`gulp-sass`);
 const combineMq = require(`gulp-combine-mq`);
@@ -139,11 +142,24 @@ const mobileVendorsTask = function(watch) {
 };
 
 const serverScriptsTask = function() {
-  return gulp.src(`${config.server.js.src  }/**/*.js`)
+  return gulp.src(`${config.server.js.src}/**/*.js`)
     .pipe(babel())
     .pipe(gulp.dest(config.server.js.dst));
 };
 
+const presentationImagesTask = function() {
+  return gulp.src(`${config.presentation.slides}/*`)
+        .pipe(imagemin([
+          imagemin.gifsicle(),
+          imagemin.jpegtran(),
+          imagemin.optipng(),
+          imagemin.svgo(),
+          imageminJpegRecompress()
+        ]))
+        .pipe(gulp.dest(`${config.presentation.slides}`));
+};
+
+gulp.task(`presentation-images`, presentationImagesTask);
 gulp.task(`presentation-styles`, presentationStylesTask);
 gulp.task(`presentation-scripts`, function() {
   return presentationScriptsTask(false);

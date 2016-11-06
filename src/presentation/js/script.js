@@ -12,8 +12,8 @@ import SlidesFolderParser from '../../server/classes/SlidesFolderParser';
   const init = () => {
     const settings = {
       presentationPath: presentationPath,
-      // mobileServerUrl: 'https://bbridges.herokuapp.com',
-      mobileServerUrl: `http://localhost:5000`,
+      mobileServerUrl: 'https://jsworkout.herokuapp.com',
+      // mobileServerUrl: `http://localhost:5000`,
       mobileServerUsername: `wouter.verweirder@gmail.com`,
       mobileServerPassword: `geheim`
     };
