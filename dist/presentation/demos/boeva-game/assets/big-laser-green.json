@@ -1,0 +1,124 @@
+{"frames": {
+
+"Big laser green_00010.png":
+{
+	"frame": {"x":1,"y":1,"w":3,"h":3},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":3,"h":3},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00011.png":
+{
+	"frame": {"x":928,"y":1,"w":429,"h":441},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":90,"y":67,"w":429,"h":441},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00012.png":
+{
+	"frame": {"x":1513,"y":457,"w":491,"h":479},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":85,"y":48,"w":491,"h":479},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00013.png":
+{
+	"frame": {"x":1,"y":903,"w":520,"h":488},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":85,"y":44,"w":520,"h":488},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00014.png":
+{
+	"frame": {"x":1408,"y":938,"w":588,"h":495},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":84,"y":40,"w":588,"h":495},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00015.png":
+{
+	"frame": {"x":941,"y":1435,"w":755,"h":496},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":83,"y":40,"w":755,"h":496},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00016.png":
+{
+	"frame": {"x":1,"y":1398,"w":938,"h":495},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":83,"y":40,"w":938,"h":495},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00017.png":
+{
+	"frame": {"x":523,"y":923,"w":883,"h":473},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":138,"y":51,"w":883,"h":473},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00018.png":
+{
+	"frame": {"x":705,"y":457,"w":806,"h":464},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":214,"y":56,"w":806,"h":464},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00019.png":
+{
+	"frame": {"x":1,"y":440,"w":702,"h":461},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":318,"y":57,"w":702,"h":461},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00020.png":
+{
+	"frame": {"x":1359,"y":1,"w":605,"h":454},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":413,"y":61,"w":605,"h":454},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00021.png":
+{
+	"frame": {"x":418,"y":1,"w":508,"h":437},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":508,"y":69,"w":508,"h":437},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00022.png":
+{
+	"frame": {"x":6,"y":1,"w":410,"h":392},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":602,"y":92,"w":410,"h":392},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big laser green_00023.png":
+{
+	"frame": {"x":1,"y":1,"w":3,"h":3},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":3,"h":3},
+	"sourceSize": {"w":1024,"h":576}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "big-laser-green.png",
+	"format": "RGBA8888",
+	"size": {"w":2048,"h":2048},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:4281a0eb3d40ad6850f116299c86513c:4c53a3ad6b851e08b7d8b1acc1ef6849:e87e76c6d8a8ed8ecb8a3d292e33871c$"
+}
+}

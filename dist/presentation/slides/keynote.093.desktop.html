@@ -1,0 +1,25 @@
+<template>
+  <webview style="width: 100%; height: 100%;" />
+<script type="text/template">
+
+(function($slideHolder){
+
+  var ContentBase = require('ContentBase').default;
+
+  function init() {
+    new WebViewSlide($slideHolder);
+  }
+
+  class WebViewSlide extends ContentBase {
+    constructor($slideHolder) {
+      super($slideHolder);
+      this.$webview = $slideHolder.find('webview');
+      this.$webview.attr('src', 'demos/patatap/index.html');
+    }
+  }
+
+  init();
+
+})(document.$slideHolder);
+</script><img onLoad="var s = document.createElement('script'); s.innerHTML = this.previousSibling.innerHTML; document.$slideHolder = $(this).closest('.slide-frame'); this.parentNode.appendChild(s);" style="display: none;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="/>
+</template>

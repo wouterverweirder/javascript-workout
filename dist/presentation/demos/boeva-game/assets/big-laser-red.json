@@ -1,0 +1,124 @@
+{"frames": {
+
+"Big red laser_00010.png":
+{
+	"frame": {"x":1,"y":1,"w":3,"h":3},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":3,"h":3},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00011.png":
+{
+	"frame": {"x":423,"y":1,"w":442,"h":454},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":504,"y":61,"w":442,"h":454},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00012.png":
+{
+	"frame": {"x":717,"y":463,"w":495,"h":488},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":457,"y":44,"w":495,"h":488},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00013.png":
+{
+	"frame": {"x":1,"y":943,"w":516,"h":496},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":436,"y":40,"w":516,"h":496},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00014.png":
+{
+	"frame": {"x":1421,"y":967,"w":592,"h":508},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":361,"y":34,"w":592,"h":508},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00015.png":
+{
+	"frame": {"x":958,"y":1477,"w":784,"h":510},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":171,"y":33,"w":784,"h":510},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00016.png":
+{
+	"frame": {"x":1,"y":1455,"w":955,"h":508},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":34,"w":955,"h":508},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00017.png":
+{
+	"frame": {"x":519,"y":967,"w":900,"h":486},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":45,"w":900,"h":486},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00018.png":
+{
+	"frame": {"x":1214,"y":479,"w":815,"h":486},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":45,"w":815,"h":486},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00019.png":
+{
+	"frame": {"x":1,"y":457,"w":714,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":46,"w":714,"h":484},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00020.png":
+{
+	"frame": {"x":1383,"y":1,"w":613,"h":476},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":50,"w":613,"h":476},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00021.png":
+{
+	"frame": {"x":867,"y":1,"w":514,"h":460},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":58,"w":514,"h":460},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00022.png":
+{
+	"frame": {"x":6,"y":1,"w":415,"h":420},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":78,"w":415,"h":420},
+	"sourceSize": {"w":1024,"h":576}
+},
+"Big red laser_00023.png":
+{
+	"frame": {"x":1,"y":1,"w":3,"h":3},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":3,"h":3},
+	"sourceSize": {"w":1024,"h":576}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "big-laser-red.png",
+	"format": "RGBA8888",
+	"size": {"w":2048,"h":2048},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:fd91a3fd03cd35d74dc9bec8d5eb5551:5fe7e5b78361980553f628d40d0cabd3:55a0201ab69e64e4cdcef3cadf533129$"
+}
+}

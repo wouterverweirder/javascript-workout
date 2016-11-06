@@ -2,4 +2,5 @@
 /dist/presentation/demos
 /dist/presentation/vendors
 /dist/presentation/assets
+/dist/presentation/slides/*.desktop.*
 /dist/spark-pulse-udp-bin

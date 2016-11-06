@@ -1,0 +1,108 @@
+{"frames": {
+
+"laser green_00010.png":
+{
+	"frame": {"x":1834,"y":1,"w":3,"h":3},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":3,"h":3},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00011.png":
+{
+	"frame": {"x":1,"y":1559,"w":534,"h":484},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":75,"y":46,"w":534,"h":484},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00012.png":
+{
+	"frame": {"x":709,"y":1043,"w":687,"h":512},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":71,"y":32,"w":687,"h":512},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00013.png":
+{
+	"frame": {"x":959,"y":522,"w":837,"h":518},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":68,"y":29,"w":837,"h":518},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00014.png":
+{
+	"frame": {"x":1,"y":1,"w":956,"h":520},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":68,"y":28,"w":956,"h":520},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00015.png":
+{
+	"frame": {"x":959,"y":1,"w":873,"h":519},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":151,"y":29,"w":873,"h":519},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00016.png":
+{
+	"frame": {"x":1,"y":523,"w":790,"h":518},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":234,"y":29,"w":790,"h":518},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00017.png":
+{
+	"frame": {"x":1,"y":1043,"w":706,"h":514},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":318,"y":31,"w":706,"h":514},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00018.png":
+{
+	"frame": {"x":1398,"y":1042,"w":620,"h":506},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":404,"y":35,"w":620,"h":506},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00019.png":
+{
+	"frame": {"x":990,"y":1557,"w":535,"h":490},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":489,"y":43,"w":535,"h":490},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00020.png":
+{
+	"frame": {"x":537,"y":1559,"w":451,"h":452},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":573,"y":62,"w":451,"h":452},
+	"sourceSize": {"w":1024,"h":576}
+},
+"laser green_00021.png":
+{
+	"frame": {"x":1834,"y":1,"w":3,"h":3},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":0,"w":3,"h":3},
+	"sourceSize": {"w":1024,"h":576}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "single-laser-green.png",
+	"format": "RGBA8888",
+	"size": {"w":2048,"h":2048},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:36d4a0071857194d78541a5e799e90c0:5e89ce9480310239464a0e2291a998a3:cb9cf739a7a421a37cc8742d7158153b$"
+}
+}

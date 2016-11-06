@@ -1,0 +1,92 @@
+{"frames": {
+
+"Big hit red_001.png":
+{
+	"frame": {"x":1233,"y":1,"w":377,"h":377},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":52,"y":51,"w":377,"h":377},
+	"sourceSize": {"w":480,"h":480}
+},
+"Big hit red_002.png":
+{
+	"frame": {"x":833,"y":403,"w":391,"h":391},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":45,"y":44,"w":391,"h":391},
+	"sourceSize": {"w":480,"h":480}
+},
+"Big hit red_003.png":
+{
+	"frame": {"x":425,"y":1,"w":404,"h":404},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":38,"y":38,"w":404,"h":404},
+	"sourceSize": {"w":480,"h":480}
+},
+"Big hit red_004.png":
+{
+	"frame": {"x":1,"y":425,"w":414,"h":414},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":33,"y":33,"w":414,"h":414},
+	"sourceSize": {"w":480,"h":480}
+},
+"Big hit red_005.png":
+{
+	"frame": {"x":1,"y":1,"w":422,"h":422},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":29,"y":29,"w":422,"h":422},
+	"sourceSize": {"w":480,"h":480}
+},
+"Big hit red_006.png":
+{
+	"frame": {"x":417,"y":425,"w":414,"h":414},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":32,"y":34,"w":414,"h":414},
+	"sourceSize": {"w":480,"h":480}
+},
+"Big hit red_007.png":
+{
+	"frame": {"x":831,"y":1,"w":400,"h":400},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":40,"y":40,"w":400,"h":400},
+	"sourceSize": {"w":480,"h":480}
+},
+"Big hit red_008.png":
+{
+	"frame": {"x":1226,"y":403,"w":389,"h":389},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":46,"y":45,"w":389,"h":389},
+	"sourceSize": {"w":480,"h":480}
+},
+"Big hit red_009.png":
+{
+	"frame": {"x":1612,"y":1,"w":348,"h":348},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":66,"y":66,"w":348,"h":348},
+	"sourceSize": {"w":480,"h":480}
+},
+"Big hit red_010.png":
+{
+	"frame": {"x":1617,"y":351,"w":318,"h":318},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":81,"y":81,"w":318,"h":318},
+	"sourceSize": {"w":480,"h":480}
+}},
+"meta": {
+	"app": "http://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "big-hit-red.png",
+	"format": "RGBA8888",
+	"size": {"w":2048,"h":1024},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:613cab76631711ea456bfb6c0981ecf2:1408a296cda9102208ff261b0d3ea8b7:9be56905c4df7451406a26630be52a36$"
+}
+}

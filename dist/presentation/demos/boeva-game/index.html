@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Ketnet Boeva Game</title>
+</head>
+<style>
+html, body, #content{
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: black;
+}
+#content canvas {
+  opacity: 0;
+}
+@font-face {
+  font-family: 'PhuturexPhat';
+  src: url('assets/fonts/FUTUP___.eot');
+  src: local('☺'), url('assets/fonts/FUTUP___.woff') format('woff'), url('assets/fonts/FUTUP___.ttf') format('truetype'), url('assets/fonts/FUTUP___.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+</style>
+<body>
+  <span style="font-family: PhuturexPhat; position: absolute; top: 0; left: 0; opacity: 0;">PhuturexPhat font load</span>
+  <div id="content" style="background-image: url(assets/loading.gif); background-size: contain; background-position: center center; background-repeat: no-repeat;">
+  </div>
+  <script src="js/script.js"></script>
+</body>
+</html>
