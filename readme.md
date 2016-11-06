@@ -38,8 +38,8 @@ To link a spark-core to your local cloud, do the following after installing the 
 
 You will need to flash the firmware (spark/pulsesensor-udp) to the spark-core:
 
-1. `particle compile core pulsesensor-udp/ --saveTo firmware.bin`
-2. `particle flash --usb firmware.bin`
+1. `particle compile core src/spark-pulse-udp --saveTo dist/spark-pulse-udp.bin`
+2. `particle flash --usb dist/spark-pulse-udp.bin`
 
 
 https://github.com/chuank/spark-protocol
