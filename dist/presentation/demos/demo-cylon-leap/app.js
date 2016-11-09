@@ -1,7 +1,7 @@
 const Cylon = require("cylon");
 Cylon.robot({
   connections: {
-    arduino: { adaptor: "firmata", port: "/dev/cu.usbmodem1411" },
+    arduino: { adaptor: "firmata", port: "/dev/cu.usbmodem14141" },
     leap: { adaptor: "leapmotion" }
   },
   devices: {
