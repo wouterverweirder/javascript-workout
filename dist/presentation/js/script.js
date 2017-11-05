@@ -2784,7 +2784,7 @@ var SlideBridge = function (_SlideBridgeBase) {
 exports.default = SlideBridge;
 
 },{"../../../shared/js/classes/SlideBridge":48}],12:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -2808,10 +2808,11 @@ var getCameraConfig = function getCameraConfig(videoWidth) {
     MediaStreamTrack.getSources(function (mediaSources) {
       var sourceId = void 0;
       mediaSources.forEach(function (mediaSource) {
-        if (mediaSource.kind === "video") {
-          // if(!sourceId || mediaSource.label.toLowerCase().indexOf('facetime') === -1) {
-          sourceId = mediaSource.id;
-          // }
+        if (mediaSource.kind === 'video') {
+          console.log(mediaSource.label.toLowerCase());
+          if (!sourceId || mediaSource.label.toLowerCase().indexOf('facetime') === -1) {
+            sourceId = mediaSource.id;
+          }
         }
       });
       var cameraConfig = {

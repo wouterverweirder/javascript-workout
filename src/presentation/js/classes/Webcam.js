@@ -15,9 +15,10 @@ const getCameraConfig = videoWidth => {
       let sourceId;
       mediaSources.forEach(mediaSource => {
         if (mediaSource.kind === `video`) {
-          // if(!sourceId || mediaSource.label.toLowerCase().indexOf('facetime') === -1) {
-          sourceId = mediaSource.id;
-          // }
+          console.log(mediaSource.label.toLowerCase());
+          if(!sourceId || mediaSource.label.toLowerCase().indexOf(`facetime`) === -1) {
+            sourceId = mediaSource.id;
+          }
         }
       });
       const cameraConfig = {

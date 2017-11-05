@@ -50,7 +50,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     "width": 1280,
     "height": 700,
-    "fullscreen": false,
+    "fullscreen": true,
     "kiosk": false,
     "autoHideMenuBar": false
   });
