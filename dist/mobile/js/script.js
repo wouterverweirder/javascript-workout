@@ -863,9 +863,6 @@ var MobileServerBridge = function () {
     value: function connect() {
       var _this = this;
 
-      if (!this.settings.mobileServerUrl) {
-        return;
-      }
       console.log('MobileServerBridge.connect');
       //console.warn('MobileServerBridge disabled');
       //return;

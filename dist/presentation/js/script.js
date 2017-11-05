@@ -5292,8 +5292,8 @@ require('es6-promise').polyfill();
   var init = function init() {
     var settings = {
       presentationPath: presentationPath,
-      mobileServerUrl: 'https://jsworkout.herokuapp.com',
-      // mobileServerUrl: `http://localhost:5000`,
+      // mobileServerUrl: 'https://jsworkout.herokuapp.com',
+      mobileServerUrl: 'http://localhost:5000',
       mobileServerUsername: 'wouter.verweirder@gmail.com',
       mobileServerPassword: 'geheim'
     };
@@ -5560,9 +5560,6 @@ var MobileServerBridge = function () {
     value: function connect() {
       var _this = this;
 
-      if (!this.settings.mobileServerUrl) {
-        return;
-      }
       console.log('MobileServerBridge.connect');
       //console.warn('MobileServerBridge disabled');
       //return;
