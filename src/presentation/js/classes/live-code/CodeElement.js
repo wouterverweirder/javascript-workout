@@ -1,4 +1,4 @@
-const fs = requireNode(`fs-promise`);
+const fs = requireNode(`fs-extra`);
 
 export default class CodeElement {
   constructor(el, options) {
@@ -96,6 +96,10 @@ export default class CodeElement {
       .then(data => {
         this.setValue(data);
         return data;
+      })
+      .catch(e => {
+        this.setValue(``);
+        throw e;
       });
   }
 

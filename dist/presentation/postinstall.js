@@ -11,8 +11,6 @@ const init = () => {
   spawnPromised(`echo`, [`Installing Presentation Dependencies`])
     .then(() => spawnPromised(`echo`, [`> Installing Spark Server Dependencies`]))
     .then(() => spawnPromised(`npm`, [`install`], path.resolve(__dirname, `vendors`, `spark-server`)))
-    .then(() => spawnPromised(`echo`, [`> Installing Spacebrew Dependencies`]))
-    .then(() => spawnPromised(`npm`, [`install`], path.resolve(__dirname, `vendors`, `spacebrew`)))
     .then(() => spawnPromised(`echo`, [`> Installing Espruino IDE Dependencies`]))
     .then(() => spawnPromised(`npm`, [`install`], path.resolve(__dirname, `vendors`, `EspruinoWebIDE`)))
     .then(() => spawnPromised(`echo`, [`> Rebuilding node_modules for Electron`]))

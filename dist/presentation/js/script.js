@@ -7,17 +7,18 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
  * @license   Licensed under MIT license
  *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   4.0.5
+ * @version   4.1.1
  */
 
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.ES6Promise = factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global.ES6Promise = factory());
 }(this, (function () { 'use strict';
 
 function objectOrFunction(x) {
-  return typeof x === 'function' || typeof x === 'object' && x !== null;
+  var type = typeof x;
+  return x !== null && (type === 'object' || type === 'function');
 }
 
 function isFunction(x) {
@@ -25,12 +26,12 @@ function isFunction(x) {
 }
 
 var _isArray = undefined;
-if (!Array.isArray) {
+if (Array.isArray) {
+  _isArray = Array.isArray;
+} else {
   _isArray = function (x) {
     return Object.prototype.toString.call(x) === '[object Array]';
   };
-} else {
-  _isArray = Array.isArray;
 }
 
 var isArray = _isArray;
@@ -218,7 +219,7 @@ function then(onFulfillment, onRejection) {
   @return {Promise} a promise that will become fulfilled with the given
   `value`
 */
-function resolve(object) {
+function resolve$1(object) {
   /*jshint validthis:true */
   var Constructor = this;
 
@@ -227,7 +228,7 @@ function resolve(object) {
   }
 
   var promise = new Constructor(noop);
-  _resolve(promise, object);
+  resolve(promise, object);
   return promise;
 }
 
@@ -258,24 +259,24 @@ function getThen(promise) {
   }
 }
 
-function tryThen(then, value, fulfillmentHandler, rejectionHandler) {
+function tryThen(then$$1, value, fulfillmentHandler, rejectionHandler) {
   try {
-    then.call(value, fulfillmentHandler, rejectionHandler);
+    then$$1.call(value, fulfillmentHandler, rejectionHandler);
   } catch (e) {
     return e;
   }
 }
 
-function handleForeignThenable(promise, thenable, then) {
+function handleForeignThenable(promise, thenable, then$$1) {
   asap(function (promise) {
     var sealed = false;
-    var error = tryThen(then, thenable, function (value) {
+    var error = tryThen(then$$1, thenable, function (value) {
       if (sealed) {
         return;
       }
       sealed = true;
       if (thenable !== value) {
-        _resolve(promise, value);
+        resolve(promise, value);
       } else {
         fulfill(promise, value);
       }
@@ -285,12 +286,12 @@ function handleForeignThenable(promise, thenable, then) {
       }
       sealed = true;
 
-      _reject(promise, reason);
+      reject(promise, reason);
     }, 'Settle: ' + (promise._label || ' unknown promise'));
 
     if (!sealed && error) {
       sealed = true;
-      _reject(promise, error);
+      reject(promise, error);
     }
   }, promise);
 }
@@ -299,35 +300,36 @@ function handleOwnThenable(promise, thenable) {
   if (thenable._state === FULFILLED) {
     fulfill(promise, thenable._result);
   } else if (thenable._state === REJECTED) {
-    _reject(promise, thenable._result);
+    reject(promise, thenable._result);
   } else {
     subscribe(thenable, undefined, function (value) {
-      return _resolve(promise, value);
+      return resolve(promise, value);
     }, function (reason) {
-      return _reject(promise, reason);
+      return reject(promise, reason);
     });
   }
 }
 
-function handleMaybeThenable(promise, maybeThenable, then$$) {
-  if (maybeThenable.constructor === promise.constructor && then$$ === then && maybeThenable.constructor.resolve === resolve) {
+function handleMaybeThenable(promise, maybeThenable, then$$1) {
+  if (maybeThenable.constructor === promise.constructor && then$$1 === then && maybeThenable.constructor.resolve === resolve$1) {
     handleOwnThenable(promise, maybeThenable);
   } else {
-    if (then$$ === GET_THEN_ERROR) {
-      _reject(promise, GET_THEN_ERROR.error);
-    } else if (then$$ === undefined) {
+    if (then$$1 === GET_THEN_ERROR) {
+      reject(promise, GET_THEN_ERROR.error);
+      GET_THEN_ERROR.error = null;
+    } else if (then$$1 === undefined) {
       fulfill(promise, maybeThenable);
-    } else if (isFunction(then$$)) {
-      handleForeignThenable(promise, maybeThenable, then$$);
+    } else if (isFunction(then$$1)) {
+      handleForeignThenable(promise, maybeThenable, then$$1);
     } else {
       fulfill(promise, maybeThenable);
     }
   }
 }
 
-function _resolve(promise, value) {
+function resolve(promise, value) {
   if (promise === value) {
-    _reject(promise, selfFulfillment());
+    reject(promise, selfFulfillment());
   } else if (objectOrFunction(value)) {
     handleMaybeThenable(promise, value, getThen(value));
   } else {
@@ -356,7 +358,7 @@ function fulfill(promise, value) {
   }
 }
 
-function _reject(promise, reason) {
+function reject(promise, reason) {
   if (promise._state !== PENDING) {
     return;
   }
@@ -435,13 +437,13 @@ function invokeCallback(settled, promise, callback, detail) {
     if (value === TRY_CATCH_ERROR) {
       failed = true;
       error = value.error;
-      value = null;
+      value.error = null;
     } else {
       succeeded = true;
     }
 
     if (promise === value) {
-      _reject(promise, cannotReturnOwn());
+      reject(promise, cannotReturnOwn());
       return;
     }
   } else {
@@ -452,25 +454,25 @@ function invokeCallback(settled, promise, callback, detail) {
   if (promise._state !== PENDING) {
     // noop
   } else if (hasCallback && succeeded) {
-      _resolve(promise, value);
+      resolve(promise, value);
     } else if (failed) {
-      _reject(promise, error);
+      reject(promise, error);
     } else if (settled === FULFILLED) {
       fulfill(promise, value);
     } else if (settled === REJECTED) {
-      _reject(promise, value);
+      reject(promise, value);
     }
 }
 
 function initializePromise(promise, resolver) {
   try {
     resolver(function resolvePromise(value) {
-      _resolve(promise, value);
+      resolve(promise, value);
     }, function rejectPromise(reason) {
-      _reject(promise, reason);
+      reject(promise, reason);
     });
   } catch (e) {
-    _reject(promise, e);
+    reject(promise, e);
   }
 }
 
@@ -486,7 +488,7 @@ function makePromise(promise) {
   promise._subscribers = [];
 }
 
-function Enumerator(Constructor, input) {
+function Enumerator$1(Constructor, input) {
   this._instanceConstructor = Constructor;
   this.promise = new Constructor(noop);
 
@@ -495,7 +497,6 @@ function Enumerator(Constructor, input) {
   }
 
   if (isArray(input)) {
-    this._input = input;
     this.length = input.length;
     this._remaining = input.length;
 
@@ -505,34 +506,31 @@ function Enumerator(Constructor, input) {
       fulfill(this.promise, this._result);
     } else {
       this.length = this.length || 0;
-      this._enumerate();
+      this._enumerate(input);
       if (this._remaining === 0) {
         fulfill(this.promise, this._result);
       }
     }
   } else {
-    _reject(this.promise, validationError());
+    reject(this.promise, validationError());
   }
 }
 
 function validationError() {
   return new Error('Array Methods must be provided an Array');
-};
+}
 
-Enumerator.prototype._enumerate = function () {
-  var length = this.length;
-  var _input = this._input;
-
-  for (var i = 0; this._state === PENDING && i < length; i++) {
-    this._eachEntry(_input[i], i);
+Enumerator$1.prototype._enumerate = function (input) {
+  for (var i = 0; this._state === PENDING && i < input.length; i++) {
+    this._eachEntry(input[i], i);
   }
 };
 
-Enumerator.prototype._eachEntry = function (entry, i) {
+Enumerator$1.prototype._eachEntry = function (entry, i) {
   var c = this._instanceConstructor;
-  var resolve$$ = c.resolve;
+  var resolve$$1 = c.resolve;
 
-  if (resolve$$ === resolve) {
+  if (resolve$$1 === resolve$1) {
     var _then = getThen(entry);
 
     if (_then === then && entry._state !== PENDING) {
@@ -540,28 +538,28 @@ Enumerator.prototype._eachEntry = function (entry, i) {
     } else if (typeof _then !== 'function') {
       this._remaining--;
       this._result[i] = entry;
-    } else if (c === Promise) {
+    } else if (c === Promise$2) {
       var promise = new c(noop);
       handleMaybeThenable(promise, entry, _then);
       this._willSettleAt(promise, i);
     } else {
-      this._willSettleAt(new c(function (resolve$$) {
-        return resolve$$(entry);
+      this._willSettleAt(new c(function (resolve$$1) {
+        return resolve$$1(entry);
       }), i);
     }
   } else {
-    this._willSettleAt(resolve$$(entry), i);
+    this._willSettleAt(resolve$$1(entry), i);
   }
 };
 
-Enumerator.prototype._settledAt = function (state, i, value) {
+Enumerator$1.prototype._settledAt = function (state, i, value) {
   var promise = this.promise;
 
   if (promise._state === PENDING) {
     this._remaining--;
 
     if (state === REJECTED) {
-      _reject(promise, value);
+      reject(promise, value);
     } else {
       this._result[i] = value;
     }
@@ -572,7 +570,7 @@ Enumerator.prototype._settledAt = function (state, i, value) {
   }
 };
 
-Enumerator.prototype._willSettleAt = function (promise, i) {
+Enumerator$1.prototype._willSettleAt = function (promise, i) {
   var enumerator = this;
 
   subscribe(promise, undefined, function (value) {
@@ -629,8 +627,8 @@ Enumerator.prototype._willSettleAt = function (promise, i) {
   fulfilled, or rejected if any of them become rejected.
   @static
 */
-function all(entries) {
-  return new Enumerator(this, entries).promise;
+function all$1(entries) {
+  return new Enumerator$1(this, entries).promise;
 }
 
 /**
@@ -698,7 +696,7 @@ function all(entries) {
   @return {Promise} a promise which settles in the same way as the first passed
   promise to settle.
 */
-function race(entries) {
+function race$1(entries) {
   /*jshint validthis:true */
   var Constructor = this;
 
@@ -750,11 +748,11 @@ function race(entries) {
   Useful for tooling.
   @return {Promise} a promise rejected with the given `reason`.
 */
-function reject(reason) {
+function reject$1(reason) {
   /*jshint validthis:true */
   var Constructor = this;
   var promise = new Constructor(noop);
-  _reject(promise, reason);
+  reject(promise, reason);
   return promise;
 }
 
@@ -869,27 +867,27 @@ function needsNew() {
   Useful for tooling.
   @constructor
 */
-function Promise(resolver) {
+function Promise$2(resolver) {
   this[PROMISE_ID] = nextId();
   this._result = this._state = undefined;
   this._subscribers = [];
 
   if (noop !== resolver) {
     typeof resolver !== 'function' && needsResolver();
-    this instanceof Promise ? initializePromise(this, resolver) : needsNew();
+    this instanceof Promise$2 ? initializePromise(this, resolver) : needsNew();
   }
 }
 
-Promise.all = all;
-Promise.race = race;
-Promise.resolve = resolve;
-Promise.reject = reject;
-Promise._setScheduler = setScheduler;
-Promise._setAsap = setAsap;
-Promise._asap = asap;
+Promise$2.all = all$1;
+Promise$2.race = race$1;
+Promise$2.resolve = resolve$1;
+Promise$2.reject = reject$1;
+Promise$2._setScheduler = setScheduler;
+Promise$2._setAsap = setAsap;
+Promise$2._asap = asap;
 
-Promise.prototype = {
-  constructor: Promise,
+Promise$2.prototype = {
+  constructor: Promise$2,
 
   /**
     The primary way of interacting with a promise is through its `then` method,
@@ -1118,7 +1116,8 @@ Promise.prototype = {
   }
 };
 
-function polyfill() {
+/*global self*/
+function polyfill$1() {
     var local = undefined;
 
     if (typeof global !== 'undefined') {
@@ -1148,16 +1147,18 @@ function polyfill() {
         }
     }
 
-    local.Promise = Promise;
+    local.Promise = Promise$2;
 }
 
 // Strange compat..
-Promise.polyfill = polyfill;
-Promise.Promise = Promise;
+Promise$2.polyfill = polyfill$1;
+Promise$2.Promise = Promise$2;
 
-return Promise;
+return Promise$2;
 
 })));
+
+
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
@@ -1644,6 +1645,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -1676,6 +1681,28 @@ process.umask = function() { return 0; };
     })(),
     formData: 'FormData' in self,
     arrayBuffer: 'ArrayBuffer' in self
+  }
+
+  if (support.arrayBuffer) {
+    var viewClasses = [
+      '[object Int8Array]',
+      '[object Uint8Array]',
+      '[object Uint8ClampedArray]',
+      '[object Int16Array]',
+      '[object Uint16Array]',
+      '[object Int32Array]',
+      '[object Uint32Array]',
+      '[object Float32Array]',
+      '[object Float64Array]'
+    ]
+
+    var isDataView = function(obj) {
+      return obj && DataView.prototype.isPrototypeOf(obj)
+    }
+
+    var isArrayBufferView = ArrayBuffer.isView || function(obj) {
+      return obj && viewClasses.indexOf(Object.prototype.toString.call(obj)) > -1
+    }
   }
 
   function normalizeName(name) {
@@ -1720,7 +1747,10 @@ process.umask = function() { return 0; };
       headers.forEach(function(value, name) {
         this.append(name, value)
       }, this)
-
+    } else if (Array.isArray(headers)) {
+      headers.forEach(function(header) {
+        this.append(header[0], header[1])
+      }, this)
     } else if (headers) {
       Object.getOwnPropertyNames(headers).forEach(function(name) {
         this.append(name, headers[name])
@@ -1731,12 +1761,8 @@ process.umask = function() { return 0; };
   Headers.prototype.append = function(name, value) {
     name = normalizeName(name)
     value = normalizeValue(value)
-    var list = this.map[name]
-    if (!list) {
-      list = []
-      this.map[name] = list
-    }
-    list.push(value)
+    var oldValue = this.map[name]
+    this.map[name] = oldValue ? oldValue+','+value : value
   }
 
   Headers.prototype['delete'] = function(name) {
@@ -1744,12 +1770,8 @@ process.umask = function() { return 0; };
   }
 
   Headers.prototype.get = function(name) {
-    var values = this.map[normalizeName(name)]
-    return values ? values[0] : null
-  }
-
-  Headers.prototype.getAll = function(name) {
-    return this.map[normalizeName(name)] || []
+    name = normalizeName(name)
+    return this.has(name) ? this.map[name] : null
   }
 
   Headers.prototype.has = function(name) {
@@ -1757,15 +1779,15 @@ process.umask = function() { return 0; };
   }
 
   Headers.prototype.set = function(name, value) {
-    this.map[normalizeName(name)] = [normalizeValue(value)]
+    this.map[normalizeName(name)] = normalizeValue(value)
   }
 
   Headers.prototype.forEach = function(callback, thisArg) {
-    Object.getOwnPropertyNames(this.map).forEach(function(name) {
-      this.map[name].forEach(function(value) {
-        callback.call(thisArg, value, name, this)
-      }, this)
-    }, this)
+    for (var name in this.map) {
+      if (this.map.hasOwnProperty(name)) {
+        callback.call(thisArg, this.map[name], name, this)
+      }
+    }
   }
 
   Headers.prototype.keys = function() {
@@ -1810,14 +1832,36 @@ process.umask = function() { return 0; };
 
   function readBlobAsArrayBuffer(blob) {
     var reader = new FileReader()
+    var promise = fileReaderReady(reader)
     reader.readAsArrayBuffer(blob)
-    return fileReaderReady(reader)
+    return promise
   }
 
   function readBlobAsText(blob) {
     var reader = new FileReader()
+    var promise = fileReaderReady(reader)
     reader.readAsText(blob)
-    return fileReaderReady(reader)
+    return promise
+  }
+
+  function readArrayBufferAsText(buf) {
+    var view = new Uint8Array(buf)
+    var chars = new Array(view.length)
+
+    for (var i = 0; i < view.length; i++) {
+      chars[i] = String.fromCharCode(view[i])
+    }
+    return chars.join('')
+  }
+
+  function bufferClone(buf) {
+    if (buf.slice) {
+      return buf.slice(0)
+    } else {
+      var view = new Uint8Array(buf.byteLength)
+      view.set(new Uint8Array(buf))
+      return view.buffer
+    }
   }
 
   function Body() {
@@ -1825,7 +1869,9 @@ process.umask = function() { return 0; };
 
     this._initBody = function(body) {
       this._bodyInit = body
-      if (typeof body === 'string') {
+      if (!body) {
+        this._bodyText = ''
+      } else if (typeof body === 'string') {
         this._bodyText = body
       } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
         this._bodyBlob = body
@@ -1833,11 +1879,12 @@ process.umask = function() { return 0; };
         this._bodyFormData = body
       } else if (support.searchParams && URLSearchParams.prototype.isPrototypeOf(body)) {
         this._bodyText = body.toString()
-      } else if (!body) {
-        this._bodyText = ''
-      } else if (support.arrayBuffer && ArrayBuffer.prototype.isPrototypeOf(body)) {
-        // Only support ArrayBuffers for POST method.
-        // Receiving ArrayBuffers happens via Blobs, instead.
+      } else if (support.arrayBuffer && support.blob && isDataView(body)) {
+        this._bodyArrayBuffer = bufferClone(body.buffer)
+        // IE 10-11 can't handle a DataView body.
+        this._bodyInit = new Blob([this._bodyArrayBuffer])
+      } else if (support.arrayBuffer && (ArrayBuffer.prototype.isPrototypeOf(body) || isArrayBufferView(body))) {
+        this._bodyArrayBuffer = bufferClone(body)
       } else {
         throw new Error('unsupported BodyInit type')
       }
@@ -1862,6 +1909,8 @@ process.umask = function() { return 0; };
 
         if (this._bodyBlob) {
           return Promise.resolve(this._bodyBlob)
+        } else if (this._bodyArrayBuffer) {
+          return Promise.resolve(new Blob([this._bodyArrayBuffer]))
         } else if (this._bodyFormData) {
           throw new Error('could not read FormData body as blob')
         } else {
@@ -1870,27 +1919,28 @@ process.umask = function() { return 0; };
       }
 
       this.arrayBuffer = function() {
-        return this.blob().then(readBlobAsArrayBuffer)
-      }
-
-      this.text = function() {
-        var rejected = consumed(this)
-        if (rejected) {
-          return rejected
-        }
-
-        if (this._bodyBlob) {
-          return readBlobAsText(this._bodyBlob)
-        } else if (this._bodyFormData) {
-          throw new Error('could not read FormData body as text')
+        if (this._bodyArrayBuffer) {
+          return consumed(this) || Promise.resolve(this._bodyArrayBuffer)
         } else {
-          return Promise.resolve(this._bodyText)
+          return this.blob().then(readBlobAsArrayBuffer)
         }
       }
-    } else {
-      this.text = function() {
-        var rejected = consumed(this)
-        return rejected ? rejected : Promise.resolve(this._bodyText)
+    }
+
+    this.text = function() {
+      var rejected = consumed(this)
+      if (rejected) {
+        return rejected
+      }
+
+      if (this._bodyBlob) {
+        return readBlobAsText(this._bodyBlob)
+      } else if (this._bodyArrayBuffer) {
+        return Promise.resolve(readArrayBufferAsText(this._bodyArrayBuffer))
+      } else if (this._bodyFormData) {
+        throw new Error('could not read FormData body as text')
+      } else {
+        return Promise.resolve(this._bodyText)
       }
     }
 
@@ -1918,7 +1968,8 @@ process.umask = function() { return 0; };
   function Request(input, options) {
     options = options || {}
     var body = options.body
-    if (Request.prototype.isPrototypeOf(input)) {
+
+    if (input instanceof Request) {
       if (input.bodyUsed) {
         throw new TypeError('Already read')
       }
@@ -1929,12 +1980,12 @@ process.umask = function() { return 0; };
       }
       this.method = input.method
       this.mode = input.mode
-      if (!body) {
+      if (!body && input._bodyInit != null) {
         body = input._bodyInit
         input.bodyUsed = true
       }
     } else {
-      this.url = input
+      this.url = String(input)
     }
 
     this.credentials = options.credentials || this.credentials || 'omit'
@@ -1952,7 +2003,7 @@ process.umask = function() { return 0; };
   }
 
   Request.prototype.clone = function() {
-    return new Request(this)
+    return new Request(this, { body: this._bodyInit })
   }
 
   function decode(body) {
@@ -1968,16 +2019,17 @@ process.umask = function() { return 0; };
     return form
   }
 
-  function headers(xhr) {
-    var head = new Headers()
-    var pairs = (xhr.getAllResponseHeaders() || '').trim().split('\n')
-    pairs.forEach(function(header) {
-      var split = header.trim().split(':')
-      var key = split.shift().trim()
-      var value = split.join(':').trim()
-      head.append(key, value)
+  function parseHeaders(rawHeaders) {
+    var headers = new Headers()
+    rawHeaders.split(/\r?\n/).forEach(function(line) {
+      var parts = line.split(':')
+      var key = parts.shift().trim()
+      if (key) {
+        var value = parts.join(':').trim()
+        headers.append(key, value)
+      }
     })
-    return head
+    return headers
   }
 
   Body.call(Request.prototype)
@@ -1988,10 +2040,10 @@ process.umask = function() { return 0; };
     }
 
     this.type = 'default'
-    this.status = options.status
+    this.status = 'status' in options ? options.status : 200
     this.ok = this.status >= 200 && this.status < 300
-    this.statusText = options.statusText
-    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers)
+    this.statusText = 'statusText' in options ? options.statusText : 'OK'
+    this.headers = new Headers(options.headers)
     this.url = options.url || ''
     this._initBody(bodyInit)
   }
@@ -2029,35 +2081,16 @@ process.umask = function() { return 0; };
 
   self.fetch = function(input, init) {
     return new Promise(function(resolve, reject) {
-      var request
-      if (Request.prototype.isPrototypeOf(input) && !init) {
-        request = input
-      } else {
-        request = new Request(input, init)
-      }
-
+      var request = new Request(input, init)
       var xhr = new XMLHttpRequest()
-
-      function responseURL() {
-        if ('responseURL' in xhr) {
-          return xhr.responseURL
-        }
-
-        // Avoid security warnings on getResponseHeader when not allowed by CORS
-        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
-          return xhr.getResponseHeader('X-Request-URL')
-        }
-
-        return
-      }
 
       xhr.onload = function() {
         var options = {
           status: xhr.status,
           statusText: xhr.statusText,
-          headers: headers(xhr),
-          url: responseURL()
+          headers: parseHeaders(xhr.getAllResponseHeaders() || '')
         }
+        options.url = 'responseURL' in xhr ? xhr.responseURL : options.headers.get('X-Request-URL')
         var body = 'response' in xhr ? xhr.response : xhr.responseText
         resolve(new Response(body, options))
       }
@@ -2270,7 +2303,7 @@ var MobileServerBridge = function (_MobileServerBridgeBa) {
 
 exports.default = MobileServerBridge;
 
-},{"../../../shared/js/Constants":45,"../../../shared/js/classes/MobileServerBridge":46}],9:[function(require,module,exports){
+},{"../../../shared/js/Constants":36,"../../../shared/js/classes/MobileServerBridge":37}],9:[function(require,module,exports){
 (function (process){
 "use strict";
 
@@ -2701,7 +2734,7 @@ var Presentation = function (_PresentationBase) {
 
 exports.default = Presentation;
 
-},{"../../../shared/js/Constants":45,"../../../shared/js/classes/Presentation":47,"./MobileServerBridge":8,"./SlideBridge":11,"./Webcam":12,"./sensors/PolarH7":33}],11:[function(require,module,exports){
+},{"../../../shared/js/Constants":36,"../../../shared/js/classes/Presentation":38,"./MobileServerBridge":8,"./SlideBridge":11,"./Webcam":12,"./sensors/PolarH7":33}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2756,24 +2789,22 @@ var SlideBridge = function (_SlideBridgeBase) {
       });
 
       if (src !== $(slideHolder).attr('data-src')) {
-        (function () {
-          //create html import
-          var $importEl = $('<link rel="import">');
-          var importEl = $importEl[0];
-          $importEl.on('load', function () {
-            var template = importEl.import.querySelector('template');
-            if (template) {
-              var clone = document.importNode(template.content, true);
-              _this2.slideHolder.appendChild(clone);
-            }
-            $importEl.remove();
-            $(slideHolder).removeClass('loading');
-            cb();
-          });
-          $importEl.attr('href', src);
-          $(slideHolder).attr('data-src', src);
-          $(slideHolder).html($importEl);
-        })();
+        //create html import
+        var $importEl = $('<link rel="import">');
+        var importEl = $importEl[0];
+        $importEl.on('load', function () {
+          var template = importEl.import.querySelector('template');
+          if (template) {
+            var clone = document.importNode(template.content, true);
+            _this2.slideHolder.appendChild(clone);
+          }
+          $importEl.remove();
+          $(slideHolder).removeClass('loading');
+          cb();
+        });
+        $importEl.attr('href', src);
+        $(slideHolder).attr('data-src', src);
+        $(slideHolder).html($importEl);
       }
     }
   }]);
@@ -2783,8 +2814,8 @@ var SlideBridge = function (_SlideBridgeBase) {
 
 exports.default = SlideBridge;
 
-},{"../../../shared/js/classes/SlideBridge":48}],12:[function(require,module,exports){
-'use strict';
+},{"../../../shared/js/classes/SlideBridge":39}],12:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -2792,36 +2823,25 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var getUserMedia = function getUserMedia(config) {
-  return new Promise(function (resolve, reject) {
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-    navigator.getUserMedia(config, function (stream) {
-      resolve(stream);
-    }, function (err) {
-      return reject(err);
-    });
-  });
-};
-
 var getCameraConfig = function getCameraConfig(videoWidth) {
-  return new Promise(function (resolve) {
-    MediaStreamTrack.getSources(function (mediaSources) {
-      var sourceId = void 0;
-      mediaSources.forEach(function (mediaSource) {
-        if (mediaSource.kind === 'video') {
-          console.log(mediaSource.label.toLowerCase());
-          if (!sourceId || mediaSource.label.toLowerCase().indexOf('facetime') === -1) {
-            sourceId = mediaSource.id;
-          }
-        }
-      });
-      var cameraConfig = {
-        video: {
-          optional: [{ sourceId: sourceId }, { minWidth: videoWidth }]
-        }
-      };
-      resolve(cameraConfig);
+  var sourceId = false;
+  return window.navigator.mediaDevices.enumerateDevices().then(function (devices) {
+    return devices.filter(function (device) {
+      return device.kind === "video";
     });
+  }).then(function (devices) {
+    devices.forEach(function (device) {
+      console.log(device);
+      if (!sourceId || device.label.toLowerCase().indexOf("facetime") === -1) {
+        sourceId = device.deviceId;
+      }
+    });
+  }).then(function () {
+    return {
+      video: {
+        optional: [{ sourceId: sourceId }, { minWidth: videoWidth }]
+      }
+    };
   });
 };
 
@@ -2832,7 +2852,7 @@ var Webcam = function Webcam(video) {
 
   this.video = video;
   getCameraConfig(1280).then(function (config) {
-    return getUserMedia(config);
+    return window.navigator.mediaDevices.getUserMedia(config);
   }).then(function (stream) {
     _this.video.src = window.URL.createObjectURL(stream);
     _this.video.onloadedmetadata = function () {
@@ -3476,7 +3496,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var fs = requireNode("fs-promise");
+var fs = requireNode("fs-extra");
 
 var CodeElement = function () {
   function CodeElement(el, options) {
@@ -3579,6 +3599,9 @@ var CodeElement = function () {
       return fs.readFile(filePath, "utf8").then(function (data) {
         _this.setValue(data);
         return data;
+      }).catch(function (e) {
+        _this.setValue("");
+        throw e;
       });
     }
   }, {
@@ -3613,13 +3636,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var htmlEscape = function htmlEscape(str) {
   return String(str).replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-};
-
-var needsJSONConversion = function needsJSONConversion(arg) {
-  if (typeof arg === 'number' || typeof arg === 'string' || typeof arg === 'boolean') {
-    return false;
-  }
-  return true;
 };
 
 var ConsoleElement = function () {
@@ -3697,42 +3713,12 @@ var ConsoleElement = function () {
       this.resume();
     }
   }, {
-    key: 'info',
-    value: function info(args) {
-      var str = '';
-      args.forEach(function (arg) {
-        if (str.length > 0) {
-          str += ' ';
-        }
-        //is it an object or a simple type?
-        if (needsJSONConversion(arg)) {
-          arg = JSON.stringify(arg);
-        }
-        str += htmlEscape(arg);
-      });
-      this.logs.push('<pre>' + str + '</pre>');
-      while (this.logs.length > 20) {
-        this.logs.shift();
-      }
-      var html = this.logs.join('');
-      this.el.innerHTML = html;
-      this.wrapperEl.scrollTop = this.wrapperEl.scrollHeight;
-    }
-  }, {
-    key: 'error',
-    value: function error(args) {
-      var str = '';
-      args.forEach(function (arg) {
-        if (str.length > 0) {
-          str += ' ';
-        }
-        //is it an object or a simple type?
-        if (needsJSONConversion(arg)) {
-          arg = JSON.stringify(arg);
-        }
-        str += htmlEscape(arg);
-      });
-      this.logs.push('<pre class="console-error">' + str + '</pre>');
+    key: 'message',
+    value: function message(event) {
+      var str = htmlEscape(event.message);
+      var fileName = event.sourceId.split('/');
+      fileName = fileName[fileName.length - 1];
+      this.logs.push('<div class="console-message">\n      <pre class="console-message__content console-message__content--level' + event.level + '">' + str + '</pre>\n      <div class="console-message__origin">' + fileName + ':' + event.line + '</div>\n    </div>');
       while (this.logs.length > 20) {
         this.logs.shift();
       }
@@ -3911,9 +3897,10 @@ var WebPreviewElement = function () {
     }
 
     this.file = this.$el.data("file") || this.$el.data("url");
-    this.autoload = this.$el.data("autoload");
+    this.autoload = this.$el.data("autoload") || false;
+    this.zoomfactor = this.$el.data("zoomfactor") || false;
 
-    this.console = this.$el.data("console");
+    this.console = this.$el.data("console") || false;
 
     this.$el.css("width", "100%").css("height", "100%");
 
@@ -3934,8 +3921,10 @@ var WebPreviewElement = function () {
       this.isRunning = false;
       if (this.webview) {
         this.webview.removeEventListener("did-get-response-details", this._didGetResponseDetailsHandler);
+        this.webview.removeEventListener("dom-ready", this._domReadyHandler);
         this.webview.removeEventListener("did-fail-load", this._didFailLoadHandler);
         this.webview.removeEventListener("ipc-message", this._ipcMessageHandler);
+        this.webview.removeEventListener("console-message", this._consoleMessageHandler);
         this.webview.parentNode.removeChild(this.webview);
         this.webview = false;
         clearTimeout(this.retryTimeout);
@@ -3966,7 +3955,7 @@ var WebPreviewElement = function () {
       this.webview = document.createElement("webview");
       this.webview.style.width = "100%";
       this.webview.style.height = "100%";
-      this.webview.preload = "js/webpreview.js";
+      this.webview.preload = "js/livecode-webpreview.js";
       this.el.appendChild(this.webview);
 
       var url = this.url !== false ? this.url : "webpreview.html";
@@ -3988,6 +3977,14 @@ var WebPreviewElement = function () {
       };
       this.webview.addEventListener("did-get-response-details", this._didGetResponseDetailsHandler);
 
+      this._domReadyHandler = function () {
+        if (_this.zoomfactor) {
+          var zoomfactor = parseFloat(_this.zoomfactor);
+          _this.webview.setZoomFactor(zoomfactor);
+        }
+      };
+      this.webview.addEventListener("dom-ready", this._domReadyHandler);
+
       this._didFailLoadHandler = function () {
         _this.retryTimeout = setTimeout(function () {
           _this.pause();
@@ -3996,15 +3993,14 @@ var WebPreviewElement = function () {
       };
       this.webview.addEventListener("did-fail-load", this._didFailLoadHandler);
 
+      this._consoleMessageHandler = function (e) {
+        _this.$wrapperEl.trigger("console-message", e);
+      };
+      this.webview.addEventListener("console-message", this._consoleMessageHandler);
+
       this._ipcMessageHandler = function (event) {
         if (event.channel === "request-html") {
           _this.webview.send("receive-html", htmlSrc);
-        } else if (event.channel === "console.log") {
-          //notify live code editor
-          _this.$wrapperEl.trigger("console.log", event.args[0]);
-        } else if (event.channel === "console.error") {
-          //notify live code editor
-          _this.$wrapperEl.trigger("console.error", event.args[0]);
         }
       };
       this.webview.addEventListener("ipc-message", this._ipcMessageHandler);
@@ -4029,6 +4025,11 @@ var WebPreviewElement = function () {
       this.url = false;
       this.blocks = blocks;
       this.resume();
+    }
+  }, {
+    key: "openDevTools",
+    value: function openDevTools() {
+      this.webview.openDevTools();
     }
   }, {
     key: "needsOutputPathPrefix",
@@ -4165,7 +4166,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var path = requireNode('path');
-var fs = requireNode('fs-promise');
+var fs = requireNode('fs-extra');
 
 var LiveCode = function () {
   function LiveCode($el, config, readyCallback) {
@@ -4239,6 +4240,12 @@ var LiveCode = function () {
       _this.reloadButtonEls = [];
       _this.$el.find('[data-type="reload-button"]').each(function (index, reloadButtonEl) {
         return _this.createReloadButton(reloadButtonEl);
+      });
+
+      //create reload buttons
+      _this.devToolsButtonEls = [];
+      _this.$el.find('[data-type="devtools-button"]').each(function (index, devToolsButtonEl) {
+        return _this.createDevToolsButton(devToolsButtonEl);
       });
     }).then(function () {
       return _this.setCodeElementValuesFromFiles();
@@ -4410,6 +4417,9 @@ var LiveCode = function () {
       this.reloadButtonEls.forEach(function (el) {
         return _this2.destroyReloadButton(el);
       });
+      this.devToolsButtonEls.forEach(function (el) {
+        return _this2.destroyDevToolsButton(el);
+      });
       //TODO: destroy the tmp directory for this instance
     }
   }, {
@@ -4496,15 +4506,13 @@ var LiveCode = function () {
     key: 'createWebPreviewElement',
     value: function createWebPreviewElement(webPreviewEl) {
       var webPreviewElement = new _WebPreviewElement2.default(webPreviewEl);
-      webPreviewElement.$wrapperEl.on('console.log', this.webPreviewConsoleLogHandler.bind(this, webPreviewElement));
-      webPreviewElement.$wrapperEl.on('console.error', this.webPreviewConsoleErrorHandler.bind(this, webPreviewElement));
+      webPreviewElement.$wrapperEl.on('console-message', this.webPreviewConsoleMessageHandler.bind(this, webPreviewElement));
       this.webPreviewElements[webPreviewElement.id] = webPreviewElement;
     }
   }, {
     key: 'destroyWebPreviewElement',
     value: function destroyWebPreviewElement(webPreviewElement) {
-      webPreviewElement.$wrapperEl.off('console.log');
-      webPreviewElement.$wrapperEl.off('console.error');
+      webPreviewElement.$wrapperEl.off('console-message');
       webPreviewElement.destroy();
     }
   }, {
@@ -4535,7 +4543,7 @@ var LiveCode = function () {
       var _this3 = this;
 
       this.runButtonEls.push(runButtonEl);
-      $(runButtonEl).on('click', function () {
+      $(runButtonEl).on('click', function (e) {
         if (_this3.webPreviewElements[$(runButtonEl).data('target')]) {
           //save the files first
           _this3.saveCodeElementsToFiles().catch(function (err) {
@@ -4548,6 +4556,8 @@ var LiveCode = function () {
           var applicationPath = _this3.getFilePath(_this3.consoleElements[$(runButtonEl).data('target')].file);
           _this3.consoleElements[$(runButtonEl).data('target')].runNodeApp(applicationPath);
         }
+        e.preventDefault();
+        e.stopImmediatePropagation();
       });
     }
   }, {
@@ -4561,7 +4571,9 @@ var LiveCode = function () {
       var _this4 = this;
 
       this.saveButtonEls.push(saveButtonEl);
-      $(saveButtonEl).on('click', function () {
+      $(saveButtonEl).on('click', function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
         //get the target element for this button
         var targetString = $(saveButtonEl).data('target');
         if (targetString === 'all') {
@@ -4591,35 +4603,61 @@ var LiveCode = function () {
       var _this5 = this;
 
       this.reloadButtonEls.push(reloadButtonEl);
-      $(reloadButtonEl).on('click', function () {
+      $(reloadButtonEl).on('click', function (e) {
         //get the reload button target
         var reloadTargetElement = _this5.getCodeElement($(reloadButtonEl).data('target'));
         if (reloadTargetElement) {
           _this5.reloadCodeElement(reloadTargetElement);
+          e.preventDefault();
+          e.stopImmediatePropagation();
           return;
         }
         reloadTargetElement = _this5.getWebPreviewElement($(reloadButtonEl).data('target'));
         if (reloadTargetElement) {
           _this5.reloadWebPreviewElement(reloadTargetElement);
+          e.preventDefault();
+          e.stopImmediatePropagation();
           return;
         }
+        // reload all elements
+        _this5.reloadAllCodeElements().then(function () {
+          return _this5.reloadAllWebPreviewElements();
+        });
       });
+    }
+  }, {
+    key: 'reloadAllCodeElements',
+    value: function reloadAllCodeElements() {
+      var tasks = [];
+      for (var key in this.codeElements) {
+        tasks.push(this.reloadCodeElement(this.codeElements[key]));
+      }
+      return Promise.all(tasks);
     }
   }, {
     key: 'reloadCodeElement',
     value: function reloadCodeElement(codeElement) {
-      var filePath = self.getFilePathForCodeElement(codeElement);
+      var filePath = this.getFilePathForCodeElement(codeElement);
       if (!filePath) {
         return;
       }
-      codeElement.readFromFile(filePath).catch(function (err) {
+      return codeElement.readFromFile(filePath).catch(function (err) {
         return console.log(err);
       });
     }
   }, {
+    key: 'reloadAllWebPreviewElements',
+    value: function reloadAllWebPreviewElements() {
+      var tasks = [];
+      for (var key in this.webPreviewElements) {
+        tasks.push(this.reloadWebPreviewElement(this.webPreviewElements[key]));
+      }
+      return Promise.all(tasks);
+    }
+  }, {
     key: 'reloadWebPreviewElement',
     value: function reloadWebPreviewElement(webPreviewElement) {
-      this.updateWebPreviewElement(webPreviewElement);
+      return this.updateWebPreviewElement(webPreviewElement);
     }
   }, {
     key: 'destroyReloadButton',
@@ -4627,21 +4665,34 @@ var LiveCode = function () {
       $(reloadButtonEl).off('click');
     }
   }, {
-    key: 'webPreviewConsoleLogHandler',
-    value: function webPreviewConsoleLogHandler(webPreviewElement, event, message) {
-      //get the console element for this web preview
-      var consoleElement = this.getConsoleElementForWebPreview(webPreviewElement);
-      if (consoleElement) {
-        consoleElement.info(JSON.parse(message).args);
-      }
+    key: 'createDevToolsButton',
+    value: function createDevToolsButton(devToolsButtonEl) {
+      var _this6 = this;
+
+      this.devToolsButtonEls.push(devToolsButtonEl);
+      $(devToolsButtonEl).on('click', function (e) {
+        //get the target element for this button
+        var webPreviewElement = _this6.getWebPreviewElement($(devToolsButtonEl).data('target'));
+        if (!webPreviewElement) {
+          return;
+        }
+        webPreviewElement.openDevTools();
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      });
     }
   }, {
-    key: 'webPreviewConsoleErrorHandler',
-    value: function webPreviewConsoleErrorHandler(webPreviewElement, event, message) {
+    key: 'destroyDevToolsButton',
+    value: function destroyDevToolsButton(devToolsButtonEl) {
+      $(devToolsButtonEl).off('click');
+    }
+  }, {
+    key: 'webPreviewConsoleMessageHandler',
+    value: function webPreviewConsoleMessageHandler(webPreviewElement, jqEvent, event) {
       //get the console element for this web preview
       var consoleElement = this.getConsoleElementForWebPreview(webPreviewElement);
       if (consoleElement) {
-        consoleElement.error(JSON.parse(message).args);
+        consoleElement.message(event);
       }
     }
   }, {
@@ -5220,692 +5271,6 @@ PolarH7.HEART_RATE = 'heartRate';
 },{"events":3}],34:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _Preload = require('./states/Preload');
-
-var _Preload2 = _interopRequireDefault(_Preload);
-
-var _Menu = require('./states/Menu');
-
-var _Menu2 = _interopRequireDefault(_Menu);
-
-var _Play = require('./states/Play');
-
-var _Play2 = _interopRequireDefault(_Play);
-
-var _Finished = require('./states/Finished');
-
-var _Finished2 = _interopRequireDefault(_Finished);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Game = function (_Phaser$Game) {
-  _inherits(Game, _Phaser$Game);
-
-  function Game(width, height, renderMode, container) {
-    _classCallCheck(this, Game);
-
-    var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, width, height, renderMode, container));
-
-    _this.state.add('Preload', _Preload2.default);
-    _this.state.add('Menu', _Menu2.default);
-    _this.state.add('Play', _Play2.default);
-    _this.state.add('Finished', _Finished2.default);
-    _this.state.start('Preload');
-    return _this;
-  }
-
-  return Game;
-}(Phaser.Game);
-
-exports.default = Game;
-
-},{"./states/Finished":39,"./states/Menu":40,"./states/Play":41,"./states/Preload":42}],35:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var SpacebrewPlugin = function (_Phaser$Plugin) {
-  _inherits(SpacebrewPlugin, _Phaser$Plugin);
-
-  function SpacebrewPlugin(game, parent) {
-    _classCallCheck(this, SpacebrewPlugin);
-
-    return _possibleConstructorReturn(this, (SpacebrewPlugin.__proto__ || Object.getPrototypeOf(SpacebrewPlugin)).call(this, game, parent));
-  }
-
-  _createClass(SpacebrewPlugin, [{
-    key: "init",
-    value: function init() {
-      var _this2 = this;
-
-      console.log("Spacebrew Plugin init");
-      this.noteNames = ["blue-left", "blue-up", "blue-down", "orange-down", "orange-up", "orange-right"];
-      this.buttons = {};
-      //spacebrew connection
-      this.sb = new Spacebrew.Client("localhost", "DDR Presentation");
-      this.sb.onStringMessage = function (name, isDown) {
-        return _this2.handleButton(name, isDown === "true");
-      };
-      this.noteNames.forEach(function (noteName) {
-        _this2.buttons[noteName] = { isDown: false };
-        _this2.sb.addSubscribe(noteName, "string");
-      });
-      this.sb.connect();
-    }
-  }, {
-    key: "handleButton",
-    value: function handleButton(name, isDown) {
-      this.buttons[name].isDown = isDown;
-    }
-  }, {
-    key: "destroy",
-    value: function destroy() {
-      if (this.sb) {
-        this.sb.close();
-      }
-      _get(SpacebrewPlugin.prototype.__proto__ || Object.getPrototypeOf(SpacebrewPlugin.prototype), "destroy", this).call(this);
-    }
-  }]);
-
-  return SpacebrewPlugin;
-}(Phaser.Plugin);
-
-exports.default = SpacebrewPlugin;
-
-},{}],36:[function(require,module,exports){
-arguments[4][15][0].apply(exports,arguments)
-},{"dup":15}],37:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var DanceButtonOutline = function (_Phaser$Sprite) {
-  _inherits(DanceButtonOutline, _Phaser$Sprite);
-
-  function DanceButtonOutline(game, x, y) {
-    var color = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "blue";
-    var orientation = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "left";
-
-    _classCallCheck(this, DanceButtonOutline);
-
-    var _this = _possibleConstructorReturn(this, (DanceButtonOutline.__proto__ || Object.getPrototypeOf(DanceButtonOutline)).call(this, game, x, y, "ddr-graphics", "white-outline"));
-
-    _this.data.color = color;
-    _this.data.orientation = orientation;
-    _this.anchor.setTo(0.5, 0.5);
-    _this.scale.setTo(0.3, 0.3);
-    switch (orientation) {
-      case "up":
-        _this.angle = 180;
-        break;
-      case "down":
-        _this.angle = 0;
-        break;
-      case "right":
-        _this.angle = 270;
-        break;
-      default:
-        _this.angle = 90;
-        break;
-    }
-    return _this;
-  }
-
-  _createClass(DanceButtonOutline, [{
-    key: "pressed",
-    set: function set(value) {
-      if (value) {
-        this.frameName = this.data.color + "-outline";
-      } else {
-        this.frameName = "white-outline";
-      }
-    },
-    get: function get() {
-      return this.frameName !== "white-outline";
-    }
-  }]);
-
-  return DanceButtonOutline;
-}(Phaser.Sprite);
-
-exports.default = DanceButtonOutline;
-
-},{}],38:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ScoreBar = function (_Phaser$Group) {
-  _inherits(ScoreBar, _Phaser$Group);
-
-  function ScoreBar(game, x, y) {
-    _classCallCheck(this, ScoreBar);
-
-    var _this = _possibleConstructorReturn(this, (ScoreBar.__proto__ || Object.getPrototypeOf(ScoreBar)).call(this, game));
-
-    _this.data = {
-      score: 0.5
-    };
-
-    _this.scoreFill = new Phaser.Sprite(game, 0, 0, "ddr-graphics", "scorebar");
-    _this.add(_this.scoreFill);
-
-    var outline = new Phaser.Sprite(game, 0, 0, "ddr-graphics", "scorebar-outline");
-    _this.add(outline);
-
-    //mask
-    _this.scoreFillMask = new Phaser.Graphics(game, 0, 0);
-    _this.scoreFillMask.beginFill(0xffffff);
-    _this.scoreFillMask.drawRect(0, 0, _this.scoreFill.width * _this.data.score, _this.scoreFill.height);
-    _this.add(_this.scoreFillMask);
-
-    _this.scoreFill.mask = _this.scoreFillMask;
-
-    _this.x = x - outline.width / 2;
-    _this.y = y - outline.height / 2;
-    return _this;
-  }
-
-  _createClass(ScoreBar, [{
-    key: "update",
-    value: function update() {
-      var targetFillWidth = this.scoreFill.width * this.data.score;
-      var currentFillWidth = this.scoreFillMask.width;
-      currentFillWidth += (targetFillWidth - currentFillWidth) * 0.1;
-      this.scoreFillMask.clear();
-      this.scoreFillMask.beginFill(0xffffff);
-      this.scoreFillMask.drawRect(0, 0, currentFillWidth, this.scoreFill.height);
-    }
-  }, {
-    key: "score",
-    set: function set(value) {
-      value = Math.min(1, Math.max(0, value));
-      this.data.score = value;
-    },
-    get: function get() {
-      return this.data.score;
-    }
-  }]);
-
-  return ScoreBar;
-}(Phaser.Group);
-
-exports.default = ScoreBar;
-
-},{}],39:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Finished = function (_Phaser$State) {
-  _inherits(Finished, _Phaser$State);
-
-  function Finished() {
-    _classCallCheck(this, Finished);
-
-    return _possibleConstructorReturn(this, (Finished.__proto__ || Object.getPrototypeOf(Finished)).apply(this, arguments));
-  }
-
-  _createClass(Finished, [{
-    key: "create",
-    value: function create() {}
-  }]);
-
-  return Finished;
-}(Phaser.State);
-
-exports.default = Finished;
-
-},{}],40:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Button = require('../objects/Button');
-
-var _Button2 = _interopRequireDefault(_Button);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Menu = function (_Phaser$State) {
-  _inherits(Menu, _Phaser$State);
-
-  function Menu() {
-    _classCallCheck(this, Menu);
-
-    return _possibleConstructorReturn(this, (Menu.__proto__ || Object.getPrototypeOf(Menu)).apply(this, arguments));
-  }
-
-  _createClass(Menu, [{
-    key: 'init',
-    value: function init() {
-      if (!this.game.backgroundVideo) {
-        this.game.backgroundVideo = this.add.video('background-video');
-        this.game.backgroundVideo.play(true);
-      }
-      this.game.backgroundVideo.addToWorld();
-    }
-  }, {
-    key: 'create',
-    value: function create() {
-      var playButton = new _Button2.default(this.game, this.world.centerX, this.world.centerY, this.playClicked, this, 'blue', 'Play');
-      playButton.anchor.setTo(0.5, 0.5);
-      this.add.existing(playButton);
-    }
-  }, {
-    key: 'playClicked',
-    value: function playClicked() {
-      this.state.start('Play');
-    }
-  }]);
-
-  return Menu;
-}(Phaser.State);
-
-exports.default = Menu;
-
-},{"../objects/Button":36}],41:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _Button = require('../objects/Button');
-
-var _Button2 = _interopRequireDefault(_Button);
-
-var _DanceButtonOutline = require('../objects/DanceButtonOutline');
-
-var _DanceButtonOutline2 = _interopRequireDefault(_DanceButtonOutline);
-
-var _ScoreBar = require('../objects/ScoreBar');
-
-var _ScoreBar2 = _interopRequireDefault(_ScoreBar);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var OVERLAP_SIZE = 20;
-var DANCETAG_STATUS_NORMAL = 0;
-var DANCETAG_STATUS_CORRECT = 1;
-var DANCETAG_STATUS_WRONG = 2;
-
-var Play = function (_Phaser$State) {
-  _inherits(Play, _Phaser$State);
-
-  function Play() {
-    _classCallCheck(this, Play);
-
-    return _possibleConstructorReturn(this, (Play.__proto__ || Object.getPrototypeOf(Play)).apply(this, arguments));
-  }
-
-  _createClass(Play, [{
-    key: 'init',
-    value: function init() {
-      if (!this.game.backgroundVideo) {
-        this.game.backgroundVideo = this.add.video('background-video');
-        this.game.backgroundVideo.play(true);
-      }
-      this.game.backgroundVideo.addToWorld();
-
-      this.notesByTime = { 12: [{ name: 'blue-up' }], 28: [{ name: 'blue-up' }], 29: [{ name: 'blue-up' }], 30: [{ name: 'blue-up' }], 39: [{ name: 'orange-down' }], 48: [{ name: 'orange-up' }], 57: [{ name: 'orange-down' }], 58: [{ name: 'blue-down' }], 66: [{ name: 'blue-down' }], 67: [{ name: 'blue-left' }, { name: 'orange-right' }], 74: [{ name: 'blue-left' }, { name: 'orange-up' }, { name: 'blue-up' }, { name: 'orange-right' }], 76: [{ name: 'blue-left' }, { name: 'orange-up' }, { name: 'blue-up' }, { name: 'orange-right' }], 77: [{ name: 'orange-up' }, { name: 'orange-right' }], 9.8: [{ name: 'blue-up' }], 10.8: [{ name: 'blue-down' }], 12.8: [{ name: 'blue-down' }], 14.2: [{ name: 'blue-up' }], 15.1: [{ name: 'blue-down' }], 16.2: [{ name: 'blue-left' }], 18.4: [{ name: 'orange-up' }], 19.4: [{ name: 'orange-down' }], 20.5: [{ name: 'orange-up' }], 21.6: [{ name: 'orange-down' }], 22.6: [{ name: 'orange-up' }], 23.7: [{ name: 'orange-down' }], 24.7: [{ name: 'orange-right' }], 26.8: [{ name: 'blue-up' }], 27.4: [{ name: 'blue-down' }], 28.5: [{ name: 'blue-down' }], 29.5: [{ name: 'blue-down' }], 30.5: [{ name: 'blue-down' }], 31.1: [{ name: 'blue-up' }], 31.6: [{ name: 'blue-down' }], 32.1: [{ name: 'blue-up' }], 32.6: [{ name: 'blue-down' }], 33.2: [{ name: 'blue-left' }], 35.3: [{ name: 'orange-up' }], 35.8: [{ name: 'orange-down' }], 36.4: [{ name: 'orange-up' }], 36.9: [{ name: 'orange-down' }], 37.4: [{ name: 'orange-up' }], 37.9: [{ name: 'orange-down' }], 38.4: [{ name: 'orange-up' }], 39.6: [{ name: 'blue-up' }], 40.1: [{ name: 'blue-down' }], 40.6: [{ name: 'blue-up' }], 41.1: [{ name: 'blue-down' }], 41.6: [{ name: 'blue-up' }], 42.1: [{ name: 'blue-down' }], 42.7: [{ name: 'blue-up' }], 43.2: [{ name: 'blue-down' }], 43.8: [{ name: 'orange-up' }], 44.3: [{ name: 'orange-down' }], 44.8: [{ name: 'blue-up' }], 45.4: [{ name: 'blue-down' }], 45.9: [{ name: 'orange-up' }], 46.4: [{ name: 'orange-down' }], 46.9: [{ name: 'blue-up' }], 47.5: [{ name: 'blue-down' }], 48.6: [{ name: 'orange-down' }], 49.1: [{ name: 'blue-up' }], 49.6: [{ name: 'blue-down' }], 50.1: [{ name: 'orange-right' }], 50.6: [{ name: 'blue-left' }], 52.2: [{ name: 'orange-right' }], 52.7: [{ name: 'blue-left' }], 53.3: [{ name: 'orange-right' }], 53.8: [{ name: 'blue-left' }], 54.3: [{ name: 'orange-right' }], 54.9: [{ name: 'blue-left' }], 55.4: [{ name: 'orange-right' }], 55.9: [{ name: 'blue-left' }], 56.5: [{ name: 'orange-up' }], 57.5: [{ name: 'blue-up' }], 58.6: [{ name: 'orange-up' }], 59.1: [{ name: 'orange-down' }], 59.6: [{ name: 'blue-up' }], 60.1: [{ name: 'blue-down' }], 60.7: [{ name: 'orange-right' }], 61.2: [{ name: 'blue-left' }], 61.8: [{ name: 'orange-up' }], 62.3: [{ name: 'blue-up' }], 62.8: [{ name: 'orange-down' }], 63.3: [{ name: 'blue-down' }], 63.8: [{ name: 'orange-right' }], 64.3: [{ name: 'blue-left' }], 64.9: [{ name: 'orange-up' }], 65.4: [{ name: 'blue-up' }], 65.9: [{ name: 'orange-down' }], 66.5: [{ name: 'blue-down' }, { name: 'orange-down' }], 67.5: [{ name: 'blue-left' }, { name: 'orange-right' }], 68.1: [{ name: 'orange-up' }, { name: 'blue-up' }], 68.5: [{ name: 'blue-up' }], 68.6: [{ name: 'orange-up' }], 69.2: [{ name: 'blue-down' }], 69.3: [{ name: 'orange-up' }, { name: 'blue-up' }], 69.8: [{ name: 'blue-down' }, { name: 'blue-up' }], 70.3: [{ name: 'orange-up' }, { name: 'blue-up' }], 70.8: [{ name: 'blue-down' }, { name: 'blue-up' }], 71.4: [{ name: 'blue-down' }], 71.9: [{ name: 'blue-left' }, { name: 'orange-up' }, { name: 'blue-down' }], 72.4: [{ name: 'blue-left' }, { name: 'blue-down' }], 72.9: [{ name: 'blue-left' }, { name: 'orange-up' }, { name: 'blue-up' }, { name: 'orange-right' }], 73.5: [{ name: 'blue-up' }], 74.5: [{ name: 'blue-up' }], 74.9: [{ name: 'blue-left' }, { name: 'orange-up' }, { name: 'blue-up' }, { name: 'orange-right' }], 75.2: [{ name: 'orange-up' }, { name: 'blue-up' }, { name: 'orange-right' }], 75.5: [{ name: 'orange-up' }, { name: 'blue-up' }, { name: 'orange-right' }], 75.7: [{ name: 'orange-up' }], 76.2: [{ name: 'blue-left' }, { name: 'orange-up' }, { name: 'blue-up' }, { name: 'orange-right' }], 76.5: [{ name: 'blue-left' }, { name: 'orange-up' }, { name: 'blue-up' }, { name: 'orange-right' }], 76.7: [{ name: 'orange-up' }, { name: 'orange-right' }], 77.3: [{ name: 'blue-left' }, { name: 'orange-up' }, { name: 'blue-up' }, { name: 'orange-right' }], 77.6: [{ name: 'orange-up' }, { name: 'orange-right' }] };
-      this.danceKeyboardKeys = this.input.keyboard.addKeys({
-        blueLeft: Phaser.KeyCode.Q,
-        blueUp: Phaser.KeyCode.Z,
-        blueDown: Phaser.KeyCode.S,
-        orangeDown: Phaser.KeyCode.DOWN,
-        orangeUp: Phaser.KeyCode.UP,
-        orangeRight: Phaser.KeyCode.RIGHT
-      });
-    }
-  }, {
-    key: 'create',
-    value: function create() {
-      this.score = 0.5;
-
-      this.createOutlines();
-      this.createDanceTags();
-      this.createScoreBar();
-
-      var stopButton = new _Button2.default(this.game, this.world.centerX, this.world.centerY, this.stopClicked, this, 'blue', 'Stop');
-      stopButton.anchor.setTo(0.5, 0.5);
-      this.add.existing(stopButton);
-
-      this.music = this.add.audio('music');
-      this.game.sound.setDecodedCallback([this.music], this.musicDecoded, this);
-    }
-  }, {
-    key: 'musicDecoded',
-    value: function musicDecoded() {
-      this.createTimers();
-      this.music.play();
-    }
-  }, {
-    key: 'createOutlines',
-    value: function createOutlines() {
-      this.outlinesLeft = this.add.group();
-      this.outlinesLeft.enableBody = true;
-      this.blueLeftButton = this.outlinesLeft.add(new _DanceButtonOutline2.default(this.game, 0, 0, 'blue', 'left'));
-      this.blueUpButton = this.outlinesLeft.add(new _DanceButtonOutline2.default(this.game, 1 * (this.blueLeftButton.width + 10), 0, 'blue', 'up'));
-      this.blueDownButton = this.outlinesLeft.add(new _DanceButtonOutline2.default(this.game, 2 * (this.blueLeftButton.width + 10), 0, 'blue', 'down'));
-      this.outlinesLeft.setAll('body.immovable', true);
-      this.outlinesLeft.setAll('body.width', OVERLAP_SIZE);
-      this.outlinesLeft.setAll('body.height', OVERLAP_SIZE);
-      this.outlinesLeft.setAll('body.offset.x', (this.blueLeftButton.width / this.blueLeftButton.scale.x - OVERLAP_SIZE) * 0.5);
-      this.outlinesLeft.setAll('body.offset.y', (this.blueLeftButton.height / this.blueLeftButton.scale.x - OVERLAP_SIZE) * 0.5);
-      this.outlinesLeft.x = 100;
-      this.outlinesLeft.y = this.world.centerY;
-
-      this.outlinesRight = this.add.group();
-      this.outlinesRight.enableBody = true;
-      this.orangeDownButton = this.outlinesRight.add(new _DanceButtonOutline2.default(this.game, 0 * (this.blueLeftButton.width + 10), 0, 'orange', 'down'));
-      this.orangeUpButton = this.outlinesRight.add(new _DanceButtonOutline2.default(this.game, 1 * (this.blueLeftButton.width + 10), 0, 'orange', 'up'));
-      this.orangeRightButton = this.outlinesRight.add(new _DanceButtonOutline2.default(this.game, 2 * (this.blueLeftButton.width + 10), 0, 'orange', 'right'));
-      this.outlinesRight.setAll('body.immovable', true);
-      this.outlinesRight.setAll('body.width', OVERLAP_SIZE);
-      this.outlinesRight.setAll('body.height', OVERLAP_SIZE);
-      this.outlinesRight.setAll('body.offset.x', (this.blueLeftButton.width / this.blueLeftButton.scale.x - OVERLAP_SIZE) * 0.5);
-      this.outlinesRight.setAll('body.offset.y', (this.blueLeftButton.height / this.blueLeftButton.scale.x - OVERLAP_SIZE) * 0.5);
-      this.outlinesRight.x = this.world.centerX + 200;
-      this.outlinesRight.y = this.world.centerY;
-    }
-  }, {
-    key: 'createDanceTags',
-    value: function createDanceTags() {
-      this.danceTags = this.add.group();
-      this.danceTags.enableBody = true;
-      this.danceTags.createMultiple(100, 'ddr-graphics', 'blue');
-      this.danceTags.setAll('anchor.x', 0.5);
-      this.danceTags.setAll('anchor.y', 0.5);
-      this.danceTags.setAll('scale.x', 0.3);
-      this.danceTags.setAll('scale.y', 0.3);
-      this.danceTags.setAll('checkWorldBounds', true);
-      this.danceTags.setAll('outOfBoundsKill', true);
-      this.danceTags.setAll('body.immovable', true);
-      this.danceTags.setAll('body.width', OVERLAP_SIZE);
-      this.danceTags.setAll('body.height', OVERLAP_SIZE);
-      this.danceTags.setAll('body.offset.x', (this.blueLeftButton.width / this.blueLeftButton.scale.x - OVERLAP_SIZE) * 0.5);
-      this.danceTags.setAll('body.offset.y', (this.blueLeftButton.height / this.blueLeftButton.scale.x - OVERLAP_SIZE) * 0.5);
-    }
-  }, {
-    key: 'createScoreBar',
-    value: function createScoreBar() {
-      this.scoreBar = new _ScoreBar2.default(this.game, this.world.centerX, 100);
-      this.add.existing(this.scoreBar);
-    }
-  }, {
-    key: 'createTimers',
-    value: function createTimers() {
-      var _this2 = this;
-
-      var timeToReachCenter = 1000;
-
-      var _loop = function _loop(time) {
-        var delay = ~~(parseFloat(time) * Phaser.Timer.SECOND) - timeToReachCenter;
-        _this2.notesByTime[time].forEach(function (note) {
-          var noteSplit = note.name.split('-');
-          _this2.time.events.add(delay, _this2.addDanceTag, _this2, noteSplit[0], noteSplit[1]);
-        });
-      };
-
-      for (var time in this.notesByTime) {
-        _loop(time);
-      }
-    }
-  }, {
-    key: 'addDanceTag',
-    value: function addDanceTag(color, orientation) {
-      var danceTag = this.danceTags.getFirstDead();
-      var xPos = 0;
-      switch (orientation) {
-        case 'up':
-          xPos = color === 'blue' ? this.outlinesLeft.x + this.blueUpButton.x : this.outlinesRight.x + this.orangeUpButton.x;
-          danceTag.angle = 180;
-          break;
-        case 'down':
-          xPos = color === 'blue' ? this.outlinesLeft.x + this.blueDownButton.x : this.outlinesRight.x + this.orangeDownButton.x;
-          danceTag.angle = 0;
-          break;
-        case 'right':
-          xPos = this.outlinesRight.x + this.orangeRightButton.x;
-          danceTag.angle = 270;
-          break;
-        default:
-          xPos = this.outlinesLeft.x + this.blueLeftButton.x;
-          danceTag.angle = 90;
-          break;
-      }
-      danceTag.reset(xPos, this.world.bottom);
-      danceTag.body.velocity.y = -180;
-      danceTag.data = {
-        color: color,
-        orientation: orientation,
-        status: DANCETAG_STATUS_NORMAL
-      };
-      danceTag.frameName = color;
-    }
-  }, {
-    key: 'setScore',
-    value: function setScore(value) {
-      this.score = Math.min(1, Math.max(0, value));
-      if (this.scoreBar) {
-        this.scoreBar.score = this.score;
-      }
-    }
-  }, {
-    key: 'increaseScore',
-    value: function increaseScore() {
-      this.setScore(this.score + 0.1);
-    }
-  }, {
-    key: 'decreaseScore',
-    value: function decreaseScore() {
-      this.setScore(this.score - 0.1);
-    }
-  }, {
-    key: 'update',
-    value: function update() {
-      var _this3 = this;
-
-      this.physics.arcade.overlap(this.danceTags, this.outlinesLeft, this.danceTagOverlap, null, this);
-      this.physics.arcade.overlap(this.danceTags, this.outlinesRight, this.danceTagOverlap, null, this);
-      //this.handleKeyboardInput();
-      this.handleSpacebrewInput();
-      this.danceTags.forEachAlive(function (danceTag) {
-        if (danceTag.y < _this3.world.centerY - OVERLAP_SIZE / 2 && danceTag.data.status === DANCETAG_STATUS_NORMAL) {
-          danceTag.data.status = DANCETAG_STATUS_WRONG;
-          danceTag.frameName = danceTag.data.color + '-wrong';
-          _this3.decreaseScore();
-        }
-      });
-    }
-  }, {
-    key: 'danceTagOverlap',
-    value: function danceTagOverlap(danceTag, outline) {
-      if (danceTag.data.status === DANCETAG_STATUS_NORMAL) {
-        if (outline.pressed) {
-          danceTag.data.status = DANCETAG_STATUS_CORRECT;
-          danceTag.frameName = danceTag.data.color + '-correct';
-          this.increaseScore();
-        }
-      }
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      // this.outlinesLeft.forEach(o => this.game.debug.body(o));
-      // this.outlinesRight.forEach(o => this.game.debug.body(o));
-      // this.danceTags.forEach(o => this.game.debug.body(o));
-    }
-  }, {
-    key: 'handleKeyboardInput',
-    value: function handleKeyboardInput() {
-      this.blueLeftButton.pressed = this.danceKeyboardKeys.blueLeft.isDown;
-      this.blueUpButton.pressed = this.danceKeyboardKeys.blueUp.isDown;
-      this.blueDownButton.pressed = this.danceKeyboardKeys.blueDown.isDown;
-      this.orangeUpButton.pressed = this.danceKeyboardKeys.orangeUp.isDown;
-      this.orangeDownButton.pressed = this.danceKeyboardKeys.orangeDown.isDown;
-      this.orangeRightButton.pressed = this.danceKeyboardKeys.orangeRight.isDown;
-    }
-  }, {
-    key: 'handleSpacebrewInput',
-    value: function handleSpacebrewInput() {
-      this.blueLeftButton.pressed = this.game.spacebrewPlugin.buttons['blue-left'].isDown;
-      this.blueUpButton.pressed = this.game.spacebrewPlugin.buttons['blue-up'].isDown;
-      this.blueDownButton.pressed = this.game.spacebrewPlugin.buttons['blue-down'].isDown;
-      this.orangeUpButton.pressed = this.game.spacebrewPlugin.buttons['orange-up'].isDown;
-      this.orangeDownButton.pressed = this.game.spacebrewPlugin.buttons['orange-down'].isDown;
-      this.orangeRightButton.pressed = this.game.spacebrewPlugin.buttons['orange-right'].isDown;
-    }
-  }, {
-    key: 'stopClicked',
-    value: function stopClicked() {
-      this.state.start('Menu');
-    }
-  }, {
-    key: 'shutdown',
-    value: function shutdown() {
-      if (this.music) {
-        this.music.destroy();
-      }
-    }
-  }]);
-
-  return Play;
-}(Phaser.State);
-
-exports.default = Play;
-
-},{"../objects/Button":36,"../objects/DanceButtonOutline":37,"../objects/ScoreBar":38}],42:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _SpacebrewPlugin = require('../SpacebrewPlugin');
-
-var _SpacebrewPlugin2 = _interopRequireDefault(_SpacebrewPlugin);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Preload = function (_Phaser$State) {
-  _inherits(Preload, _Phaser$State);
-
-  function Preload() {
-    _classCallCheck(this, Preload);
-
-    return _possibleConstructorReturn(this, (Preload.__proto__ || Object.getPrototypeOf(Preload)).apply(this, arguments));
-  }
-
-  _createClass(Preload, [{
-    key: 'init',
-    value: function init() {
-      this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-      this.game.spacebrewPlugin = this.game.plugins.add(_SpacebrewPlugin2.default);
-    }
-  }, {
-    key: 'preload',
-    value: function preload() {
-      this.load.video('background-video', 'assets/spacebrew-dance-game/disco-background.mp4');
-      this.load.audio('music', 'assets/spacebrew-dance-game/never-gonna-give-you-up.mp3');
-      this.load.atlasJSONHash('ddr-graphics', 'assets/spacebrew-dance-game/ddr-graphics.png', 'assets/spacebrew-dance-game/ddr-graphics.json');
-      this.load.atlasJSONHash('components', 'assets/spacebrew-dance-game/components.png', 'assets/spacebrew-dance-game/components.json');
-    }
-  }, {
-    key: 'create',
-    value: function create() {
-      this.state.start('Menu');
-      // this.state.start('Play');
-    }
-  }]);
-
-  return Preload;
-}(Phaser.State);
-
-exports.default = Preload;
-
-},{"../SpacebrewPlugin":35}],43:[function(require,module,exports){
-'use strict';
-
 var _Presentation = require('./classes/Presentation');
 
 var _Presentation2 = _interopRequireDefault(_Presentation);
@@ -5941,7 +5306,7 @@ require('es6-promise').polyfill();
   init();
 })();
 
-},{"../../server/classes/SlidesFolderParser":44,"./classes/Presentation":10,"es6-promise":2}],44:[function(require,module,exports){
+},{"../../server/classes/SlidesFolderParser":35,"./classes/Presentation":10,"es6-promise":2}],35:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5959,7 +5324,7 @@ if (!(typeof window !== "undefined" && window)) {
   requireNode = window.requireNode;
 }
 
-var fs = requireNode("fs-promise");
+var fs = requireNode("fs-extra");
 var path = requireNode("path");
 
 var getFileProperties = function getFileProperties(filePath) {
@@ -6092,7 +5457,7 @@ var SlidesFolderParser = function () {
 
 exports.default = SlidesFolderParser;
 
-},{}],45:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6164,7 +5529,7 @@ var Constants = exports.Constants = {
   DANCE_PAD_GAME_FINISHED: "dancePadGameFinished"
 };
 
-},{}],46:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6195,6 +5560,9 @@ var MobileServerBridge = function () {
     value: function connect() {
       var _this = this;
 
+      if (!this.settings.mobileServerUrl) {
+        return;
+      }
       console.log('MobileServerBridge.connect');
       //console.warn('MobileServerBridge disabled');
       //return;
@@ -6265,14 +5633,12 @@ var MobileServerBridge = function () {
 
 exports.default = MobileServerBridge;
 
-},{"isomorphic-fetch":4}],47:[function(require,module,exports){
+},{"isomorphic-fetch":4}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -6403,31 +5769,23 @@ var Presentation = function () {
     key: 'getSlideHolderForSlide',
     value: function getSlideHolderForSlide(slide, slidesNotToClear) {
       if (slide) {
-        var _ret = function () {
-          var $slideHolder = $('.slide-frame[data-name="' + slide.name + '"]');
-          if ($slideHolder.length > 0) {
-            return {
-              v: $slideHolder[0]
-            };
+        var $slideHolder = $('.slide-frame[data-name="' + slide.name + '"]');
+        if ($slideHolder.length > 0) {
+          return $slideHolder[0];
+        }
+        //get a free slideHolder
+        var slideNamesNotToClear = [];
+        $(slidesNotToClear).each(function (index, obj) {
+          slideNamesNotToClear.push(obj.name);
+        });
+        var $slideHolders = $('.slide-frame');
+        for (var i = $slideHolders.length - 1; i >= 0; i--) {
+          $slideHolder = $($slideHolders[i]);
+          var name = $slideHolder.attr('data-name');
+          if (!name || slideNamesNotToClear.indexOf(name) === -1) {
+            return $slideHolder[0];
           }
-          //get a free slideHolder
-          var slideNamesNotToClear = [];
-          $(slidesNotToClear).each(function (index, obj) {
-            slideNamesNotToClear.push(obj.name);
-          });
-          var $slideHolders = $('.slide-frame');
-          for (var i = $slideHolders.length - 1; i >= 0; i--) {
-            $slideHolder = $($slideHolders[i]);
-            var name = $slideHolder.attr('data-name');
-            if (!name || slideNamesNotToClear.indexOf(name) === -1) {
-              return {
-                v: $slideHolder[0]
-              };
-            }
-          }
-        }();
-
-        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+        }
       }
       return false;
     }
@@ -6444,52 +5802,48 @@ var Presentation = function () {
   }, {
     key: 'setCurrentSlideIndex',
     value: function setCurrentSlideIndex(value) {
-      var _this = this;
-
       value = Math.max(0, Math.min(value, this.slideBridges.length - 1));
       if (value !== this.currentSlideIndex) {
-        (function () {
-          _this.currentSlideIndex = value;
+        this.currentSlideIndex = value;
 
-          var currentSlideBridge = _this.getSlideBridgeByIndex(_this.currentSlideIndex);
-          var previousSlideBridge = _this.getSlideBridgeByIndex(_this.currentSlideIndex - 1);
-          var nextSlideBridge = _this.getSlideBridgeByIndex(_this.currentSlideIndex + 1);
+        var currentSlideBridge = this.getSlideBridgeByIndex(this.currentSlideIndex);
+        var previousSlideBridge = this.getSlideBridgeByIndex(this.currentSlideIndex - 1);
+        var nextSlideBridge = this.getSlideBridgeByIndex(this.currentSlideIndex + 1);
 
-          //remove "used" class from slide holders
-          $('.slide-frame').removeAttr('data-used', false);
+        //remove "used" class from slide holders
+        $('.slide-frame').removeAttr('data-used', false);
 
-          var currentSlideHolder = _this.getSlideHolderForSlide(currentSlideBridge, [previousSlideBridge, nextSlideBridge]);
-          _this.setupSlideHolder(currentSlideHolder, currentSlideBridge, _Constants.Constants.STATE_ACTIVE, 0);
+        var currentSlideHolder = this.getSlideHolderForSlide(currentSlideBridge, [previousSlideBridge, nextSlideBridge]);
+        this.setupSlideHolder(currentSlideHolder, currentSlideBridge, _Constants.Constants.STATE_ACTIVE, 0);
 
-          var previousSlideHolder = _this.getSlideHolderForSlide(previousSlideBridge, [currentSlideBridge, nextSlideBridge]);
-          _this.setupSlideHolder(previousSlideHolder, previousSlideBridge, _Constants.Constants.STATE_INACTIVE, '-100%');
+        var previousSlideHolder = this.getSlideHolderForSlide(previousSlideBridge, [currentSlideBridge, nextSlideBridge]);
+        this.setupSlideHolder(previousSlideHolder, previousSlideBridge, _Constants.Constants.STATE_INACTIVE, '-100%');
 
-          var nextSlideHolder = _this.getSlideHolderForSlide(nextSlideBridge, [previousSlideBridge, currentSlideBridge]);
-          _this.setupSlideHolder(nextSlideHolder, nextSlideBridge, _Constants.Constants.STATE_INACTIVE, '100%');
+        var nextSlideHolder = this.getSlideHolderForSlide(nextSlideBridge, [previousSlideBridge, currentSlideBridge]);
+        this.setupSlideHolder(nextSlideHolder, nextSlideBridge, _Constants.Constants.STATE_INACTIVE, '100%');
 
-          //clear attributes of unused slide frames
-          $('.slide-frame').each(function (index, slideHolder) {
-            if (!$(slideHolder).attr('data-used')) {
-              $(slideHolder).removeAttr('data-used').removeAttr('data-name').removeAttr('data-src');
-            }
-          });
+        //clear attributes of unused slide frames
+        $('.slide-frame').each(function (index, slideHolder) {
+          if (!$(slideHolder).attr('data-used')) {
+            $(slideHolder).removeAttr('data-used').removeAttr('data-name').removeAttr('data-src');
+          }
+        });
 
-          //all other slideHolder bridges should be unlinked from their slideHolder
-          _this.slideBridges.forEach(function (slideBridge) {
-            if (slideBridge === currentSlideBridge) {
-              return;
-            }
-            if (slideBridge === previousSlideBridge) {
-              return;
-            }
-            if (slideBridge === nextSlideBridge) {
-              return;
-            }
-            slideBridge.slideHolder = null;
-          });
+        //all other slideHolder bridges should be unlinked from their slideHolder
+        this.slideBridges.forEach(function (slideBridge) {
+          if (slideBridge === currentSlideBridge) {
+            return;
+          }
+          if (slideBridge === previousSlideBridge) {
+            return;
+          }
+          if (slideBridge === nextSlideBridge) {
+            return;
+          }
+          slideBridge.slideHolder = null;
+        });
 
-          bean.fire(_this, _Constants.Constants.SET_CURRENT_SLIDE_INDEX, [_this.currentSlideIndex]);
-        })();
+        bean.fire(this, _Constants.Constants.SET_CURRENT_SLIDE_INDEX, [this.currentSlideIndex]);
       }
     }
   }, {
@@ -6514,12 +5868,12 @@ var Presentation = function () {
   }, {
     key: 'attachToSlideHolder',
     value: function attachToSlideHolder(slideHolder, slideBridge, src) {
-      var _this2 = this;
+      var _this = this;
 
       //listen for events on this slideHolder
       $(slideHolder).off('message-from-slide');
       $(slideHolder).on('message-from-slide', function (event, message) {
-        _this2.slideMessageHandler({ data: message });
+        _this.slideMessageHandler({ data: message });
       });
       //leave previous channel of this slideHolder
       if (this.mobileServerBridge) {
@@ -6554,7 +5908,7 @@ var Presentation = function () {
 
 exports.default = Presentation;
 
-},{"../Constants":45,"./SlideBridge":48}],48:[function(require,module,exports){
+},{"../Constants":36,"./SlideBridge":39}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6813,7 +6167,7 @@ var ContentBase = function () {
 
 exports.default = ContentBase;
 
-},{"../Constants":45}],"HeartRateSlide":[function(require,module,exports){
+},{"../Constants":36}],"HeartRateSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6884,7 +6238,7 @@ var HeartRateSlide = function (_ContentBase) {
 
 exports.default = HeartRateSlide;
 
-},{"../../../../shared/js/Constants":45,"../../../../shared/js/classes/ContentBase":"ContentBase","../HeartRateCanvas":7}],"HighestHeartrateGameSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase","../HeartRateCanvas":7}],"HighestHeartrateGameSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6947,7 +6301,7 @@ var HighestHeartrateGameSlide = function (_ContentBase) {
 
 exports.default = HighestHeartrateGameSlide;
 
-},{"../../../../shared/js/Constants":45,"../../../../shared/js/classes/ContentBase":"ContentBase","./game/Game":13}],"LiveCodeSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase","./game/Game":13}],"LiveCodeSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7022,7 +6376,7 @@ var LiveCodeSlide = function (_ContentBase) {
 
 exports.default = LiveCodeSlide;
 
-},{"../../../../shared/js/Constants":45,"../../../../shared/js/classes/ContentBase":"ContentBase","../live-code":25}],"LowestHeartrateGameSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase","../live-code":25}],"LowestHeartrateGameSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7085,7 +6439,7 @@ var LowestHeartrateGameSlide = function (_ContentBase) {
 
 exports.default = LowestHeartrateGameSlide;
 
-},{"../../../../shared/js/Constants":45,"../../../../shared/js/classes/ContentBase":"ContentBase","./game/Game":26}],"ReactPhonesSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase","./game/Game":26}],"ReactPhonesSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7288,7 +6642,7 @@ var ReactPhonesSlide = function (_ContentBase) {
 
 exports.default = ReactPhonesSlide;
 
-},{"../../../../shared/js/Constants":45,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"ShakeYourPhonesSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"ShakeYourPhonesSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7521,70 +6875,7 @@ var ShakeYourPhonesSlide = function (_ContentBase) {
 
 exports.default = ShakeYourPhonesSlide;
 
-},{"../../../../shared/js/Constants":45,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"SpacebrewDanceGameSlide":[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _Constants = require('../../../../shared/js/Constants');
-
-var _ContentBase2 = require('../../../../shared/js/classes/ContentBase');
-
-var _ContentBase3 = _interopRequireDefault(_ContentBase2);
-
-var _Game = require('./game/Game');
-
-var _Game2 = _interopRequireDefault(_Game);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var SpacebrewDanceGameSlide = function (_ContentBase) {
-  _inherits(SpacebrewDanceGameSlide, _ContentBase);
-
-  function SpacebrewDanceGameSlide($slideHolder) {
-    _classCallCheck(this, SpacebrewDanceGameSlide);
-
-    var _this = _possibleConstructorReturn(this, (SpacebrewDanceGameSlide.__proto__ || Object.getPrototypeOf(SpacebrewDanceGameSlide)).call(this, $slideHolder));
-
-    _this.game = new _Game2.default(1280, 670, Phaser.AUTO, 'dance-game-container');
-    return _this;
-  }
-
-  _createClass(SpacebrewDanceGameSlide, [{
-    key: 'onStateChanged',
-    value: function onStateChanged() {
-      if (this.state === _Constants.Constants.STATE_ACTIVE) {
-        this.game.paused = false;
-      } else {
-        this.game.paused = true;
-      }
-    }
-  }, {
-    key: 'destroy',
-    value: function destroy() {
-      this.game.destroy();
-      _get(SpacebrewDanceGameSlide.prototype.__proto__ || Object.getPrototypeOf(SpacebrewDanceGameSlide.prototype), 'destroy', this).call(this);
-    }
-  }]);
-
-  return SpacebrewDanceGameSlide;
-}(_ContentBase3.default);
-
-exports.default = SpacebrewDanceGameSlide;
-
-},{"../../../../shared/js/Constants":45,"../../../../shared/js/classes/ContentBase":"ContentBase","./game/Game":34}],"VideoSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"VideoSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7698,7 +6989,91 @@ var VideoSlide = function (_ContentBase) {
 
 exports.default = VideoSlide;
 
-},{"../../../../shared/js/Constants":45,"../../../../shared/js/classes/ContentBase":"ContentBase"}]},{},[43])
+},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"WebviewSlide":[function(require,module,exports){
+'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _Constants = require('../../../../shared/js/Constants');
+
+var _ContentBase2 = require('../../../../shared/js/classes/ContentBase');
+
+var _ContentBase3 = _interopRequireDefault(_ContentBase2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var WebviewSlide = function (_ContentBase) {
+  _inherits(WebviewSlide, _ContentBase);
+
+  function WebviewSlide($slideHolder) {
+    _classCallCheck(this, WebviewSlide);
+
+    var _this = _possibleConstructorReturn(this, (WebviewSlide.__proto__ || Object.getPrototypeOf(WebviewSlide)).call(this, $slideHolder));
+
+    _this.webviewMuted = false;
+
+    _this.webview = _this.$slideHolder.find('webview')[0];
+    return _this;
+  }
+
+  _createClass(WebviewSlide, [{
+    key: 'destroy',
+    value: function destroy() {
+      _get(WebviewSlide.prototype.__proto__ || Object.getPrototypeOf(WebviewSlide.prototype), 'destroy', this).call(this);
+    }
+  }, {
+    key: 'reload',
+    value: function reload() {
+      this.webview.reload();
+    }
+  }, {
+    key: 'openDevTools',
+    value: function openDevTools() {
+      this.webview.openDevTools();
+    }
+  }, {
+    key: 'onStateChanged',
+    value: function onStateChanged() {
+      if (this.state === _Constants.Constants.STATE_ACTIVE) {
+        this.setWebviewMuted(false);
+      } else {
+        this.setWebviewMuted(true);
+      }
+    }
+  }, {
+    key: 'setWebviewMuted',
+    value: function setWebviewMuted(value) {
+      if (value !== this.webviewMuted) {
+        this.webviewMuted = value;
+        if (!this.webview) {
+          return;
+        }
+        if (this.webviewMuted) {
+          this.webview.setAudioMuted(true);
+        } else {
+          this.webview.setAudioMuted(false);
+        }
+      }
+    }
+  }]);
+
+  return WebviewSlide;
+}(_ContentBase3.default);
+
+exports.default = WebviewSlide;
+
+},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase"}]},{},[34])
 
 //# sourceMappingURL=script.js.map

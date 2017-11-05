@@ -12,7 +12,6 @@
     "io": true,
     "requireNode": true,
     "Phaser": true,
-    "Spacebrew": true,
     "_": true,
     "CodeMirror": true
   },

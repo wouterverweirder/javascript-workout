@@ -103,12 +103,12 @@ const presentationScriptsTask = function(watch) {
     .require(`${__dirname  }/${  config.shared.js.src  }/classes/ContentBase.js`, { expose: `ContentBase`})
     .require(`${__dirname  }/${  config.presentation.js.src  }/classes/live-code-slide/index.js`, { expose: `LiveCodeSlide`})
     .require(`${__dirname  }/${  config.presentation.js.src  }/classes/video-slide/index.js`, { expose: `VideoSlide`})
+    .require(`${__dirname  }/${  config.presentation.js.src  }/classes/webview-slide/index.js`, { expose: `WebviewSlide`})
     .require(`${__dirname  }/${  config.presentation.js.src  }/classes/heart-rate-slide/index.js`, { expose: `HeartRateSlide`})
     .require(`${__dirname  }/${  config.presentation.js.src  }/classes/shake-your-phones-slide/index.js`, { expose: `ShakeYourPhonesSlide`})
     .require(`${__dirname  }/${  config.presentation.js.src  }/classes/highest-heartrate-game-slide/index.js`, { expose: `HighestHeartrateGameSlide`})
     .require(`${__dirname  }/${  config.presentation.js.src  }/classes/lowest-heartrate-game-slide/index.js`, { expose: `LowestHeartrateGameSlide`})
     .require(`${__dirname  }/${  config.presentation.js.src  }/classes/react-phones-slide/index.js`, { expose: `ReactPhonesSlide`})
-    .require(`${__dirname  }/${  config.presentation.js.src  }/classes/spacebrew-dance-game-slide/index.js`, { expose: `SpacebrewDanceGameSlide`})
     .transform(babelify);
 
   return scriptsTask(b, watch, `script.js`, config.presentation.js.dst);
@@ -119,6 +119,13 @@ const presentationVendorsTask = function(watch) {
     .transform(babelify);
 
   return scriptsTask(b, watch, `vendors.js`, config.presentation.js.dst);
+};
+
+const liveCodeWebPreviewTask = function(watch) {
+  const b = browserify(`${config.presentation.js.src  }/livecode-webpreview.js`, { debug: gutil.env.type !== `production` })
+    .transform(babelify);
+
+  return scriptsTask(b, watch, `livecode-webpreview.js`, config.presentation.js.dst);
 };
 
 const mobileStylesTask = function() {
@@ -176,6 +183,10 @@ gulp.task(`mobile-vendors`, function() {
   return mobileVendorsTask(false);
 });
 
+gulp.task(`livecode-webpreview`, function() {
+  return liveCodeWebPreviewTask(false);
+});
+
 gulp.task(`server-scripts`, serverScriptsTask);
 
 gulp.task(`watch`, [`presentation-styles`, `mobile-styles`, `server-scripts`], function() {
@@ -183,7 +194,10 @@ gulp.task(`watch`, [`presentation-styles`, `mobile-styles`, `server-scripts`], f
   gulp.watch(`${config.mobile.scss.src  }/**/*.scss`, [`mobile-styles`]);
   gulp.watch(`${config.server.js.src  }/**/*.js`, [`server-scripts`]);
   presentationScriptsTask(true);
+  presentationVendorsTask(true);
   mobileScriptsTask(true);
+  mobileVendorsTask(true);
+  liveCodeWebPreviewTask(true);
 });
 
 gulp.task(`default`, [`watch`]);

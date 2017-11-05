@@ -20,9 +20,10 @@ export default class WebPreviewElement {
     }
 
     this.file = this.$el.data(`file`) || this.$el.data(`url`);
-    this.autoload = this.$el.data(`autoload`);
+    this.autoload = this.$el.data(`autoload`) || false;
+    this.zoomfactor = this.$el.data(`zoomfactor`) || false;
 
-    this.console = this.$el.data(`console`);
+    this.console = this.$el.data(`console`) || false;
 
     this.$el.css(`width`, `100%`).css(`height`, `100%`);
 
@@ -44,8 +45,10 @@ export default class WebPreviewElement {
     this.isRunning = false;
     if(this.webview) {
       this.webview.removeEventListener(`did-get-response-details`, this._didGetResponseDetailsHandler);
+      this.webview.removeEventListener(`dom-ready`, this._domReadyHandler);
       this.webview.removeEventListener(`did-fail-load`, this._didFailLoadHandler);
       this.webview.removeEventListener(`ipc-message`, this._ipcMessageHandler);
+      this.webview.removeEventListener(`console-message`, this._consoleMessageHandler);
       this.webview.parentNode.removeChild(this.webview);
       this.webview = false;
       clearTimeout(this.retryTimeout);
@@ -72,7 +75,7 @@ export default class WebPreviewElement {
     this.webview = document.createElement(`webview`);
     this.webview.style.width = `100%`;
     this.webview.style.height = `100%`;
-    this.webview.preload = `js/webpreview.js`;
+    this.webview.preload = `js/livecode-webpreview.js`;
     this.el.appendChild(this.webview);
 
     const url = (this.url !== false) ? this.url : `webpreview.html`;
@@ -95,6 +98,14 @@ export default class WebPreviewElement {
     };
     this.webview.addEventListener(`did-get-response-details`, this._didGetResponseDetailsHandler);
 
+    this._domReadyHandler = () => {
+      if (this.zoomfactor) {
+        const zoomfactor = parseFloat(this.zoomfactor);
+        this.webview.setZoomFactor(zoomfactor);
+      }
+    };
+    this.webview.addEventListener(`dom-ready`, this._domReadyHandler);
+
     this._didFailLoadHandler = () => {
       this.retryTimeout = setTimeout(() => {
         this.pause();
@@ -103,20 +114,15 @@ export default class WebPreviewElement {
     };
     this.webview.addEventListener(`did-fail-load`, this._didFailLoadHandler);
 
+    this._consoleMessageHandler = e => {
+      this.$wrapperEl.trigger(`console-message`, e);
+    };
+    this.webview.addEventListener(`console-message`, this._consoleMessageHandler);
+
     this._ipcMessageHandler = event => {
       if(event.channel === `request-html`)
       {
         this.webview.send(`receive-html`, htmlSrc);
-      }
-      else if(event.channel === `console.log`)
-      {
-        //notify live code editor
-        this.$wrapperEl.trigger(`console.log`, event.args[0]);
-      }
-      else if(event.channel === `console.error`)
-      {
-        //notify live code editor
-        this.$wrapperEl.trigger(`console.error`, event.args[0]);
       }
     };
     this.webview.addEventListener(`ipc-message`, this._ipcMessageHandler);
@@ -139,5 +145,9 @@ export default class WebPreviewElement {
     this.url = false;
     this.blocks = blocks;
     this.resume();
+  }
+
+  openDevTools() {
+    this.webview.openDevTools();
   }
 }

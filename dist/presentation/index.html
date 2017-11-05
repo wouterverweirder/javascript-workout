@@ -18,7 +18,6 @@
   <script src="js/easeljs-0.8.2.min.js"></script>
   <script src="js/preloadjs-0.6.2.min.js"></script>
   <script src="js/phaser.min.js"></script>
-  <script src="js/sb-1.4.1.js"></script>
 </head>
 <body>
   <div id="presentation-wrapper-outer">
@@ -29,9 +28,6 @@
           <div style="color: white; font-size: 2em;"><i class="fa fa-heartbeat" aria-hidden="true"></i> <span id="global-heart-rate">60</span></div>
           <div style="color: white; flex: 1; text-align: center; font-size: 1.5em;">jsworkout.herokuapp.com</div>
           <div style="margin-left: auto;">
-            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#spacebrewAdminModal">
-              <i class="fa fa-rocket" aria-hidden="true"></i>
-            </button>
           </div>
         </div>
       </footer>
@@ -45,22 +41,6 @@
       </div>
     </div>
     <div style="margin-left: 1em;">press space to toggle controls</div>
-  </div>
-
-  <div class="modal fade" id="spacebrewAdminModal" tabindex="-1" role="dialog" aria-labelledby="spacebrewAdminModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h4 class="modal-title" id="spacebrewAdminModalLabel">Spacebrew Admin</h4>
-        </div>
-        <div class="modal-body">
-          <iframe src="http://localhost:9000" style="width: 100%; height: 60rem;"></iframe>
-        </div>
-      </div>
-    </div>
   </div>
 
   <video id="webcam-video" style="display: none;"></video>

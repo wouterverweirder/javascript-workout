@@ -14,17 +14,7 @@ const argv = require('minimist')(process.argv.slice(2));
 
 let debug = (argv.env === 'dev');
 
-const tty = require('tty.js');
-
-let ttyServer = tty.createServer({
-  shell: 'bash',
-  port: 3000,
-  localOnly: true,
-  static: path.resolve(__dirname, 'vendors', 'tty'),
-  cwd: path.resolve(__dirname)
-});
-
-ttyServer.listen();
+require('./xterm-app.js');
 
 //start the spark core server
 const sparkProcess =  spawn('node', ['main.js'], {cwd: path.resolve(__dirname, 'vendors', 'spark-server')});
@@ -32,14 +22,6 @@ sparkProcess.stdout.pipe(process.stdout);
 sparkProcess.stderr.pipe(process.stderr);
 sparkProcess.on('close', code => {
 	console.log('[spark] exited with code ' + code);
-});
-
-//start the spacebrew server
-const spacebrewProcess =  spawn('node', ['node_server.js'], {cwd: path.resolve(__dirname, 'vendors', 'spacebrew')});
-spacebrewProcess.stdout.pipe(process.stdout);
-spacebrewProcess.stderr.pipe(process.stderr);
-spacebrewProcess.on('close', code => {
-	console.log('[spacebrew] exited with code ' + code);
 });
 
 let mainWindow;
@@ -71,7 +53,6 @@ app.on('window-all-closed', () => {
 app.on('will-quit', () => {
   //kill the spawned processes
   process.kill(sparkProcess.pid, 'SIGTERM');
-  process.kill(spacebrewProcess.pid, 'SIGTERM');
 });
 
 app.on('activate', () => {

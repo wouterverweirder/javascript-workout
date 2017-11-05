@@ -1,44 +1,32 @@
-const getUserMedia = config => {
-  return new Promise((resolve, reject) => {
-    navigator.getUserMedia = navigator.getUserMedia ||
-                       navigator.webkitGetUserMedia ||
-                       navigator.mozGetUserMedia;
-    navigator.getUserMedia(config, stream => {
-      resolve(stream);
-    }, err => reject(err));
-  });
-};
-
 const getCameraConfig = videoWidth => {
-  return new Promise(resolve => {
-    MediaStreamTrack.getSources(mediaSources => {
-      let sourceId;
-      mediaSources.forEach(mediaSource => {
-        if (mediaSource.kind === `video`) {
-          console.log(mediaSource.label.toLowerCase());
-          if(!sourceId || mediaSource.label.toLowerCase().indexOf(`facetime`) === -1) {
-            sourceId = mediaSource.id;
-          }
+  let sourceId = false;
+  return window.navigator.mediaDevices.enumerateDevices()
+    .then(devices => devices.filter(device => device.kind === `video`))
+    .then(devices => {
+      devices.forEach(device => {
+        console.log(device);
+        if(!sourceId || device.label.toLowerCase().indexOf(`facetime`) === -1) {
+          sourceId = device.deviceId;
         }
       });
-      const cameraConfig = {
+    })
+    .then(() => {
+      return {
         video: {
           optional: [
-            {sourceId: sourceId},
-            {minWidth: videoWidth}
+            { sourceId },
+            { minWidth: videoWidth}
           ]
         }
       };
-      resolve(cameraConfig);
     });
-  });
 };
 
 export default class Webcam {
   constructor(video) {
     this.video = video;
     getCameraConfig(1280)
-      .then(config => getUserMedia(config))
+      .then(config => window.navigator.mediaDevices.getUserMedia(config))
       .then(stream => {
         this.video.src = window.URL.createObjectURL(stream);
         this.video.onloadedmetadata = () => {
