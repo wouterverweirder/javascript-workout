@@ -24,6 +24,14 @@ sparkProcess.on('close', code => {
 	console.log('[spark] exited with code ' + code);
 });
 
+// start the espruino server
+const espruinoProcess =  spawn('node', ['server.js'], {cwd: path.resolve(__dirname, 'vendors', 'EspruinoWebIDE')});
+espruinoProcess.stdout.pipe(process.stdout);
+espruinoProcess.stderr.pipe(process.stderr);
+espruinoProcess.on('close', code => {
+	console.log('[EspruinoWebIDE] exited with code ' + code);
+});
+
 let mainWindow;
 
 global.__dirname = __dirname;
@@ -53,6 +61,7 @@ app.on('window-all-closed', () => {
 app.on('will-quit', () => {
   //kill the spawned processes
   process.kill(sparkProcess.pid, 'SIGTERM');
+  process.kill(espruinoProcess.pid, 'SIGTERM');  
 });
 
 app.on('activate', () => {

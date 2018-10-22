@@ -1,6 +1,6 @@
 <template>
   <article class="slide">
-    <webview width="100%" height="100%" style="width: 100%; height: 100%;" nodeintegration disablewebsecurity />
+    <webview width="100%" height="100%" style="width: 100%; height: 100%;" disablewebsecurity />
 <script type="text/template">
 (function($slideHolder){
 
@@ -15,10 +15,10 @@
       super($slideHolder);
       this.webview = this.slideHolder.querySelector('webview');
       this.webview.addEventListener('dom-ready', () => {
-        //this.webview.openDevTools();
+        this.webview.openDevTools();
       });
       this.webview.setAttribute('preload', 'js/espruino-webview-preload.js');
-      this.webview.setAttribute('src', 'vendors/EspruinoWebIDE/main.html');
+      this.webview.setAttribute('src', 'http://localhost:8080/');
 
       //disable keyboard bubbling up
       $(window).on('keydown', event => this.keyDownHandler(event));

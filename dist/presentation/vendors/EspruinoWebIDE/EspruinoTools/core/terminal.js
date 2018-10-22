@@ -56,25 +56,112 @@
     $('<div id="terminal" class="terminal"></div>').appendTo(".editor--terminal .editor__canvas");
     $('<textarea id="terminalfocus" class="terminal__focus" rows="1" cols="1"></textarea>').appendTo(document.body);
 
-    // Populate terminal
-    $.get("data/terminal_initial.html", function (data){
-      $("#terminal").html(data);
-      $(".tour_link").click(function(e) {
-        e.preventDefault();
-        $("#icon-tour").click();
+    var terminal = document.getElementById("terminal");
+    var terminalfocus = document.getElementById("terminalfocus");
+
+    var html = "";
+    html+='<div style="max-width:400px;margin:auto;">\n';
+    html+='  <p><a href="http://www.espruino.com/Web+IDE" target="_blank"><img src="img/ide_logo.png" width="299" height="96" alt="Espruino IDE"/></a></p>\n';
+    html+='  <p id="versioninfo" style="text-align:right"></p>\n';
+    html+='  <p style="text-align:center;font-weight:bold">A Code Editor and Terminal for <a href="http://www.espruino.com" target="_blank">Espruino JavaScript Microcontrollers</a></p>\n';
+    html+='  <p>Try the <a class="tour_link" href="#">guided tour</a> and <a href="http://www.espruino.com/Quick+Start" target="_blank">getting started</a> guide for more information, tutorials and example projects.</p>\n';
+    html+='  <div id="terminalnews"></div>\n';
+    html+='  <p>Espruino is <a href="https://github.com/espruino" target="_blank">Open Source</a>.\n';
+    html+='Please support us by <a href="http://www.espruino.com/Donate" target="_blank">donating</a> or\n';
+    html+='  <a href="http://www.espruino.com/Order" target="_blank">buying an official board</a>.</p>\n';
+    html+='  <p style="text-align:right">\n'
+    html+='    <a href="http://twitter.com/Espruino" target="_blank"><img src="img/icon_twitter.png" width="16" height="16" alt="Follow on Twitter"/></a>\n';
+    html+='    <a href="http://youtube.com/subscription_center?add_user=espruino" target="_blank"><img src="img/icon_youtube.png" width="44" height="16" alt="Subscribe on YouTube"/></a>\n';
+    html+='    <a href="https://www.patreon.com/espruino" target="_blank"><img src="img/icon_patreon.png" width="45" height="16" alt="Support on Patreon"/></a>\n';
+    html+='  </p>\n';
+    html+='</div>\n';
+
+    terminal.innerHTML = html;
+    Espruino.Core.Utils.getVersionInfo(function(v) {
+      $("#versioninfo").html(v);
+
+      var r = 0|(Math.random()*1000000);
+      $.get("https://www.espruino.com/ide/news.html?v="+encodeURIComponent(v.replace(/[ ,]/g,"")+"&r="+r), function (data){
+        $("#terminalnews").html(data);
       });
     });
 
-    $("#terminal").mouseup(function() {
-      var terminalfocus = $('#terminalfocus');
+    $(".tour_link").click(function(e) {
+      e.preventDefault();
+      $("#icon-tour").click();
+    });
+
+    var mouseDownTime = Date.now();
+    var mouseUpTime = Date.now();
+    window.addEventListener("mousedown", function() {
+      mouseDownTime = Date.now();
+    });
+    terminal.addEventListener("mouseup" , function(e) {
       var selection = window.getSelection();
+      var shortClick = Date.now() < mouseDownTime+200;
+      var doubleClick = Date.now() < mouseUpTime+600;
+      mouseUpTime = Date.now();
+      /* Maybe we basically just clicked (<200ms)
+       in which case we don't want to copy but just
+       move the cursor. DON'T move cursor
+       for double-clicks */
+      if (shortClick && !doubleClick) {
+        // Move cursor, if we can...
+        if (selection &&
+            selection.baseNode &&
+            selection.baseNode.parentNode &&
+            selection.baseNode.parentNode.className=="termLine") {
+          var cx = selection.baseOffset;
+          var cy = selection.baseNode.parentNode.attributes.linenumber.value;
+          var prev = selection.baseNode.previousSibling;
+          while (prev) {
+            cx += prev.textContent.length;
+            prev = prev.previousSibling;
+          }
+          //console.log("Click to ",cx,cy, termCursorX,termCursorY);
+          var s = "";
+          var tx = termCursorX;
+          var ty = termCursorY;
+          while (cx<tx) { tx--; s+=String.fromCharCode(27,91,68); } // left
+          while (cy>ty && termText[ty+1] && ":>".indexOf(termText[ty+1][0])>=0) {
+            ty++; s+=String.fromCharCode(27,91,66);
+          }
+          while (cy<ty && termText[ty-1] && ":>".indexOf(termText[ty-1][0])>=0) {
+            ty--; s+=String.fromCharCode(27,91,65);
+          }
+          if (!termText[ty]) cx=0;
+          else if (termText[ty].length<cx)
+            cx = termText[ty].length;
+          while (cx>tx) { tx++; s+=String.fromCharCode(27,91,67); } // right
+          if (s.length) {
+            if (termCursorY==termText.length-1 &&
+                termCursorX==termText[termCursorY].length) {
+              if (termCursorX<=1) {
+                /* if we're right at the end, but there are no characters so
+                we can't step back - don't try and move because we can't */
+                s="";
+              } else {
+                /* if we're at the end of the last line, we need to step left
+                then move, then right - or we could just end up going back in
+                the command history */
+                s = String.fromCharCode(27,91,68) + s + String.fromCharCode(27,91,67);
+              }
+            }
+            if (s.length)
+              onInputData(s);
+          }
+        }
+        terminalfocus.focus();
+        window.scrollTo(0,0); // as terminalfocus is offscreen, just in case force us back onscreen
+        return;
+      }
+
       /* this rather convoluted code checks to see if the selection
        * is actually part of the terminal. It may be that the user
        * clicked on the editor pane, dragged, and released over the
        * terminal in which case we DON'T want to copy. */
       if (selection.rangeCount > 0) {
         var node = selection.getRangeAt(0).startContainer;
-        var terminal = $("#terminal")[0];
         while (node && node!=terminal)
           node = node.parentNode;
 
@@ -86,24 +173,85 @@
             //console.log(selectedText.split("").map(function(c) { return c.charCodeAt(0); }));
             selectedText = selectedText.replace(/\xA0/g," "); // Convert nbsp chars to spaces
             //console.log(selectedText.split("").map(function(c) { return c.charCodeAt(0); }));
-            terminalfocus.val(selectedText).select();
+
+            /* Because Espruino prefixes multi-line code with ':' it makes
+             it a nightmare to copy/paste. This hack gets around it. */
+            var allColon = true, hasNewline = false;
+            var trimmedSelectedText = selectedText.trim();
+            for (var i=0;i<trimmedSelectedText.length-1;i++) {
+              if (trimmedSelectedText[i]=="\n")
+                hasNewline = true;
+              if (trimmedSelectedText[i]=="\n" && trimmedSelectedText[i+1]!=":")
+                allColon = false;
+            }
+            if (allColon && hasNewline) {
+              selectedText = selectedText.replace(/\n:/g,"\n");
+              if (selectedText[0]==">" ||
+                  selectedText[1]==":")
+                selectedText = selectedText.substr(1);
+            }
+
+            terminalfocus.value = selectedText;
+            terminalfocus.select();
             document.execCommand('copy');
-            terminalfocus.val('');
+            terminalfocus.value = '';
+            lastValue = '';
           }
         }
       }
-
       terminalfocus.focus();
     });
-    $("#terminalfocus").focus(function() { $("#terminal").addClass('focus'); } ).blur(function() { $("#terminal").removeClass('focus'); } );
-    $("#terminalfocus").keypress(function(e) {
-      e.preventDefault();
-      var ch = String.fromCharCode(e.which);
-      onInputData(ch);
-    }).keydown(function(e) {
+    terminalfocus.focus();
+    terminalfocus.addEventListener("focus", function() {
+      terminal.classList.add('focus');
+    });
+    terminalfocus.addEventListener("blur", function() {
+      terminal.classList.remove('focus');
+    });
+    /* Super hack for Android. We can't just look at keypresses since
+    it wants to do autocomplete. What we do is keep the current word
+    (at least until someone presses a special char) in an input box
+    and then try and send the characters needed to keep text on
+    Espruino up to date with the text box. */
+    var lastValue = terminalfocus.value;
+    function changeListener() {
+      var thisValue = terminalfocus.value;
+      var commonChars = 0;
+      while (commonChars<thisValue.length &&
+             commonChars<lastValue.length &&
+             thisValue[commonChars] == lastValue[commonChars])
+        commonChars++;
+      var text = "";
+      for (var i=commonChars;i<lastValue.length;i++)
+        text+="\x08"; // backspace
+      text+=thisValue.substr(commonChars);
+      lastValue = terminalfocus.value;
+      if (text.length)
+        onInputData(Espruino.Core.Utils.fixBrokenCode(text));
+    }
+    terminalfocus.addEventListener("input", changeListener);
+    terminalfocus.addEventListener("keydown", function(e) {
       var ch = undefined;
+      if (e.keyCode == 13) ch = String.fromCharCode(13);
       if (e.ctrlKey) {
         if (e.keyCode == 'C'.charCodeAt(0)) ch = String.fromCharCode(3); // control C
+        if (e.keyCode == 'F'.charCodeAt(0)) {
+          // fullscreen
+          e.preventDefault();
+          var term = document.querySelector(".editor__canvas__terminal");
+          if (term.classList.contains("editor__canvas__fullscreen")) {
+            // was fullscreen - make windowed
+            term.classList.remove("editor__canvas__fullscreen");
+            document.querySelector(".editor--terminal").append(term)
+          } else {
+            term.classList.add("editor__canvas__fullscreen");
+            document.body.append(term);
+          }
+          // if we have a webcam it seems we need to start it playing again 
+          // after moving it 
+          var vid = document.querySelector("video");
+          if (vid) vid.play();
+        }
       }
       if (e.altKey) {
         if (e.keyCode == 13) ch = String.fromCharCode(27,10); // Alt enter
@@ -122,31 +270,47 @@
 
       if (ch!=undefined) {
         e.preventDefault();
+        terminalfocus.value = "";
+        lastValue = "";
         onInputData(ch);
       }
-    }).bind('paste', function () {
-      var element = this;
+    });
+    terminalfocus.addEventListener("paste", function() {
       // nasty hack - wait for paste to complete, then get contents of input
       setTimeout(function () {
-        var text = $(element).val();
-        $(element).val("");
-        onInputData(Espruino.Core.Utils.fixBrokenCode(text));
+        changeListener();
+        terminalfocus.value = "";
+        lastValue = "";
       }, 100);
     });
 
 
     Espruino.addProcessor("connected", function(data, callback) {
       grabSerialPort();
-      outputDataHandler("\r\nConnected\r\n>");
-      $("#terminal").addClass("terminal--connected");
+      terminal.classList.add("terminal--connected");
       callback(data);
     });
     Espruino.addProcessor("disconnected", function(data, callback) {
-      outputDataHandler("\r\nDisconnected\r\n");
-      $("#terminal").removeClass("terminal--connected");
+      // carriage return, clear to right - remove prompt, add newline
+-      outputDataHandler("\n");
+      terminal.classList.remove("terminal--connected");
       callback(data);
     });
+    Espruino.addProcessor("notification", function(data, callback) {
+      var elementClass = "terminal-status-"+data.type;
+      var line = termCursorY;
+      if (!termExtraText[line]) termExtraText[line]="";
+      termExtraText[line] += '<div class="terminal-status-container"><div class="terminal-status '+elementClass+'">'+data.msg+'</div></div>';
+      updateTerminal();
+      callback(data);
+    });
+
   };
+
+  /// send the given characters as if they were typed
+  var typeCharacters = function(s) {
+    onInputData(s);
+  }
 
   var clearTerminal = function() {
     // Get just the last entered line
@@ -212,7 +376,7 @@
     // now write this to the screen
     var t = [];
     for (var y in termText) {
-      var line = termText[y];
+      var line = termText[y];      
       if (y == termCursorY) {
         var ch = Espruino.Core.Utils.getSubString(line,termCursorX,1);
         line = Espruino.Core.Utils.escapeHTML(
@@ -224,6 +388,12 @@
         // handle URLs
         line = line.replace(/(https?:\/\/[-a-zA-Z0-9@:%._\+~#=\/\?]+)/g, '<a href="$1" target="_blank">$1</a>');
       }
+      // detect inline images and link them in
+      var m = line.match(/data:image\/\w+;base64,[\w\+\/=]+/);
+      if (m) {
+        line = line.substr(0,m.index)+'<img class="terminal-inline-image" src="'+m[0]+'"/>'+line.substr(m.index+m[0].length);
+      }
+      
       // extra text is for stuff like tutorials
       if (termExtraText[y])
         line = termExtraText[y] + line;
@@ -239,8 +409,20 @@
         elements[y].html(line);
     }
     // now show the line where the cursor is
-    if (elements[termCursorY]!==undefined);
-      elements[termCursorY][0].scrollIntoView();
+    if (elements[termCursorY]!==undefined) {
+      terminal[0].scrollTop = elements[termCursorY][0].offsetTop;
+    }
+    /* Move input box to the same place as the cursor, so Android devices
+    keep that part of the screen in view */
+    var cursor = document.getElementsByClassName("terminal__cursor");
+    if (cursor.length) {
+      var pos = cursor[0].getBoundingClientRect();
+      var terminalfocus = document.getElementById("terminalfocus");
+      var x = Math.min(pos.left, terminal.offsetWidth);
+      terminalfocus.style.left=x+"px";
+      terminalfocus.style.top=pos.top+"px";
+      terminalfocus.style["z-index"]=-100;
+    }
   };
 
   function trimRight(str) {
@@ -272,6 +454,7 @@
         case 0xC2 : break; // UTF8 for <255 - ignore this
         default : {
           // Else actually add character
+          if (termText[termCursorY]===undefined) termText[termCursorY]="";
           termText[termCursorY] = trimRight(
               Espruino.Core.Utils.getSubString(termText[termCursorY],0,termCursorX) +
               String.fromCharCode(ch) +
@@ -286,8 +469,8 @@
           }
         }
       }
-   } else if (termControlChars[0]==27) {
-     if (termControlChars[1]==91) {
+   } else if (termControlChars[0]==27) { // Esc
+     if (termControlChars[1]==91) { // Esc [
        if (termControlChars[2]==63) {
          if (termControlChars[3]==55) {
            if (ch!=108)
@@ -306,19 +489,23 @@
            case 66: termCursorY++; while (termCursorY >= termText.length) termText.push(""); break;  // down FIXME should add extra lines in...
            case 67: termCursorX++; break; // right
            case 68: if (termCursorX > 0) termCursorX--; break; // left
-           }
-         }
-       } else {
-         switch (ch) {
-           case 91: {
-             termControlChars = [27, 91];
-           } break;
-           default: {
-             termControlChars = [];
-           }
+           case 74: termText[termCursorY] = termText[termCursorY].substr(0,termCursorX); // Delete to right + down
+                    termText = termText.slice(0,termCursorY+1);
+                    break;
+           case 75: termText[termCursorY] = termText[termCursorY].substr(0,termCursorX); break; // Delete to right
          }
        }
-     } else termControlChars = [];
+     } else {
+       switch (ch) {
+         case 91: {
+           termControlChars = [27, 91];
+         } break;
+         default: {
+           termControlChars = [];
+         }
+       }
+     }
+   } else termControlChars = [];
 };
 
 
@@ -436,6 +623,13 @@
     return termText[line];
   };
 
+  function addNotification(text, type) {
+    var line = getInputLine(0);
+    line = (line===undefined)?0:line.line;
+    if (!termExtraText[line]) termExtraText[line]="";
+    termExtraText[line] += '<div class="notification_text">'+text+'</div>';
+    updateTerminal();
+  }
 
   Espruino.Core.Terminal = {
       init : init,
@@ -449,10 +643,12 @@
 
       setExtraText : setExtraText,
       clearExtraText : clearExtraText,
+      addNotification : addNotification, // wrapper around setExtraText to add advice to the terminal
 
       grabSerialPort : grabSerialPort,
       setInputDataHandler : setInputDataHandler,
       outputDataHandler : outputDataHandler,
+      typeCharacters : typeCharacters
   };
 
 })();

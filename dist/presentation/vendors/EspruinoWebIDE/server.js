@@ -49,8 +49,9 @@ Espruino.Core.Status = {
 function readEspruinoToolsFile(p) {
   return require("fs").readFileSync(__dirname+"/EspruinoTools/"+p).toString();
 }
+eval(readEspruinoToolsFile("core/utils.js"));
 eval(readEspruinoToolsFile("core/serial.js"));
-eval(readEspruinoToolsFile("core/serial_nodeserial.js"));
+eval(readEspruinoToolsFile("core/serial_node_serial.js"));
 eval(readEspruinoToolsFile("core/serial_noble.js"));
 
 function ab2str(buf) {
@@ -67,12 +68,16 @@ function str2ab(str) {
 }
 
 Espruino.Core.Serial.startListening(function(data) {
-  if (connection) connection.sendUTF("R"+ab2str(data));
+  if (connection) connection.sendUTF("\x00"+ab2str(data));
 });
 
 var server = http.createServer(function(request, response) {
     console.log((new Date()) + ' HTTP '+request.method+' ' + request.url);
     var url = request.url.toString();
+    // ignore query string
+    if (url.indexOf("?")>=0)
+      url = url.substr(0,url.indexOf("?"));
+    // special files
     if (url == "/") url = "/main.html";
     if (url == "/serial/ports") {
       Espruino.Core.Serial.getPorts(function(ports) {
@@ -81,7 +86,7 @@ var server = http.createServer(function(request, response) {
       });
       return;
     }
-
+    // load filesystem file
     var path =  require('path').resolve(__dirname, "."+url);
     if (path.substr(0,__dirname.length)!=__dirname) {
       console.warn("Hacking attempt? ", url);
@@ -104,7 +109,7 @@ var server = http.createServer(function(request, response) {
 
           blob = blob.toString();
           if (blob.indexOf("<!-- SERIAL_INTERFACES -->")<0) throw new Error("Expecing <!-- SERIAL_INTERFACES --> in main.html");
-          blob = blob.replace("<!-- SERIAL_INTERFACES -->", '<script src="EspruinoTools/core/serial_websocket.js"></script>');
+          blob = blob.replace("<!-- SERIAL_INTERFACES -->", '<script src="EspruinoTools/core/serial_websocket_relay.js"></script>');
         }
 
         response.writeHead(200);
@@ -134,12 +139,12 @@ function originIsAllowed(origin) {
 
 wsServer.on('request', function(request) {
     if (!originIsAllowed(request.origin)) {
-      request.reject();
+      try { request.reject(); } catch (e) {}
       console.log((new Date()) + ' Connection from origin ' + request.origin + ' rejected.');
       return;
     }
     if (request.httpRequest.url[0]!="/") {
-      request.reject();
+      try { request.reject(); } catch (e) {}
       console.log("Invalid connection URL "+request.httpRequest.url);
       return;
     }
@@ -150,13 +155,19 @@ wsServer.on('request', function(request) {
         console.log("Failed to open port");
         return;
       }
+      /* force slow write off. Slow write is the problem of the Web IDE
+      running on the client :) */
+      Espruino.Core.Serial.setSlowWrite(false, true);
       connection = request.accept('serial', request.origin);
       console.log((new Date()) + ' Connection accepted.');
       connection.on('message', function(message) {
-        console.log('Received Message: ' + message.type + " - " + message.utf8Data);
-        Espruino.Core.Serial.write(message.utf8Data, false, function() {
-          connection.sendUTF("W"); // send write ack
-        });
+        var d = message.utf8Data;
+        console.log('Received Message: ' + message.type + " - " + JSON.stringify(d));
+        if (d[0]=="\x01") { // IDE -> BLE
+          Espruino.Core.Serial.write(d.substr(1), false, function() {
+            connection.sendUTF("\x02"); // send write ack
+          });
+        }
       });
       connection.on('close', function(reasonCode, description) {
         console.log((new Date()) + ' Peer disconnected.');

@@ -1,6 +1,12 @@
 #Javascript Workout
 
-Interactive presentation built with electron & nodejs. (Using electron 1.3.4 on node 4.2.2)
+Interactive presentation built with electron & nodejs. (Using electron 2.0.5 on node 8.5.0)
+
+## installing
+
+```bash
+CXXFLAGS="-mmacosx-version-min=10.9" LDFLAGS="-mmacosx-version-min=10.9" yarn
+```
 
 ## building
 

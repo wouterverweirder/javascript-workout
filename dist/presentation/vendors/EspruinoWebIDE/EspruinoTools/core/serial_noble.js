@@ -1,6 +1,6 @@
 (function () {
 
-  /* On Linux, BLE normnally needs admin right to be able to access BLE
+  /* On Linux, BLE normally needs admin right to be able to access BLE
   *
   * sudo apt-get install libcap2-bin
   * sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
@@ -11,32 +11,20 @@
   try {
     noble = require('noble');
   } catch (e) {
-    console.log("'noble' module couldn't be loaded, no node.js Bluetooth Low Energy", e);
+    console.log("Noble: module couldn't be loaded, no node.js Bluetooth Low Energy\n", e);
+    // super nasty workaround for https://github.com/sandeepmistry/noble/issues/502
+    process.removeAllListeners('exit');
     return;
   }
 
   var NORDIC_SERVICE = "6e400001b5a3f393e0a9e50e24dcca9e";
   var NORDIC_TX = "6e400002b5a3f393e0a9e50e24dcca9e";
   var NORDIC_RX = "6e400003b5a3f393e0a9e50e24dcca9e";
+  var NORDIC_TX_MAX_LENGTH = 20;
 
   var initialised = false;
+  var errored = false;
   var scanWhenInitialised = undefined;
-
-  function str2buf(str) {
-    var buf = new Buffer(str.length);
-    for (var i = 0; i < buf.length; i++) {
-      buf.writeUInt8(str.charCodeAt(i), i);
-    }
-    return buf;
-  }
-
-  function dataview2ab(dv) {
-    var bufView = new Uint8Array(dv.byteLength);
-    for (var i = 0; i < bufView.length; i++) {
-      bufView[i] = dv.getUint8(i);
-    }
-    return bufView.buffer;
-  }
 
   function findByUUID(list, uuid) {
     for (var i=0;i<list.length;i++)
@@ -52,7 +40,6 @@
   var btDevice;
   var txCharacteristic;
   var rxCharacteristic;
-  var txDataQueue = undefined;
   var txInProgress = false;
   var scanStopTimeout = undefined;
 
@@ -69,22 +56,47 @@
 
 
   noble.on('stateChange', function(state) {
+    console.log("Noble: stateChange -> "+state);
     if (state=="poweredOn") {
+      if (Espruino.Config.WEB_BLUETOOTH) {
+        // Everything has already initialised, so we must disable
+        // web bluetooth this way instead
+        console.log("Noble: Disable Web Bluetooth as we have Noble instead");
+        Espruino.Config.WEB_BLUETOOTH = false;
+      }
       initialised = true;
+      /* if getPorts was called before initialisation, be sure
+      to wait for stuff to arrive before just calling back
+      with nothing - we're in the CLI */
       if (scanWhenInitialised) {
-        getPorts(scanWhenInitialised);
+        var scb = scanWhenInitialised;
         scanWhenInitialised = undefined;
+        getPorts(function() {
+          setTimeout(function() {
+            getPorts(scb);
+          }, 1500);
+        });
       }
     }
-    if (state=="poweredOff") initialised = false;
+    if (state=="poweredOff") {
+      initialised = false;
+      if (scanWhenInitialised) {
+        var scb = scanWhenInitialised;
+        scanWhenInitialised = undefined;
+        scb(undefined, true/*instantPorts*/);
+      }
+    }
   });
   // if we didn't initialise for whatever reason, keep going anyway
   setTimeout(function() {
+    if (initialised) return;
+    console.log("Noble: Didn't initialise in 10 seconds, disabling.");
+    errored = true;
     if (scanWhenInitialised) {
       scanWhenInitialised([]);
       scanWhenInitialised = undefined;
     }
-  }, 1000);
+  }, 10000);
 
   noble.on('discover', function(dev) {
     if (!dev.advertisement) return;
@@ -93,57 +105,56 @@
     var name = dev.advertisement.localName;
     var hasUartService = dev.advertisement.serviceUuids.indexOf(NORDIC_SERVICE)>=0;
     if (hasUartService ||
-        (name &&
-          (name.substr(0, 7) == "Puck.js" ||
-           name.substr(0, 8) == "Espruino"))) {
-      console.log("Found UART device:", name, dev.address);
-      newDevices.push({ path: dev.address, description: name });
+        Espruino.Core.Utils.isRecognisedBluetoothDevice(name)) {
+      console.log("Noble: Found UART device:", name, dev.address);
+      newDevices.push({ path: dev.address, description: name, type : "bluetooth" });
       btDevices[dev.address] = dev;
-    } else console.log("Found device:", name, dev.address);
+    } else console.log("Noble: Found device:", name, dev.address);
   });
 
 
   var getPorts = function (callback) {
-    if (!Espruino.Config.BLUETOOTH_LOW_ENERGY) {
-      callback([]);
+    if (errored || !Espruino.Config.BLUETOOTH_LOW_ENERGY) {
+      console.log("Noble: getPorts - disabled");
+      callback([], true/*instantPorts*/);
     } else if (!initialised) {
+      console.log("Noble: getPorts - not initialised");
       // if not initialised yet, wait until we are
       if (scanWhenInitialised) scanWhenInitialised([]);
       scanWhenInitialised = callback;
     } else { // all ok - let's go!
+      // Ensure we're scanning
       if (scanStopTimeout) {
         clearTimeout(scanStopTimeout);
         scanStopTimeout = undefined;
       } else {
-        console.log("noble starting scan");
+        console.log("Noble: Starting scan");
         lastDevices = [];
         newDevices = [];
+        noble.startScanning([], true);
       }
-      noble.startScanning([], true);
-
-      setTimeout(function () {
-        scanStopTimeout = setTimeout(function () {
-          scanStopTimeout = undefined;
-          console.log("noble stopping scan");
-          noble.stopScanning();
-        }, 2000);
-        // report back device list from both the last scan and this one...
-        var reportedDevices = [];
-        newDevices.forEach(function (d) {
-          reportedDevices.push(d);
+      scanStopTimeout = setTimeout(function () {
+        scanStopTimeout = undefined;
+        console.log("Noble: Stopping scan");
+        noble.stopScanning();
+      }, 3000);
+      // report back device list from both the last scan and this one...
+      var reportedDevices = [];
+      newDevices.forEach(function (d) {
+        reportedDevices.push(d);
+      });
+      lastDevices.forEach(function (d) {
+        var found = false;
+        reportedDevices.forEach(function (dv) {
+          if (dv.path == d.path) found = true;
         });
-        lastDevices.forEach(function (d) {
-          var found = false;
-          reportedDevices.forEach(function (dv) {
-            if (dv.path == d.path) found = true;
-          });
-          if (!found) reportedDevices.push(d);
-        });
-        reportedDevices.sort(function (a, b) { return a.path.localeCompare(b.path); });
-        lastDevices = newDevices;
-        newDevices = [];
-        callback(reportedDevices);
-      }, 1500);
+        if (!found) reportedDevices.push(d);
+      });
+      reportedDevices.sort(function (a, b) { return a.path.localeCompare(b.path); });
+      lastDevices = newDevices;
+      newDevices = [];
+      //console.log("Noble: reportedDevices",reportedDevices);
+      callback(reportedDevices, false/*instantPorts*/);
     }
   };
 
@@ -154,11 +165,10 @@
     if (scanStopTimeout) {
       clearTimeout(scanStopTimeout);
       scanStopTimeout = undefined;
-      console.log("noble stopping scan");
+      console.log("Noble: Stopping scan (openSerial)");
       noble.stopScanning();
     }
 
-    txDataQueue = undefined;
     txInProgress = false;
 
     console.log("BT> Connecting");
@@ -166,7 +176,6 @@
       txCharacteristic = undefined;
       rxCharacteristic = undefined;
       btDevice = undefined;
-      txDataQueue = undefined;
       txInProgress = false;
       disconnectCallback();
     });
@@ -214,49 +223,38 @@
   // Throttled serial write
   var writeSerial = function (data, callback) {
     if (txCharacteristic === undefined) return;
-    if (typeof txDataQueue != "undefined" || txInProgress) {
-      if (txDataQueue === undefined)
-        txDataQueue = "";
-      txDataQueue += data;
+
+    if (data.length>NORDIC_TX_MAX_LENGTH) {
+      console.error("BT> TX length >"+NORDIC_TX_MAX_LENGTH);
       return callback();
-    } else {
-      txDataQueue = data;
+    }
+    if (txInProgress) {
+      console.error("BT> already sending!");
+      return callback();
     }
 
-    function writeChunk() {
-      var chunk;
-      var CHUNKSIZE = 16;
-      if (txDataQueue.length <= CHUNKSIZE) {
-        chunk = txDataQueue;
-        txDataQueue = undefined;
-      } else {
-        chunk = txDataQueue.substr(0, CHUNKSIZE);
-        txDataQueue = txDataQueue.substr(CHUNKSIZE);
-      }
-      txInProgress = true;
-      console.log("BT> Sending " + JSON.stringify(chunk));
-      try {
-        txCharacteristic.write(str2buf(chunk), false, function() {
-          txInProgress = false;
-          if (txDataQueue)
-            writeChunk();
-        });
-      } catch (e) {
-        console.log("BT> ERROR " + e);
-        txDataQueue = undefined;
-      }
+    console.log("BT> send "+JSON.stringify(data));
+    txInProgress = true;
+    try {
+      txCharacteristic.write(Espruino.Core.Utils.stringToBuffer(data), false, function() {
+        txInProgress = false;
+        return callback();
+      });
+    } catch (e) {
+      console.log("BT> SEND ERROR " + e);
+      closeSerial();
     }
-    writeChunk();
-    return callback();
   };
 
   // ----------------------------------------------------------
 
   Espruino.Core.Serial.devices.push({
+    "name" : "Noble Bluetooth LE",
     "init": init,
     "getPorts": getPorts,
     "open": openSerial,
     "write": writeSerial,
-    "close": closeSerial
+    "close": closeSerial,
+    "maxWriteLength" : NORDIC_TX_MAX_LENGTH,
   });
 })();

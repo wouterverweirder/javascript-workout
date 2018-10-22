@@ -5,25 +5,25 @@
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/.bin/electron index.js",
-    "postinstall": "node ./postinstall.js"
+    "postinstall": "CXXFLAGS='-mmacosx-version-min=10.9' LDFLAGS='-mmacosx-version-min=10.9' node ./postinstall.js"
   },
   "keywords": [],
   "author": "Wouter Verweirder <wouter.verweirder@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "electron": "^1.7.9",
+    "electron": "^2.0.5",
     "express": "^4.16.2",
     "express-ws": "^3.0.0",
     "fs-extra": "^4.0.2",
     "isomorphic-fetch": "^2.2.1",
     "minimist": "^1.2.0",
-    "noble": "^1.8.1",
+    "noble-mac": "Timeular/noble-mac",
     "node-pty": "^0.7.1",
     "ps-tree": "^1.1.0",
     "socket.io-client": "^1.5.1",
     "xterm": "^2.9.2"
   },
   "devDependencies": {
-    "electron-rebuild": "1.4.0"
+    "electron-rebuild": "^1.8.2"
   }
 }

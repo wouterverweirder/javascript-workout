@@ -17,6 +17,13 @@
   function init() {
     $('<div id="divcode" style="width:100%;height:100%;"><textarea id="code" name="code"></textarea></div>').appendTo(".editor--code .editor__canvas");
     // The code editor
+    var lintFlags = {
+      esversion   : 6,    // Enable ES6 for literals, arrow fns, binary
+      evil        : true, // don't warn on use of strings in setInterval
+      laxbreak    : true,  // don't warn about newlines in expressions
+      laxcomma    : true  // don't warn about commas at the start of the line
+    };
+    if (Espruino.Config.DISABLE_CODE_HINTS) lintFlags = false;
     codeMirror = CodeMirror.fromTextArea(document.getElementById("code"), {
       width: "100%",
       height: "100%",
@@ -25,12 +32,7 @@
       mode: {name: "javascript", globalVars: false},
       lineWrapping: true,
       showTrailingSpace: true,
-      lint: {
-        es5         : true, // if ES5 syntax should be allowed
-        evil        : true, // don't warn on use of strings in setInterval
-        laxbreak    : true,  // don't warn about newlines in expressions
-        laxcomma    : true  // don't warn about commas at the start of the line
-      },
+      lint: lintFlags,
       highlightSelectionMatches: {showToken: /\w/},
       foldGutter: {rangeFinder: new CodeMirror.fold.combine(CodeMirror.fold.brace, CodeMirror.fold.comment)},
       gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
@@ -79,11 +81,29 @@
         });
       }
     });
+    CodeMirror.on(codeMirror.getWrapperElement(), "mouseout", function(e) {
+      var tooltips = document.getElementsByClassName('CodeMirror-Tern-tooltip');
+        while(tooltips.length)
+          tooltips[0].parentNode.removeChild(tooltips[0]);
+    });
+    // Options
+    Espruino.Core.Config.add("DISABLE_CODE_HINTS", {
+      section : "General",
+      name : "Disable Code Hints",
+      description : "Disable code hints in the editor. BE CAREFUL - they're there "+
+      "for a reason. If your code is creating warnings then it may well not work "+
+      "on Espruino! (needs a restart to take effect)",
+      type : "boolean",
+      defaultValue : false,
+    });
   }
 
 
   function getCode() {
-    return codeMirror.getValue();
+    var code = codeMirror.getValue();
+    // replace the Non-breaking space character with space. This seems to be an odd Android thing
+    code = code.replace(/\xA0/g," ");
+    return code;
   }
 
   function setCode(code) {
@@ -134,6 +154,11 @@
   }
 
   function showTooltipFor(e, content, node) {
+    // remove any existing codemirror tooltips
+    var tooltips = document.getElementsByClassName('CodeMirror-Tern-tooltip');
+    while(tooltips.length)
+      tooltips[0].parentNode.removeChild(tooltips[0]);
+
     var tooltip = showTooltip(e, content);
     function hide() {
       CodeMirror.off(node, "mouseout", hide);

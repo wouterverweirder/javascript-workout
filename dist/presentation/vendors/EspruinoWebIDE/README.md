@@ -13,8 +13,10 @@ It implements basic VT100 terminal features (up/down/left/right/etc) - enough fo
 | Version | Communications | Benefits |
 |---------|----------------|----------|
 | [Chrome Web App](#installing-from-chrome-web-store) | USB, Serial, [Audio](http://www.espruino.com/Headphone), TCP/IP | Easy to install from [Chrome Web Store](https://chrome.google.com/webstore/detail/espruino-serial-terminal/bleoifhkdalbjfbobjackfdifdneehpo) |
-| [Node.js App](#installing-from-npm) | USB, Serial, Bluetooth Low Energy | Can be run of systems without Chrome web browser |
+| [Node.js App](#installing-from-npm) / NW.js app | USB, Serial, Bluetooth Low Energy | Can be run of systems without Chrome web browser |
 | [Web Version](#full-web-version) | [Audio](http://www.espruino.com/Headphone), Bluetooth Low Energy (via [Web Bluetooth](https://webbluetoothcg.github.io/web-bluetooth/)) | Just go to [a URL](https://espruino.github.io/EspruinoWebIDE/) |
+
+The development of this app is supported by [purchases of official Espruino boards](http://www.espruino.com/Order) as well as the generous donations of my supporters on [Patreon](PATREON.md)
 
 Installing From Chrome Web Store
 ----------------------------
@@ -29,18 +31,37 @@ Installing from NPM
 
 If you have an up to date version of [Node.js](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/), you can execute the commands:
 
+* On Linux, `sudo apt-get install build-essential libudev-dev`
+* `sudo npm install nw -g`
 * `sudo npm install espruino-web-ide -g`
+* To enable BLE support: `sudo setcap cap_net_raw+eip $(eval readlink -f $(which node))`
 * `espruino-web-ide`
 
 **Note:** For command-line access you might also want to take a look at [EspruinoTools](https://github.com/espruino/EspruinoTools)
 
+**Note 2:** If you're not seeing any options for devices to connect to, it might be because your `nw.js` and node versions don't match. If that's the case you need to manually rebuild all the 'native' modules.
+
+```
+npm install -g nw-gyp
+# Now, for directory in node_modules with a binding.gyp file...
+# target should match the nw.js version in node_modules/nw/package.json
+nw-gyp rebuild --target=0.18.6 --arch=x64
+```
+
 Installing from GitHub (Latest Version)
 ---------------------------------------
+
+You need to obtain both the EspruinoWebIDE repository and the EspruinoTools repository, a submodule used in the Web IDE.
+A simple way to obtain both repositories is via the git command:
+
+```git clone --recursive https://github.com/espruino/EspruinoWebIDE.git```
+
+This will clone both the EspruinoWebIDE repository and the submodule dependencies. Alternatively, you can download or clone both repositories individually following the steps below:
 
 * Download the files in [EspruinoWebIDE](https://github.com/espruino/EspruinoWebIDE) to an `EspruinoWebIDE` directory on your PC (either as a [ZIP File](https://github.com/espruino/EspruinoWebIDE/archive/gh-pages.zip), or using git)
 * Download the files in [EspruinoTools](https://github.com/espruino/EspruinoTools) into the `EspruinoWebIDE/EspruinoTools` on your PC (either as a [ZIP File](https://github.com/espruino/EspruinoTools/archive/gh-pages.zip), or using git)
 
-### Running in Chromne
+### Running in Chrome
 
 * Install and run the [Chrome Web Browser](https://www.google.com/intl/en/chrome/browser/)
 * Click the menu icon in the top right
@@ -79,12 +100,13 @@ Using
 Full Web Version
 ----------------
 
-There is also [a web-only version of the Web IDE](https://espruino.github.io/EspruinoWebIDE/) served directly from GitHub.
+The Web IDE is [hosted on the Espruino Website](https://www.espruino.com/ide/) and can use Web Bluetooth to communicate with [Puck.js devices](http://www.espruino.com/Puck.js). There is also [a version served straight from GitHub](https://espruino.github.io/EspruinoWebIDE/).
 
 Web browser permissions stop this accessing the Serial port, but it can:
 
-* Use the Web Audio API to [fake a serial port over your headphone jack](http://www.espruino.com/Headphone) - this must be turned on using the Web IDE's settings icon first
 * Use [Web Bluetooth API](https://webbluetoothcg.github.io/web-bluetooth/) on compatible devices like the [BBC micro:bit](http://www.espruino.com/MicroBit) to communicate with Espruino via devices that implement a Nordic BLE UART
+* Use the Web Audio API to [fake a serial port over your headphone jack](http://www.espruino.com/Headphone) - this must be turned on using the Web IDE's settings icon first
+* Forward the connection [through a device that does have Web Bluetooth](http://forum.espruino.com/conversations/300770/)
 
 Potentially it could also communicate directly with Espruino boards via WebSockets or even AJAX, but this isn't implemented yet.
 
@@ -108,7 +130,7 @@ git submodule add git@github.com:espruino/EspruinoTools.git
 
  * Please stick to a [K&R style](http://en.wikipedia.org/wiki/1_true_brace_style#K.26R_style) with no tabs and 2 spaces per indent
  * Filenames should start with a lowerCase letter, and different words should be capitalised, not split with underscores
- 
+
 ### Code Outline
 
  * Core functionality goes in `js/core`, Plugins go in `js/plugins`. See `plugins/_examplePlugin.js` for an example layout
@@ -117,4 +139,3 @@ git submodule add git@github.com:espruino/EspruinoTools.git
  * Icons are added using `Espruino.Core.App.addIcon` and are generally added from JsvaScript file that performs the operation
  * Config is stored in `Espruino.Config.FOO` and is changed with `Espruino.Config.set("FOO", value)`. `Espruino.Core.Config.add` can be used to add an option to the Settings menu.
  * Annoyingly, right now plugins still have to be loaded via a `<script>` tag in `main.html`
-

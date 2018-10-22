@@ -10,8 +10,13 @@
   position: relative;
   width: 100%;
   height: 100%;
-  padding-top: 30px;
 }
+
+  /* for windows that have a 'real' OS-visible title bar */
+  .window--app
+  {
+    padding-top: 30px;
+  }
 
   .window--modal
   {
@@ -22,6 +27,7 @@
   	width: 350px;
   	min-height: 110px;
   	height: auto;
+    padding-top: 30px;
   }
 
   .window--modal.window--stretch
@@ -171,6 +177,17 @@ a:hover > .menu
   .sidebar .sidebar__buttons--top .menu { top: 0; left: 60px; }
   .sidebar .sidebar__buttons--bottom .menu { bottom: 0; left: 60px; }
 
+  /* Full (un-split) Pane */
+  .full-pane
+  {
+  	position: absolute;
+  	margin-top: 60px;
+  	top: 0;
+  	right: 0;
+  	bottom: 30px;
+  	left: 0;
+  }
+
 /* Split Pane */
 .split-pane
 {
@@ -180,6 +197,16 @@ a:hover > .menu
 	right: 0;
 	bottom: 30px;
 	left: 0;
+}
+
+/* Loading indicator */
+.split-pane__loading {
+  position:absolute;
+  top:50%;left:50%;
+  transform: translate(-50%,-50%);
+  font-size:24px;
+  font-weight: bold;
+  color:#888;"
 }
 
 /* Status */
@@ -195,12 +222,23 @@ a:hover > .menu
         width: 100%;
 }
 
-.status__message
+.status h5
 {
         display: inline-block;
         font-size: 100%;
         line-height: 30px;
         text-transform: uppercase;
+}
+
+
+.status__port
+{
+        margin: 0;
+        padding: 0 10px;
+}
+
+.status__message
+{
         margin: 0;
         padding: 0 10px;
 }
@@ -208,11 +246,12 @@ a:hover > .menu
 /* Progress */
 .status__progress
 {
-        position: relative;
         display: inline-block;
+        position: relative;
         width: 180px;
         height: 4px;
-        margin: 13px 13px;
+        top: -1px;
+        margin: 0px;
         vertical-align: middle;
         background: rgba(0,0,0,0.2);
 }
@@ -250,6 +289,12 @@ a:hover > .menu
         overflow: hidden;
 }
 
+.editor__canvas__fullscreen
+{
+  left: 0;
+  z-index:  100;
+}
+
 /* Sidebar */
 .sidebar
 {
@@ -264,27 +309,27 @@ a:hover > .menu
 	background: #42484a;
 }
 
-/* Port List */
-.port-list,
-.port-list__item
+/* Lists */
+.list,
+.list__item
 {
 	margin: 0;
 	padding: 0;
 	list-style: none;
 }
 
-.port-list
+.list
 {
         margin: 10px;
 }
 
-.port-list__item
+.list__item
 {
         margin-bottom: 10px;
         overflow: hidden;
 }
 
-.port-list__item__name
+.list__item__name
 {
         font-weight: normal;
         font-size: 150%;
@@ -294,15 +339,17 @@ a:hover > .menu
         top: 50%;
         transform: translateY(-50%);
         margin-bottom: 0px;
+        white-space: nowrap;
 }
 
-.port-list__item__desc
+.list__item__desc
 {
         font-size: 70%;
         color : #666;
+        white-space: nowrap;
 }
 
-.port-list__no-results
+.list__no-results
 {
         color: #333;
         font-size: 120%;
@@ -311,12 +358,14 @@ a:hover > .menu
         line-height: 40px;
 }
 
-.port-list__no-results-help
+.list__no-results-help
 {
         color: #333;
         text-align: center;
         line-height: 30px;
 }
+
+
 
 /* Snippets list */
 
@@ -349,13 +398,9 @@ paddi   ng-left: 15px;
 
 /* Terminal */
 /* ----------------------------------------------------- */
-
-
 .terminal
 {
-  font-family: Fixed, monospace;
   font-size: 12px;
-  tab-size: 4;
   background-color: #222;
   color: white;
   display: block;
@@ -373,6 +418,12 @@ paddi   ng-left: 15px;
   -moz-user-select: text;
   -webkit-user-select: text;
   user-select: text;
+}
+
+.termLine {
+  font-family: Fixed, monospace;
+  tab-size: 4;
+
 }
 
 .terminal.focus
@@ -422,18 +473,18 @@ paddi   ng-left: 15px;
 
 .terminal--connected.focus .terminal__cursor
 {
-  -webkit-animation: blink 1s step-end 0s infinite;
   animation: blink 1s step-end 0s infinite;
 }
 
 .terminal--webcam.focus .terminal__cursor
 {
   text-shadow: none;
+  animation: blink_webcam 1s step-end 0s infinite;
 }
 
 @keyframes blink {
   0%, 100% {
-        background-color: #fff; /* not #aaa because it's seem there is Google Chrome bug */
+        background-color: #fff;
         color: #000;
   }
   50% {
@@ -441,23 +492,25 @@ paddi   ng-left: 15px;
         color: #aaa;
   }
 }
-@-webkit-keyframes blink {
+
+@keyframes blink_webcam {
   0%, 100% {
-        background-color: #ffffff; /* not #aaa because it's seem there is Google Chrome bug */
-        color: #000000;
+        background-color: #ffffffC0;
+        color: #000;
   }
   50% {
-        background-color: transparent;
-        color: #aaaaaa;
+        background-color: #000000C0;
+        color: #fff;
   }
 }
+
 
 /* Tutorial */
 .tutorial_text {
     background-color : #222;
     border: 1px solid #888;
     border-radius: 10px;
-    padding: 4px;
+    padding: 8px;
     margin-left: 16px;
     margin-right: 16px;
     margin-top: 8px;
@@ -475,10 +528,52 @@ paddi   ng-left: 15px;
     background-color : #333;
     border: 1px solid #888;
     border-radius: 5px;
-    padding: 4px;
+    padding: 8px;
     margin-top: 8px;
     font-weight: bold;
     color: #CFC;
+}
+
+/* Other notifications */
+.notification_text {
+    background-color : #145931;
+    border: 1px solid #1b7a43;
+    border-radius: 10px;
+    padding: 8px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+/* Other notifications */
+.terminal-status-container {
+  min-height: 34px;
+}
+.terminal-status {
+  float:right;
+  border-radius: 5px;
+  padding: 6px;
+  margin-top: 2px;
+}
+/* Other notifications */
+.terminal-status-success {
+  background-color: #2ecc71;
+}
+.terminal-status-error {
+  background-color: #e74c3c;
+}
+.terminal-status-info {
+  background-color: #3498db;
+}
+.terminal-status-warning {
+  background-color: #f39c12;
+}
+
+.terminal-inline-image {
+  border: 1px solid #666;
+  padding: 8px;
+  margin: 8px;
 }
 
 /* Code Editors */
@@ -508,6 +603,11 @@ paddi   ng-left: 15px;
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
     background-position: bottom;
     background-repeat: repeat-x;
+}
+
+.CodeMirror-Tern-tooltip {
+  max-width: 400px;
+  overflow-x : scroll;
 }
 
 .cm-DebugLineBg {
@@ -643,5 +743,15 @@ paddi   ng-left: 15px;
 .compact .button { height: 30px; padding: 0; }
 .compact .button--icon { border-left-width: 30px; }
 .compact .button--icon .button__icon { left: -30px; }
-.compact .port-list__item__name { font-size: 100%; }
-.compact .port-list__item { margin-bottom: 2px; }
+.compact .list__item__name { font-size: 100%; }
+.compact .list__item { margin-bottom: 2px; }
+
+/* For code highlighter comments */
+.hljs-comment,.hljs-quote{color:#a50}
+.hljs-variable,.hljs-template-variable,.hljs-tag,.hljs-name,.hljs-selector-id,.hljs-selector-class,.hljs-regexp,.hljs-deletion{}
+.hljs-number,.hljs-built_in,.hljs-builtin-name,.hljs-literal,.hljs-type,.hljs-params,.hljs-meta,.hljs-link{color:#164}
+.hljs-attribute{color:#00c}
+.hljs-string,.hljs-symbol,.hljs-bullet,.hljs-addition{color:#a11}
+.hljs-title,.hljs-section{color:#4271ae}
+.hljs-keyword,.hljs-selector-tag{color:#708}
+.hljs-emphasis{font-style:italic}.hljs-strong{font-weight:bold}

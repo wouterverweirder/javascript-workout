@@ -7,12 +7,13 @@ const serviceUUIDs = [POLARH7_HRM_HEART_RATE_SERVICE_UUID];
 export default class PolarH7 extends events.EventEmitter {
   constructor() {
     super();
+    console.log(`[PolarH7] constructor`);
 
     this.polarH7Peripheral = false;
     this._stateChangeHandler = state => this.stateChangeHandler(state);
     this._discoverHandler = peripheral => this.discoverHandler(peripheral);
 
-    this.noble = requireNode(`noble`);
+    this.noble = requireNode(`noble-mac`);
     this.noble.on(`stateChange`, this._stateChangeHandler);
     this.noble.on(`discover`, this._discoverHandler);
   }
@@ -28,6 +29,7 @@ export default class PolarH7 extends events.EventEmitter {
   }
 
   discoverHandler(peripheral) {
+    console.log(`[PolarH7] discoverHandler`);
     let foundSuitablePeripheral = false;
     for (let i = peripheral.advertisement.serviceUuids.length - 1; i >= 0; i--) {
       if(peripheral.advertisement.serviceUuids[i] === POLARH7_HRM_HEART_RATE_SERVICE_UUID) {
@@ -73,7 +75,7 @@ export default class PolarH7 extends events.EventEmitter {
     for (let i = characteristics.length - 1; i >= 0; i--) {
       const characteristic = characteristics[i];
       if(characteristic.uuid === POLARH7_HRM_MEASUREMENT_CHARACTERISTIC_UUID) {
-				//console.log("HRM Characteristic");
+        //console.log("HRM Characteristic");
         characteristic.on(`read`, (data, isNotification) => this.onHeartRateRead(data, isNotification));
         characteristic.notify(true, error => (error) ? console.log(error) : true);
       }
@@ -85,10 +87,10 @@ export default class PolarH7 extends events.EventEmitter {
       const heartRate = data[1];
       if(heartRate) {
         this.emit(PolarH7.HEART_RATE, heartRate);
-				// var filePath = Config.heartRateFilePath;
-				// fs.appendFile(filePath, new Date().getTime() + ":" + heartRate + "\n", function (err) {
-				// 	console.log(err);
-				// });
+        // var filePath = Config.heartRateFilePath;
+        // fs.appendFile(filePath, new Date().getTime() + ":" + heartRate + "\n", function (err) {
+        // 	console.log(err);
+        // });
       }
     }
   }

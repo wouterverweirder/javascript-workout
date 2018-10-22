@@ -1,12 +1,28 @@
 #!/bin/bash
 
 cd `dirname $0`
+TEMPDIR=`pwd`/temp
+rm -rf $TEMPDIR
+mkdir $TEMPDIR
 cd ..
-rm -f EspruinoSerialTerminal.zip
+IDEDIR=`pwd`
 
-mkdir img/bak
-cp img/icon_*.png img/bak
-cp extras/web_store/icon_*.png img
-zip -9 -r --exclude=@extras/chrome_exclude.lst EspruinoSerialTerminal.zip .
-cp img/bak/icon_*.png img
-rm -rf img/bak
+ZIP=$IDEDIR/EspruinoWebIDE.zip
+rm -f $ZIP
+
+# Copy files, excluding some
+rsync -av --exclude-from extras/chrome_exclude.lst $IDEDIR/ $TEMPDIR/
+# Update icons
+cp -v extras/web_store/icon_*.png $TEMPDIR/img
+# Merge html
+node extras/squish.js --delete-squished $TEMPDIR/main.html $TEMPDIR/main.html
+
+
+cd $TEMPDIR
+zip -9 -r $ZIP .
+cd $IDEDIR
+rm -rf $TEMPDIR
+
+echo =================================================
+echo    App written to $ZIP
+echo =================================================

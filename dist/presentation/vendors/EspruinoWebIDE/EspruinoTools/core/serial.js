@@ -1,7 +1,33 @@
+/*
+Gordon Williams (gw@pur3.co.uk)
+
+Common entrypoint for all communications from the IDE. This handles
+all serial_*.js connection types and passes calls to the correct one.
+
+To add a new serial device, you must add an object to
+  Espruino.Core.Serial.devices:
+
+  Espruino.Core.Serial.devices.push({
+    "name" : "Test",               // Name, when initialising
+    "init" : function()            // Gets called at startup
+    "getPorts": function(callback) // calls 'callback' with an array of ports:
+        callback([{path:"TEST",          // path passed to 'open' (and displayed to user)
+                   description:"test",   // description displayed to user
+                   type:"test",           // bluetooth|usb|socket - used to show icon in UI
+                   // autoconnect : true  // automatically conect to this (without the connect menu)
+                 }], true); // instantPorts - will getPorts return all the ports on the first call, or does it need multiple calls (eg. Bluetooth)
+    "open": function(path, openCallback, receiveCallback, disconnectCallback),
+    "write": function(dataAsString, callbackWhenWritten)
+    "close": function(),
+    "maxWriteLength": 20, // optional - the maximum amount of characters that should be given to 'write' at a time
+  });
+
+*/
 (function() {
 
   // List of ports and the devices they map to
   var portToDevice = undefined;
+  // The current connected device (from Espruino.Core.Serial.devices)
   var currentDevice = undefined;
 
   // called when data received
@@ -25,9 +51,11 @@
     });
 
     var devices = Espruino.Core.Serial.devices;
-    for (var i=0;i<devices.length;i++)
+    for (var i=0;i<devices.length;i++) {
+      console.log("  - Initialising Serial "+devices[i].name);
       if (devices[i].init)
         devices[i].init();
+    }
   }
 
   var startListening=function(callback) {
@@ -36,6 +64,9 @@
     return oldListener;
   };
 
+  /* Calls 'callback(port_list, shouldCallAgain)'
+   'shouldCallAgain==true' means that more devices
+   may appear later on (eg Bluetooth LE).*/
   var getPorts=function(callback) {
     var ports = [];
     var newPortToDevice = [];
@@ -44,10 +75,14 @@
     var devices = Espruino.Core.Serial.devices;
     if (!devices || devices.length==0) {
          portToDevice = newPortToDevice;
-      return callback(ports);
+      return callback(ports, false);
     }
+    var shouldCallAgain = false;
     devices.forEach(function (device) {
-      device.getPorts(function(devicePorts) {
+      //console.log("getPorts -->",device.name);
+      device.getPorts(function(devicePorts, instantPorts) {
+        //console.log("getPorts <--",device.name);
+        if (instantPorts===false) shouldCallAgain = true;
         if (devicePorts) {
           devicePorts.forEach(function(port) {
             if (port.usb && port.usb[0]==0x0483 && port.usb[1]==0x5740)
@@ -64,27 +99,43 @@
             if (b.unimportant && !a.unimportant) return -1;
             return 0;
           });
-          callback(ports);
+          callback(ports, shouldCallAgain);
         }
       });
     });
   };
 
   var openSerial=function(serialPort, connectCallback, disconnectCallback) {
+    return openSerialInternal(serialPort, connectCallback, disconnectCallback, 2);
+  }
+
+  var openSerialInternal=function(serialPort, connectCallback, disconnectCallback, attempts) {
     /* If openSerial is called, we need to have called getPorts first
       in order to figure out which one of the serial_ implementations
       we must call into. */
     if (portToDevice === undefined) {
       portToDevice = []; // stop recursive calls if something errors
       return getPorts(function() {
-        openSerial(serialPort, connectCallback, disconnectCallback);
+        openSerialInternal(serialPort, connectCallback, disconnectCallback, attempts);
       });
     }
 
     if (!(serialPort in portToDevice)) {
-      console.error("Port "+JSON.stringify(serialPort)+" not found");
-      return connectCallback(undefined);
+      if (serialPort.toLowerCase() in portToDevice) {
+        serialPort = serialPort.toLowerCase();
+      } else {
+        if (attempts>0) {
+          console.log("Port "+JSON.stringify(serialPort)+" not found - checking ports again ("+attempts+" attempts left)");
+          return getPorts(function() {
+            openSerialInternal(serialPort, connectCallback, disconnectCallback, attempts-1);
+          });
+        } else {
+          console.error("Port "+JSON.stringify(serialPort)+" not found");
+          return connectCallback(undefined);
+        }
+      }
     }
+
     connectionInfo = undefined;
     currentDevice = portToDevice[serialPort];
     currentDevice.open(serialPort, function(cInfo) {
@@ -97,7 +148,10 @@
         connectionInfo = cInfo;
         connectedPort = serialPort;
         console.log("Connected", cInfo);
-        Espruino.callProcessor("connected", undefined, function() {
+        var portInfo = { port:serialPort };
+        if (connectionInfo.portName)
+          portInfo.portName = connectionInfo.portName;
+        Espruino.callProcessor("connected", portInfo, function() {
           connectCallback(cInfo);
         });
       }
@@ -156,6 +210,17 @@
   var writeSerialWorker = function(isStarting) {
     writeTimeout = undefined; // we've been called
 
+    // if we disconnected while sending, empty queue
+    if (currentDevice === undefined) {
+      if (writeData[0].callback)
+        writeData[0].callback();
+      writeData.shift();
+      if (writeData.length) setTimeout(function() {
+        writeSerialWorker(false);
+      }, 1);
+      return;
+    }
+
     if (writeData[0].data === "") {
       if (writeData[0].showStatus)
         Espruino.Core.Status.setStatus("Sent");
@@ -167,11 +232,15 @@
     }
 
     if (isStarting) {
+      var blockSize = 512;
+      if (currentDevice.maxWriteLength)
+        blockSize = currentDevice.maxWriteLength;
       /* if we're throttling our writes we want to send small
        * blocks of data at once. We still limit the size of
        * sent blocks to 512 because on Mac we seem to lose
        * data otherwise (not on any other platforms!) */
-      writeData[0].blockSize = slowWrite ? 15 : 512;
+      if (slowWrite) blockSize=19;
+      writeData[0].blockSize = blockSize;
 
       writeData[0].showStatus &= writeData[0].data.length>writeData[0].blockSize;
       if (writeData[0].showStatus) {
@@ -180,12 +249,12 @@
       }
     }
 
-    // Initially, split based on block size
+    // Initial split use previous, or don't
     var d = undefined;
-    var split = { start:writeData[0].blockSize, end:writeData[0].blockSize, delay:0 };
+    var split = writeData[0].nextSplit || { start:0, end:writeData[0].data.length, delay:0 };
     // if we get something like Ctrl-C or `reset`, wait a bit for it to complete
     if (!sendingBinary) {
-      function findSplitIdx(prev, substr, delay) {
+      function findSplitIdx(prev, substr, delay, reason) {
         var match = writeData[0].data.match(substr);
         // not found
         if (match===null) return prev;
@@ -197,28 +266,42 @@
         prev.end = end;
         prev.delay = delay;
         prev.match = match[0];
+        prev.reason = reason;
         return prev;
       }
-      split = findSplitIdx(split, /\x03/, 250); // Ctrl-C
-      split = findSplitIdx(split, /reset\(\);\n/, 250); // Reset
-      split = findSplitIdx(split, /load\(\);\n/, 250); // Load
-      split = findSplitIdx(split, /Modules.addCached\("[^\n]*"\);\n/, 250); // Adding a module
-      if (split.match) console.log("Splitting at "+JSON.stringify(split.match)+", delay "+split.delay);
+      split = findSplitIdx(split, /\x03/, 250, "Ctrl-C"); // Ctrl-C
+      split = findSplitIdx(split, /reset\(\);\n/, 250, "reset()"); // Reset
+      split = findSplitIdx(split, /load\(\);\n/, 250, "load()"); // Load
+      split = findSplitIdx(split, /Modules.addCached\("[^\n]*"\);\n/, 250, "Modules.addCached"); // Adding a module
+      split = findSplitIdx(split, /\x10require\("Storage"\).write\([^\n]*\);\n/, 500, "Storage.write"); // Write chunk of data
     }
+    // Otherwise split based on block size
+    if (!split.match || split.end >= writeData[0].blockSize) {
+      if (split.match) writeData[0].nextSplit = split;
+      split = { start:0, end:writeData[0].blockSize, delay:0 };
+    }
+    if (split.match) console.log("Splitting for "+split.reason+", delay "+split.delay);
     // Only send some of the data
     if (writeData[0].data.length>split.end) {
-      if (split.delay==0) split.delay=50;
+      if (slowWrite && split.delay==0) split.delay=50;
       d = writeData[0].data.substr(0,split.end);
       writeData[0].data = writeData[0].data.substr(split.end);
+      if (writeData[0].nextSplit) {
+        writeData[0].nextSplit.start -= split.end;
+        writeData[0].nextSplit.end -= split.end;
+        if (writeData[0].nextSplit.end<=0)
+          writeData[0].nextSplit = undefined;
+      }
     } else {
       d = writeData[0].data;
       writeData[0].data = "";
+      writeData[0].nextSplit = undefined;
     }
     // update status
     if (writeData[0].showStatus)
       Espruino.Core.Status.incrementProgress(d.length);
     // actually write data
-    console.log("Sending block "+JSON.stringify(d)+", wait "+split.delay+"ms");
+    //console.log("Sending block "+JSON.stringify(d)+", wait "+split.delay+"ms");
     currentDevice.write(d, function() {
       // Once written, start timeout
       writeTimeout = setTimeout(function() {
@@ -231,12 +314,18 @@
   var writeSerial = function(data, showStatus, callback) {
     if (showStatus===undefined) showStatus=true;
 
-    // Queue our data to write
-    writeData.push({data:data,callback:callback,showStatus:showStatus});
-    // if we have more data we're already running. so break out
-    if (writeData.length>1) return;
-
-    writeSerialWorker(true); // start sending instantly
+    /* Queue our data to write. If there was previous data and no callback to
+    invoke on this data or the previous then just append data. This would happen
+    if typing in the terminal for example. */
+    if (!callback && writeData.length && !writeData[writeData.length-1].callback) {
+      writeData[writeData.length-1].data += data;
+    } else {
+      writeData.push({data:data,callback:callback,showStatus:showStatus});
+      /* if this is our first data, start sending now. Otherwise we're already
+      busy sending and will pull data off writeData when ready */
+      if (writeData.length==1)
+        writeSerialWorker(true);
+    }
   };
 
 

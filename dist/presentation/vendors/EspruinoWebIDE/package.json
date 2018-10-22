@@ -1,11 +1,11 @@
 {
   "name": "espruino-web-ide",
-  "version": "0.64.3",
+  "version": "0.70.4",
   "description": "A Terminal and Graphical code Editor for Espruino JavaScript Microcontrollers",
   "//1": "-------------------------------------------------------- nw.js",
   "main": "main.html",
   "window": {
-    "title": "Espruino Web IDE",
+    "title": "Espruino Native IDE",
     "toolbar": false,
     "frame": false,
     "show": true,
@@ -22,7 +22,7 @@
     "espruino-server": "./server.js"
   },
   "scripts": {
-    "start": "electron electron-app.js"
+    "start": "nw ."
   },
   "repository": {
     "type": "git",
@@ -37,19 +37,15 @@
     "url": "https://github.com/espruino/EspruinoWebIDE/issues"
   },
   "homepage": "https://github.com/espruino/EspruinoWebIDE#readme",
+  "//nw": "^0.18.6 - you can still use a global nw, or just the server",
   "dependencies": {
-    "acorn": ">=0.6.0",
-    "electron": "^1.4.5",
-    "es6-shim": "",
-    "escodegen": "",
-    "esmangle": "",
-    "esprima": "",
-    "nw": "^0.18.3",
+    "utf8": "^2.1.2",
     "websocket": "^1.0.23"
   },
   "optionalDependencies": {
     "noble": "^1.7.0",
-    "serialport": "^4.0.4"
+    "serialport": "^4.0.4",
+    "winnus": ""
   },
   "devDependencies": {}
 }

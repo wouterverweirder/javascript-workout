@@ -31,23 +31,31 @@
     });
 
     Espruino.addProcessor("getModule", function (module, callback) {
+      // If projects not enabled/setup skip immediately
+      if (!Espruino.Config.projectEntry) {
+        callback(module);
+        return;
+      }
+      // otherwise...
       getProjectSubDir("modules",getModules);
       var t = setTimeout(function(){
         // in case we were unable to find anything
         t = undefined;
         callback(module);
-      }, 50);
+      }, 250);
       function getModules(subDirEntry){
         var fnd = false;
         var dirReader = subDirEntry.createReader();
-        dirReader.readEntries(function(results){
+        dirReader.readEntries(function dirReadHandler(results){
           for(var i = 0; i < results.length; i++){
             if(results[i].name === module.moduleName + ".js"){
               fnd = true;
               readFilefromEntry(results[i],gotModule);
-              break;
             }
           }
+          // if more than 100 entries, chrome will limit it
+          if (results.length)
+            dirReader.readEntries(dirReadHandler);
         });
       }
       function gotModule(data){
@@ -246,6 +254,9 @@
         }
         console.warn("getProjectSubDir("+name+") failed");
         callback(false);
+      }, function() { // error callback
+        console.warn("getProjectSubDir("+name+") failed");
+        callback(false);
       });
     }
   }
@@ -378,7 +389,7 @@
         for(var i = 0; i < results.length;i++){
           if(!results[i].isDirectory){
             name = results[i].name.split(".");
-            if(name.length > 0){
+            if(name.length > 1){
               if(name[1].toUpperCase() === ext){
                 lrow = row.replace("$name0",name[0]);
                 lrow = lrow.replace("$fileentry",chrome.fileSystem.retainEntry(results[i]));

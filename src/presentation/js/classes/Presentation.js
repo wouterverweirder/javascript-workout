@@ -16,6 +16,8 @@ export default class Presentation extends PresentationBase {
   constructor(data, role, settings) {
     super(data, role, settings);
 
+    console.log(`[Presentation] constructor`);
+
     this.polarH7 = new PolarH7();
     this.polarH7.on(PolarH7.HEART_RATE, this.heartRatePolarHandler.bind(this));
 
