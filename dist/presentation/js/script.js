@@ -1188,7 +1188,7 @@ return Promise$1;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"_process":5}],3:[function(require,module,exports){
+},{"_process":6}],3:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -1500,7 +1500,245 @@ function isUndefined(arg) {
 require('whatwg-fetch');
 module.exports = self.fetch.bind(self);
 
-},{"whatwg-fetch":6}],5:[function(require,module,exports){
+},{"whatwg-fetch":7}],5:[function(require,module,exports){
+module.exports = function (args, opts) {
+    if (!opts) opts = {};
+    
+    var flags = { bools : {}, strings : {}, unknownFn: null };
+
+    if (typeof opts['unknown'] === 'function') {
+        flags.unknownFn = opts['unknown'];
+    }
+
+    if (typeof opts['boolean'] === 'boolean' && opts['boolean']) {
+      flags.allBools = true;
+    } else {
+      [].concat(opts['boolean']).filter(Boolean).forEach(function (key) {
+          flags.bools[key] = true;
+      });
+    }
+    
+    var aliases = {};
+    Object.keys(opts.alias || {}).forEach(function (key) {
+        aliases[key] = [].concat(opts.alias[key]);
+        aliases[key].forEach(function (x) {
+            aliases[x] = [key].concat(aliases[key].filter(function (y) {
+                return x !== y;
+            }));
+        });
+    });
+
+    [].concat(opts.string).filter(Boolean).forEach(function (key) {
+        flags.strings[key] = true;
+        if (aliases[key]) {
+            flags.strings[aliases[key]] = true;
+        }
+     });
+
+    var defaults = opts['default'] || {};
+    
+    var argv = { _ : [] };
+    Object.keys(flags.bools).forEach(function (key) {
+        setArg(key, defaults[key] === undefined ? false : defaults[key]);
+    });
+    
+    var notFlags = [];
+
+    if (args.indexOf('--') !== -1) {
+        notFlags = args.slice(args.indexOf('--')+1);
+        args = args.slice(0, args.indexOf('--'));
+    }
+
+    function argDefined(key, arg) {
+        return (flags.allBools && /^--[^=]+$/.test(arg)) ||
+            flags.strings[key] || flags.bools[key] || aliases[key];
+    }
+
+    function setArg (key, val, arg) {
+        if (arg && flags.unknownFn && !argDefined(key, arg)) {
+            if (flags.unknownFn(arg) === false) return;
+        }
+
+        var value = !flags.strings[key] && isNumber(val)
+            ? Number(val) : val
+        ;
+        setKey(argv, key.split('.'), value);
+        
+        (aliases[key] || []).forEach(function (x) {
+            setKey(argv, x.split('.'), value);
+        });
+    }
+
+    function setKey (obj, keys, value) {
+        var o = obj;
+        keys.slice(0,-1).forEach(function (key) {
+            if (o[key] === undefined) o[key] = {};
+            o = o[key];
+        });
+
+        var key = keys[keys.length - 1];
+        if (o[key] === undefined || flags.bools[key] || typeof o[key] === 'boolean') {
+            o[key] = value;
+        }
+        else if (Array.isArray(o[key])) {
+            o[key].push(value);
+        }
+        else {
+            o[key] = [ o[key], value ];
+        }
+    }
+    
+    function aliasIsBoolean(key) {
+      return aliases[key].some(function (x) {
+          return flags.bools[x];
+      });
+    }
+
+    for (var i = 0; i < args.length; i++) {
+        var arg = args[i];
+        
+        if (/^--.+=/.test(arg)) {
+            // Using [\s\S] instead of . because js doesn't support the
+            // 'dotall' regex modifier. See:
+            // http://stackoverflow.com/a/1068308/13216
+            var m = arg.match(/^--([^=]+)=([\s\S]*)$/);
+            var key = m[1];
+            var value = m[2];
+            if (flags.bools[key]) {
+                value = value !== 'false';
+            }
+            setArg(key, value, arg);
+        }
+        else if (/^--no-.+/.test(arg)) {
+            var key = arg.match(/^--no-(.+)/)[1];
+            setArg(key, false, arg);
+        }
+        else if (/^--.+/.test(arg)) {
+            var key = arg.match(/^--(.+)/)[1];
+            var next = args[i + 1];
+            if (next !== undefined && !/^-/.test(next)
+            && !flags.bools[key]
+            && !flags.allBools
+            && (aliases[key] ? !aliasIsBoolean(key) : true)) {
+                setArg(key, next, arg);
+                i++;
+            }
+            else if (/^(true|false)$/.test(next)) {
+                setArg(key, next === 'true', arg);
+                i++;
+            }
+            else {
+                setArg(key, flags.strings[key] ? '' : true, arg);
+            }
+        }
+        else if (/^-[^-]+/.test(arg)) {
+            var letters = arg.slice(1,-1).split('');
+            
+            var broken = false;
+            for (var j = 0; j < letters.length; j++) {
+                var next = arg.slice(j+2);
+                
+                if (next === '-') {
+                    setArg(letters[j], next, arg)
+                    continue;
+                }
+                
+                if (/[A-Za-z]/.test(letters[j]) && /=/.test(next)) {
+                    setArg(letters[j], next.split('=')[1], arg);
+                    broken = true;
+                    break;
+                }
+                
+                if (/[A-Za-z]/.test(letters[j])
+                && /-?\d+(\.\d*)?(e-?\d+)?$/.test(next)) {
+                    setArg(letters[j], next, arg);
+                    broken = true;
+                    break;
+                }
+                
+                if (letters[j+1] && letters[j+1].match(/\W/)) {
+                    setArg(letters[j], arg.slice(j+2), arg);
+                    broken = true;
+                    break;
+                }
+                else {
+                    setArg(letters[j], flags.strings[letters[j]] ? '' : true, arg);
+                }
+            }
+            
+            var key = arg.slice(-1)[0];
+            if (!broken && key !== '-') {
+                if (args[i+1] && !/^(-|--)[^-]/.test(args[i+1])
+                && !flags.bools[key]
+                && (aliases[key] ? !aliasIsBoolean(key) : true)) {
+                    setArg(key, args[i+1], arg);
+                    i++;
+                }
+                else if (args[i+1] && /true|false/.test(args[i+1])) {
+                    setArg(key, args[i+1] === 'true', arg);
+                    i++;
+                }
+                else {
+                    setArg(key, flags.strings[key] ? '' : true, arg);
+                }
+            }
+        }
+        else {
+            if (!flags.unknownFn || flags.unknownFn(arg) !== false) {
+                argv._.push(
+                    flags.strings['_'] || !isNumber(arg) ? arg : Number(arg)
+                );
+            }
+            if (opts.stopEarly) {
+                argv._.push.apply(argv._, args.slice(i + 1));
+                break;
+            }
+        }
+    }
+    
+    Object.keys(defaults).forEach(function (key) {
+        if (!hasKey(argv, key.split('.'))) {
+            setKey(argv, key.split('.'), defaults[key]);
+            
+            (aliases[key] || []).forEach(function (x) {
+                setKey(argv, x.split('.'), defaults[key]);
+            });
+        }
+    });
+    
+    if (opts['--']) {
+        argv['--'] = new Array();
+        notFlags.forEach(function(key) {
+            argv['--'].push(key);
+        });
+    }
+    else {
+        notFlags.forEach(function(key) {
+            argv._.push(key);
+        });
+    }
+
+    return argv;
+};
+
+function hasKey (obj, keys) {
+    var o = obj;
+    keys.slice(0,-1).forEach(function (key) {
+        o = (o[key] || {});
+    });
+
+    var key = keys[keys.length - 1];
+    return key in o;
+}
+
+function isNumber (x) {
+    if (typeof x === 'number') return true;
+    if (/^0x[0-9a-f]+$/i.test(x)) return true;
+    return /^[-+]?(?:\d+(?:\.\d*)?|\.\d+)(e[-+]?\d+)?$/.test(x);
+}
+
+
+},{}],6:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -1686,7 +1924,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -2219,7 +2457,7 @@ process.umask = function() { return 0; };
 
 })));
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2328,7 +2566,7 @@ var HeartRateCanvas = function () {
 
 exports.default = HeartRateCanvas;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2399,7 +2637,7 @@ var MobileServerBridge = function (_MobileServerBridgeBa) {
 
 exports.default = MobileServerBridge;
 
-},{"../../../shared/js/Constants":36,"../../../shared/js/classes/MobileServerBridge":37}],9:[function(require,module,exports){
+},{"../../../shared/js/Constants":37,"../../../shared/js/classes/MobileServerBridge":38}],10:[function(require,module,exports){
 (function (process){
 "use strict";
 
@@ -2595,7 +2833,7 @@ exports.default = NodeAppRunner;
 
 }).call(this,require('_process'))
 
-},{"_process":5}],10:[function(require,module,exports){
+},{"_process":6}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2832,7 +3070,7 @@ var Presentation = function (_PresentationBase) {
 
 exports.default = Presentation;
 
-},{"../../../shared/js/Constants":36,"../../../shared/js/classes/Presentation":38,"./MobileServerBridge":8,"./SlideBridge":11,"./Webcam":12,"./sensors/PolarH7":33}],11:[function(require,module,exports){
+},{"../../../shared/js/Constants":37,"../../../shared/js/classes/Presentation":39,"./MobileServerBridge":9,"./SlideBridge":12,"./Webcam":13,"./sensors/PolarH7":34}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2912,7 +3150,7 @@ var SlideBridge = function (_SlideBridgeBase) {
 
 exports.default = SlideBridge;
 
-},{"../../../shared/js/classes/SlideBridge":39}],12:[function(require,module,exports){
+},{"../../../shared/js/classes/SlideBridge":40}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2963,7 +3201,7 @@ var Webcam = function Webcam(video) {
 
 exports.default = Webcam;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3065,7 +3303,7 @@ var Game = function (_Phaser$Game) {
 
 exports.default = Game;
 
-},{"../../HeartRateCanvas":7,"./SparkHeartRatesPlugin":14,"./states/Play":18,"./states/Preload":19}],14:[function(require,module,exports){
+},{"../../HeartRateCanvas":8,"./SparkHeartRatesPlugin":15,"./states/Play":19,"./states/Preload":20}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3208,7 +3446,7 @@ var SparkHeartRatesPlugin = function (_Phaser$Plugin) {
 
 exports.default = SparkHeartRatesPlugin;
 
-},{"dgram":1}],15:[function(require,module,exports){
+},{"dgram":1}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3256,7 +3494,7 @@ var Button = function (_Phaser$Button) {
 
 exports.default = Button;
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3298,7 +3536,7 @@ var Flagpole = function (_Phaser$Group) {
 
 exports.default = Flagpole;
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3358,7 +3596,7 @@ var GameCharacter = function (_Phaser$Sprite) {
 
 exports.default = GameCharacter;
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3535,7 +3773,7 @@ var Play = function (_Phaser$State) {
 
 exports.default = Play;
 
-},{"../objects/Button":15,"../objects/Flagpole":16,"../objects/GameCharacter":17}],19:[function(require,module,exports){
+},{"../objects/Button":16,"../objects/Flagpole":17,"../objects/GameCharacter":18}],20:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3583,7 +3821,7 @@ var Preload = function (_Phaser$State) {
 
 exports.default = Preload;
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3715,7 +3953,7 @@ var CodeElement = function () {
 
 exports.default = CodeElement;
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3831,7 +4069,7 @@ var ConsoleElement = function () {
 
 exports.default = ConsoleElement;
 
-},{"../NodeAppRunner":9}],22:[function(require,module,exports){
+},{"../NodeAppRunner":10}],23:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3962,7 +4200,7 @@ var TerminalElement = function () {
 
 exports.default = TerminalElement;
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4141,7 +4379,7 @@ var WebPreviewElement = function () {
 
 exports.default = WebPreviewElement;
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4230,7 +4468,7 @@ var WebcamElement = function () {
 
 exports.default = WebcamElement;
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4835,11 +5073,11 @@ var LiveCode = function () {
 
 exports.default = LiveCode;
 
-},{"./CodeElement":20,"./ConsoleElement":21,"./TerminalElement":22,"./WebPreviewElement":23,"./WebcamElement":24}],26:[function(require,module,exports){
-arguments[4][13][0].apply(exports,arguments)
-},{"../../HeartRateCanvas":7,"./SparkHeartRatesPlugin":27,"./states/Play":31,"./states/Preload":32,"dup":13}],27:[function(require,module,exports){
+},{"./CodeElement":21,"./ConsoleElement":22,"./TerminalElement":23,"./WebPreviewElement":24,"./WebcamElement":25}],27:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"dgram":1,"dup":14}],28:[function(require,module,exports){
+},{"../../HeartRateCanvas":8,"./SparkHeartRatesPlugin":28,"./states/Play":32,"./states/Preload":33,"dup":14}],28:[function(require,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dgram":1,"dup":15}],29:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4921,9 +5159,9 @@ var Beam = function (_Phaser$Group) {
 
 exports.default = Beam;
 
-},{}],29:[function(require,module,exports){
-arguments[4][15][0].apply(exports,arguments)
-},{"dup":15}],30:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
+arguments[4][16][0].apply(exports,arguments)
+},{"dup":16}],31:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -4980,7 +5218,7 @@ var GameCharacter = function (_Phaser$Sprite) {
 
 exports.default = GameCharacter;
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5159,7 +5397,7 @@ var Play = function (_Phaser$State) {
 
 exports.default = Play;
 
-},{"../objects/Beam":28,"../objects/Button":29,"../objects/GameCharacter":30}],32:[function(require,module,exports){
+},{"../objects/Beam":29,"../objects/Button":30,"../objects/GameCharacter":31}],33:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5207,7 +5445,7 @@ var Preload = function (_Phaser$State) {
 
 exports.default = Preload;
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5369,7 +5607,7 @@ exports.default = PolarH7;
 
 PolarH7.HEART_RATE = 'heartRate';
 
-},{"events":3}],34:[function(require,module,exports){
+},{"events":3}],35:[function(require,module,exports){
 'use strict';
 
 var _Presentation = require('./classes/Presentation');
@@ -5389,15 +5627,21 @@ require('es6-promise').polyfill();
   var remote = requireNode('electron').remote;
   var presentationPath = remote.getGlobal('__dirname');
   var path = requireNode('path');
+  var argv = require('minimist')(remote.process.argv);
 
   var init = function init() {
+
     var settings = {
       presentationPath: presentationPath,
       mobileServerUrl: 'https://jsworkout.herokuapp.com',
-      // mobileServerUrl: `http://localhost:5000`,
       mobileServerUsername: 'wouter.verweirder@gmail.com',
       mobileServerPassword: 'geheim'
     };
+
+    if (argv['mobile-server-url']) {
+      settings.mobileServerUrl = argv['mobile-server-url'];
+    }
+
     var slidesFolderParser = new _SlidesFolderParser2.default();
     slidesFolderParser.parse(presentationPath, path.resolve(presentationPath, 'slides')).then(function (data) {
       new _Presentation2.default(data, 'presentation', settings);
@@ -5407,7 +5651,7 @@ require('es6-promise').polyfill();
   init();
 })();
 
-},{"../../server/classes/SlidesFolderParser":35,"./classes/Presentation":10,"es6-promise":2}],35:[function(require,module,exports){
+},{"../../server/classes/SlidesFolderParser":36,"./classes/Presentation":11,"es6-promise":2,"minimist":5}],36:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5558,7 +5802,7 @@ var SlidesFolderParser = function () {
 
 exports.default = SlidesFolderParser;
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5630,7 +5874,7 @@ var Constants = exports.Constants = {
   DANCE_PAD_GAME_FINISHED: "dancePadGameFinished"
 };
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5731,7 +5975,7 @@ var MobileServerBridge = function () {
 
 exports.default = MobileServerBridge;
 
-},{"isomorphic-fetch":4}],38:[function(require,module,exports){
+},{"isomorphic-fetch":4}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6006,7 +6250,7 @@ var Presentation = function () {
 
 exports.default = Presentation;
 
-},{"../Constants":36,"./SlideBridge":39}],39:[function(require,module,exports){
+},{"../Constants":37,"./SlideBridge":40}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6265,7 +6509,7 @@ var ContentBase = function () {
 
 exports.default = ContentBase;
 
-},{"../Constants":36}],"HeartRateSlide":[function(require,module,exports){
+},{"../Constants":37}],"HeartRateSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6336,7 +6580,7 @@ var HeartRateSlide = function (_ContentBase) {
 
 exports.default = HeartRateSlide;
 
-},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase","../HeartRateCanvas":7}],"HighestHeartrateGameSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":37,"../../../../shared/js/classes/ContentBase":"ContentBase","../HeartRateCanvas":8}],"HighestHeartrateGameSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6399,7 +6643,7 @@ var HighestHeartrateGameSlide = function (_ContentBase) {
 
 exports.default = HighestHeartrateGameSlide;
 
-},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase","./game/Game":13}],"LiveCodeSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":37,"../../../../shared/js/classes/ContentBase":"ContentBase","./game/Game":14}],"LiveCodeSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6474,7 +6718,7 @@ var LiveCodeSlide = function (_ContentBase) {
 
 exports.default = LiveCodeSlide;
 
-},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase","../live-code":25}],"LowestHeartrateGameSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":37,"../../../../shared/js/classes/ContentBase":"ContentBase","../live-code":26}],"LowestHeartrateGameSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6537,7 +6781,7 @@ var LowestHeartrateGameSlide = function (_ContentBase) {
 
 exports.default = LowestHeartrateGameSlide;
 
-},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase","./game/Game":26}],"ReactPhonesSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":37,"../../../../shared/js/classes/ContentBase":"ContentBase","./game/Game":27}],"ReactPhonesSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6740,7 +6984,7 @@ var ReactPhonesSlide = function (_ContentBase) {
 
 exports.default = ReactPhonesSlide;
 
-},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"ShakeYourPhonesSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":37,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"ShakeYourPhonesSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6973,7 +7217,7 @@ var ShakeYourPhonesSlide = function (_ContentBase) {
 
 exports.default = ShakeYourPhonesSlide;
 
-},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"VideoSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":37,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"VideoSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7087,7 +7331,7 @@ var VideoSlide = function (_ContentBase) {
 
 exports.default = VideoSlide;
 
-},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"WebviewSlide":[function(require,module,exports){
+},{"../../../../shared/js/Constants":37,"../../../../shared/js/classes/ContentBase":"ContentBase"}],"WebviewSlide":[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7172,6 +7416,6 @@ var WebviewSlide = function (_ContentBase) {
 
 exports.default = WebviewSlide;
 
-},{"../../../../shared/js/Constants":36,"../../../../shared/js/classes/ContentBase":"ContentBase"}]},{},[34])
+},{"../../../../shared/js/Constants":37,"../../../../shared/js/classes/ContentBase":"ContentBase"}]},{},[35])
 
 //# sourceMappingURL=script.js.map

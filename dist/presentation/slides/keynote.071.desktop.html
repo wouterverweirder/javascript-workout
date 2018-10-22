@@ -15,7 +15,7 @@
       super($slideHolder);
       this.webview = this.slideHolder.querySelector('webview');
       this.webview.addEventListener('dom-ready', () => {
-        this.webview.openDevTools();
+        //this.webview.openDevTools();
       });
       this.webview.setAttribute('preload', 'js/espruino-webview-preload.js');
       this.webview.setAttribute('src', 'http://localhost:8080/');

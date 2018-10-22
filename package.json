@@ -9,6 +9,7 @@
     "server": "node dist/server/index.js",
     "postinstall": "node scripts/postinstall.js",
     "presentation": "./dist/presentation/node_modules/.bin/electron ./dist/presentation/index.js",
+    "presentation:local": "./dist/presentation/node_modules/.bin/electron ./dist/presentation/index.js --mobile-server-url=http://localhost:5000",
     "presentation:dev": "./dist/presentation/node_modules/.bin/electron ./dist/presentation/index.js --env=dev"
   },
   "keywords": [],
