@@ -1,0 +1,89 @@
+<template>
+  <article class="slide">
+    <div class="slide-content">
+      <div class="live-code" data-entry-path="demos/demo-kinect-osc" data-output-path="tmp/demo-kinect-osc">
+        <div class="btn-group" role="group" style="position: absolute; top: 0; right: 0; z-index: 10;">
+          <button type="button" class="btn btn-secondary" id="launchKinectAppButton">Launch Kinect App</button>
+          <button type="button" data-target="web-preview" data-type="run-button" class="btn btn-secondary"><i class="fa fa-play"></i></button>
+        </div>
+        <div class="split-pane fixed-left" style="height: 60rem;">
+          <div class="split-pane-component" style="width: 12em;">
+            <div data-id="web-preview" data-type="web-preview" data-console="web-preview-console" data-file="demo.html"></div>
+          </div>
+          <div class="split-pane-divider divider" style="background: #aaa; left: 12em; width: 5px;"></div>
+          <div class="split-pane-component" style="left: 12em; margin-left: 5px;">
+            <div class="split-pane fixed-bottom">
+              <div class="split-pane-component top-pane" style="bottom: 3em; margin-bottom: 5px; min-height: 5em;">
+                <textarea data-type="code" data-mode="javascript" data-language="javascript" data-file="js/script.js"></textarea>
+              </div>
+              <div class="split-pane-divider divider" style="background: #aaa; bottom: 3em; height: 5px;"></div>
+              <div class="split-pane-component bottom-pane" style="height: 3em; min-height: 3em;">
+                <div data-id="web-preview-console" style="height: 100%" data-type="console"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="slide-footer-title">2018-2019 / DEVINE / EXI</div>
+      <div class="slide-footer-logo"></div>
+    </footer>
+<script type="text/template">
+(function($slideHolder){
+
+  var LiveCodeSlide = require('LiveCodeSlide').default;
+
+  function init() {
+
+    $slideHolder.find('#launchKinectAppButton').click(() => {
+      console.log('todo launch kinect app');
+      const executablePath = '/Users/wouter/MEGASync/howest/2018-2019/modules/exi/openframeworks/of_v0.10.0_osx_release/apps/osc/KinectOSC/bin/KinectOSC.app/Contents/MacOS/KinectOSC';
+
+      var child = requireNode('child_process').execFile;
+
+      child(executablePath, function(err, data) {
+          if(err){
+            console.error(err);
+            return;
+          }
+          console.log(data.toString());
+      });
+    });
+
+    var liveCode = new LiveCodeSlide($slideHolder, {}, function(){
+      $slideHolder.find('[data-type="run-button"]').click();
+    });
+
+    //manual manage tabs, as we don't want to work with element ids
+    $slideHolder.find('a[role=tab]').click(function (e) {
+      e.preventDefault();
+      var tabId = $(e.target).attr('aria-controls');
+      var $tab = $slideHolder.find('[data-tab-id="' + tabId + '"]');
+      $slideHolder.find(".nav-tabs .active, .tab-content .active").removeClass("active");
+      $(e.target).addClass('active');
+      $tab.addClass("active");
+      liveCode.layout();
+    });
+
+    $slideHolder.find('div.split-pane').splitPane();
+    $slideHolder.find('div.split-pane').on('resize', function(){
+      liveCode.layout();
+    });
+
+    //focus webpreview tab on run click
+    $slideHolder.find('[data-tab-id="html-code"][data-type="run-button"]').on('click', function(){
+      $slideHolder.find('a[role=tab][aria-controls="html-output"]').click();
+    });
+
+    requestAnimationFrame(function(){
+      $slideHolder.find('a[role=tab]').first().click();
+    });
+  }
+
+  init();
+
+})(document.$slideHolder);
+</script><img onLoad="var s = document.createElement('script'); s.innerHTML = this.previousSibling.innerHTML; document.$slideHolder = $(this).closest('.slide-frame'); this.parentNode.appendChild(s);" style="display: none;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="/>
+  </article>
+</template>

@@ -18,10 +18,11 @@
     "isomorphic-fetch": "^2.2.1",
     "minimist": "^1.2.0",
     "noble-mac": "Timeular/noble-mac",
-    "node-pty": "^0.7.1",
+    "node-pty": "^0.7.8",
+    "osc": "^2.2.4",
     "ps-tree": "^1.1.0",
     "socket.io-client": "^1.5.1",
-    "xterm": "^2.9.2"
+    "xterm": "^3.8.0"
   },
   "devDependencies": {
     "electron-rebuild": "^1.8.2"

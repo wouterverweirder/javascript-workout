@@ -1,7 +1,7 @@
 <template>
   <div class="slide" style="display: flex; width: 100%;">
     <div class="slide-content" style="display: flex; width: 100%;">
-      <div class="live-code" style="display: flex; width: 100%;" data-entry-path="demos/demo-tessel-gpio-led" data-output-path="tmp/demo-tessel-gpio-led">
+      <div class="live-code" style="display: flex; width: 100%;" data-entry-path="demos/demo-tessel-webcam" data-output-path="tmp/demo-tessel-webcam">
         <div class="split-pane fixed-left">
           <div class="split-pane-component" style="width: 20em; background: black; display: flex; align-items: center;">
             <canvas data-type="webcam" data-source="#webcam-video" style="width: 100%;"></canvas>
@@ -18,7 +18,7 @@
                 <textarea data-type="code" data-mode="javascript" data-language="javascript" data-file="index.js"></textarea>
               </div>
               <div role="tabpanel" class="tab-pane tab-pane-full-height" data-tab-id="terminal" style="position: relative;">
-                <div data-type="terminal" data-dir="tmp/demo-tessel-gpio-led" data-autorun="CXXFLAGS='-mmacosx-version-min=10.9' LDFLAGS='-mmacosx-version-min=10.9' yarn"></div>
+                <div data-type="terminal" data-dir="tmp/demo-tessel-webcam" data-autorun="CXXFLAGS='-mmacosx-version-min=10.9' LDFLAGS='-mmacosx-version-min=10.9' yarn"></div>
               </div>
             </div>
 

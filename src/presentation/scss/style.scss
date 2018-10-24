@@ -19,6 +19,8 @@ $enable-flex: true;
 @import '../../../node_modules/@shagstrom/split-pane/split-pane';
 @import '../../../node_modules/@shagstrom/split-pane/pretty-split-pane';
 
+@import '../../../node_modules/xterm/lib/xterm';
+
 @import 'general';
 @import 'devine';
 @import 'javascript-workout';

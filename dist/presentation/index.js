@@ -14,8 +14,6 @@ const argv = require('minimist')(process.argv.slice(2));
 
 let debug = (argv.env === 'dev');
 
-require('./xterm-app.js');
-
 //start the spark core server
 const sparkProcess =  spawn('node', ['main.js'], {cwd: path.resolve(__dirname, 'vendors', 'spark-server')});
 sparkProcess.stdout.pipe(process.stdout);

@@ -3936,7 +3936,7 @@ var CodeElement = function () {
         _this.setValue(data);
         return data;
       }).catch(function (e) {
-        _this.setValue("");
+        _this.setValue('');
         throw e;
       });
     }
@@ -3972,6 +3972,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var htmlEscape = function htmlEscape(str) {
   return String(str).replace(/&/g, '&amp;').replace(/\"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+};
+
+var needsJSONConversion = function needsJSONConversion(arg) {
+  if (typeof arg === 'number' || typeof arg === 'string' || typeof arg === 'boolean') {
+    return false;
+  }
+  return true;
 };
 
 var ConsoleElement = function () {
@@ -4052,6 +4059,8 @@ var ConsoleElement = function () {
     key: 'message',
     value: function message(event) {
       var str = htmlEscape(event.message);
+      // remove %c directives, as we don't receive the extra styling info in this event
+      str = str.replace(/\%c/gi, '');
       var fileName = event.sourceId.split('/');
       fileName = fileName[fileName.length - 1];
       this.logs.push('<div class="console-message">\n      <pre class="console-message__content console-message__content--level' + event.level + '">' + str + '</pre>\n      <div class="console-message__origin">' + fileName + ':' + event.line + '</div>\n    </div>');
@@ -4070,7 +4079,7 @@ var ConsoleElement = function () {
 exports.default = ConsoleElement;
 
 },{"../NodeAppRunner":10}],23:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -4080,7 +4089,15 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var TERMINAL_URL = "http://localhost:3000";
+var remote = requireNode('electron').remote;
+var env = remote.getGlobal('process').env;
+var path = requireNode('path');
+var os = requireNode('os');
+var pty = requireNode('node-pty');
+var Terminal = requireNode('xterm').Terminal;
+var fit = requireNode('xterm/lib/addons/fit/fit');
+
+Terminal.applyAddon(fit);
 
 var TerminalElement = function () {
   function TerminalElement(el, options) {
@@ -4091,107 +4108,91 @@ var TerminalElement = function () {
     this.el = el;
     this.$el = $(el);
 
-    this._ipcMessageHandler = function (e) {
-      return _this.ipcMessageHandler(e);
-    };
-
     //options
     if (!options) {
       options = {};
     }
     //wrap element in a container
-    this.$wrapperEl = $(el).wrap("<div class=\"live-code-element live-code-terminal-element\"></div>").parent();
+    this.$wrapperEl = $(el).wrap('<div class="live-code-element live-code-terminal-element"></div>').parent();
     this.wrapperEl = this.$wrapperEl[0];
 
-    this.id = this.$el.attr("data-id");
+    this.id = this.$el.attr('data-id');
     if (!this.id) {
       //generate id
-      this.id = "code-" + Math.round(Math.random() * 1000 * new Date().getTime());
-      this.$el.attr("data-id", this.id);
+      this.id = 'code-' + Math.round(Math.random() * 1000 * new Date().getTime());
+      this.$el.attr('data-id', this.id);
     }
 
-    this.dir = this.$el.data("dir");
-    this.autorun = this.$el.data("autorun");
+    this.dir = this.$el.data('dir');
+    if (this.dir) {
+      this.dir = path.resolve(remote.getGlobal('__dirname'), this.dir);
+    } else {
+      this.dir = remote.getGlobal('__dirname');
+    }
+    this.autorun = this.$el.data('autorun');
 
-    this.$el.css("width", "100%").css("height", "100%");
+    this.$el.css('width', '100%').css('height', '100%');
 
     this.isRunning = false;
+
+    // Initialize node-pty with an appropriate shell
+    this.shell = env[os.platform() === 'win32' ? 'COMSPEC' : 'SHELL'];
+    this.ptyProcess = pty.spawn(this.shell, [], {
+      name: 'xterm-color',
+      cols: 80,
+      rows: 30,
+      cwd: this.dir,
+      env: env
+    });
+
+    // Initialize xterm.js and attach it to the DOM
+    this.xterm = new Terminal();
+    this.xterm.setOption('fontSize', '24');
+    this.xterm.open(this.el);
+
+    this.xterm.on('data', function (data) {
+      _this.ptyProcess.write(data);
+    });
+    this.ptyProcess.on('data', function (data) {
+      _this.xterm.write(data);
+    });
+
+    if (this.autorun) {
+      this.executeCommand(this.autorun + "\n");
+    }
   }
 
   _createClass(TerminalElement, [{
-    key: "pause",
-    value: function pause() {
-      this.isRunning = false;
-      if (this.webview) {
-        this.webview.parentNode.removeChild(this.webview);
-        this.webview = false;
-      }
+    key: 'layout',
+    value: function layout() {
+      this.xterm.fit();
     }
   }, {
-    key: "resume",
+    key: 'pause',
+    value: function pause() {
+      this.isRunning = false;
+    }
+  }, {
+    key: 'resume',
     value: function resume() {
       if (this.isRunning) {
         return;
       }
       this.isRunning = true;
-      //create a webview tag
-      if (this.webview) {
-        this.webview.removeEventListener("ipc-message", this._ipcMessageHandler);
-        this.webview.parentNode.removeChild(this.webview);
-        this.webview = false;
-      }
-      this.webview = document.createElement("webview");
-      // this.webview.addEventListener('dom-ready', () => {
-      //   this.webview.openDevTools();
-      // });
-      this.webview.addEventListener("ipc-message", this._ipcMessageHandler);
-      this.webview.style.width = "100%";
-      this.webview.style.height = "100%";
-      this.webview.setAttribute("nodeintegration", "");
-      this.webview.setAttribute("src", TERMINAL_URL);
-      this.el.appendChild(this.webview);
     }
   }, {
-    key: "ipcMessageHandler",
-    value: function ipcMessageHandler(e) {
-      if (e.channel !== "message-from-terminal") {
-        return;
-      }
-      if (e.args.length < 1) {
-        return;
-      }
-      var o = e.args[0];
-      if (!o.command) {
-        return;
-      }
-      switch (o.command) {
-        case "init":
-          if (this.dir) {
-            this.executeCommand("cd " + this.dir);
-            this.executeCommand("clear");
-          }
-          if (this.autorun) {
-            this.executeCommand(this.autorun);
-          }
-          break;
-        default:
-          console.warn("unknow command object from terminal");
-          console.warn(o);
-          break;
-      }
-    }
-  }, {
-    key: "executeCommand",
+    key: 'executeCommand',
     value: function executeCommand(commandString) {
-      this.webview.send("message-to-terminal", {
-        command: "execute",
-        value: commandString
-      });
+      this.ptyProcess.write(commandString);
     }
   }, {
-    key: "destroy",
+    key: 'destroy',
     value: function destroy() {
       this.pause();
+      this.xterm.off('data');
+      this.ptyProcess.off('data');
+      this.ptyProcess.kill();
+      this.xterm.destroy();
     }
   }]);
 
@@ -4814,6 +4815,9 @@ var LiveCode = function () {
       //codemirror instances need to be updated
       for (var key in this.codeElements) {
         this.codeElements[key].layout();
+      }
+      for (var _key in this.terminalElements) {
+        this.terminalElements[_key].layout();
       }
     }
   }, {

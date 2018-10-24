@@ -98,7 +98,7 @@ export default class CodeElement {
         return data;
       })
       .catch(e => {
-        this.setValue(``);
+        this.setValue('');
         throw e;
       });
   }
